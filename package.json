@@ -1,0 +1,48 @@
+{
+  "name": "react-py",
+  "version": "1.0.0",
+  "description": "Run Python code directly from the browser",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "mocha -r jsdom-global/register",
+    "release": "standard-version",
+    "publish": "git push --follow-tags origin main && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elilambnz/react-py.git"
+  },
+  "keywords": [
+    "react",
+    "python"
+  ],
+  "author": "Eli Lamb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elilambnz/react-py/issues"
+  },
+  "homepage": "https://github.com/elilambnz/react-py#readme",
+  "devDependencies": {
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/react": "^18.0.15",
+    "chai": "^4.3.6",
+    "jsdom": "20.0.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^10.0.0",
+    "standard-version": "^9.3.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
+  }
+}
