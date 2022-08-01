@@ -8,11 +8,21 @@
 
 Run python code directly in the browser.
 
-## Getting Started
+## Installation
 
 ```
 npm install react-py
 ```
+
+Add the following to the `<head>` tag in your `index.html` file:
+
+```html
+<head>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+</head>
+```
+
+## Usage
 
 ```tsx
 import { useState } from "react";
