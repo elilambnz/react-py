@@ -30,6 +30,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Run All Node.js Tests
         run: npm run test
