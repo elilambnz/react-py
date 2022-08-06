@@ -14,14 +14,6 @@ Run python code directly in the browser.
 npm install react-py
 ```
 
-Add the following to the `<head>` tag in your `index.html` file:
-
-```html
-<head>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
-</head>
-```
-
 ## Usage
 
 ```tsx
@@ -41,7 +33,7 @@ function Codeblock() {
   const [input, setInput] = useState("");
 
   // Use the usePython hook to run code and access both stdout and stderr
-  const { runPython, stdout, stderr, isLoading } = usePython();
+  const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
 
   return (
     <>
@@ -53,7 +45,8 @@ function Codeblock() {
         />
         <input
           type="submit"
-          value="Submit"
+          value={!isRunning ? "Run" : "Running..."}
+          disabled={isLoading || isRunning}
           onClick={(e) => {
             e.preventDefault();
             runPython(input);
@@ -61,7 +54,7 @@ function Codeblock() {
         />
       </form>
       <p>Output</p>
-      <pre>{String(stdout)}</pre>
+      <pre>{stdout}</pre>
       <p>Error</p>
       <pre>{stderr}</pre>
     </>
@@ -70,6 +63,22 @@ function Codeblock() {
 
 render(<App />, document.getElementById("root"));
 ```
+
+## Limitations
+
+Most of the Python standard library is functional, except from some modules. The following modules can be imported, but are not functional due to the limitations of the WebAssembly VM:
+
+- multiprocessing
+- threading
+- sockets
+
+[Learn more about the limitations here](https://pyodide.org/en/stable/usage/wasm-constraints.html).
+
+## Roadmap
+
+- [ ] Add additional examples
+- [ ] Ability to run python in Web Workers
+- [ ] Extended API for custom configuration
 
 ## License
 

@@ -20,7 +20,8 @@
   },
   "keywords": [
     "react",
-    "python"
+    "python",
+    "pyodide"
   ],
   "author": "Eli Lamb",
   "license": "MIT",

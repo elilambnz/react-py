@@ -2,19 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import { PythonContext } from "./PythonProvider";
 
 function usePython() {
+  const [isRunning, setIsRunning] = useState(false);
   const [stdout, setStdout] = useState("");
   const [stderr, setStderr] = useState("");
-  const [receiveOutput, setReceiveOutput] = useState(false);
 
-  const { isLoading, run, output } = useContext(PythonContext);
+  const { run, output, isLoading } = useContext(PythonContext);
 
-  // HACK: This is a hack to get around runPython not returning output correctly
   useEffect(() => {
-    if (receiveOutput) {
+    if (isRunning) {
       setStdout(output.join("\n"));
-      setReceiveOutput(false);
     }
-  }, [output, receiveOutput]);
+  }, [isRunning, output]);
 
   const pythonRunnerCode = `
 import sys
@@ -45,19 +43,21 @@ def run(code, preamble=''):
       return;
     }
     try {
+      setIsRunning(true);
       await run(code);
-      // HACK: This is a hack to get around runPython not returning output correctly
-      setReceiveOutput(true);
     } catch (error: any) {
       setStderr("Traceback (most recent call last):\n" + error.message);
+    } finally {
+      setIsRunning(false);
     }
   };
 
   return {
+    runPython,
     stdout,
     stderr,
     isLoading,
-    runPython,
+    isRunning,
   };
 }
 
