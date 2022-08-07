@@ -1,6 +1,7 @@
 # react-py
 
-[![Build Status](https://img.shields.io/github/workflow/status/elilambnz/react-py/Tests?style=flat-square&label=Tests)](https://github.com/elilambnz/react-py/actions?query=workflow%3ATests+branch%3Amain)
+<!-- [![Build Status](https://img.shields.io/github/workflow/status/elilambnz/react-py/Tests?style=flat-square&label=Tests)](https://github.com/elilambnz/react-py/actions?query=workflow%3ATests+branch%3Amain) -->
+
 [![CodeQL](https://img.shields.io/github/workflow/status/elilambnz/react-py/CodeQL?style=flat-square&label=CodeQL)](https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain)
 [![MIT License](https://img.shields.io/npm/l/react-py?style=flat-square)](https://github.com/elilambnz/react-py/blob/main/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/react-py?style=flat-square)](https://www.npmjs.com/package/react-py)
