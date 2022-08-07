@@ -11,7 +11,7 @@ Run python code directly in the browser. [Try it out!](elilambnz.github.io/react
 
 ## Examples
 
-[Basic example](elilambnz.github.io/react-py)
+[Basic example](https://elilambnz.github.io/react-py)
 
 ## Installation
 
