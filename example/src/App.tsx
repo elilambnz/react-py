@@ -119,7 +119,7 @@ function App() {
               <div className="mt-8 flex rounded-md border border-black p-4">
                 <div className="w-1/2">
                   <AceEditor
-                    value={placeholder}
+                    value={input}
                     mode="python"
                     theme="github"
                     onChange={(newValue) => setInput(newValue)}
