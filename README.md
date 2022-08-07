@@ -7,7 +7,7 @@
 [![NPM Version](https://img.shields.io/npm/v/react-py?style=flat-square)](https://www.npmjs.com/package/react-py)
 [![NPM Bundle Size](https://img.shields.io/bundlephobia/min/react-py?style=flat-square)](https://bundlephobia.com/package/react-py)
 
-Run python code directly in the browser. [Try it out!](elilambnz.github.io/react-py)
+Run python code directly in the browser. [Try it out!](https://elilambnz.github.io/react-py)
 
 ## Examples
 
