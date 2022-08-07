@@ -16,7 +16,7 @@ print("Hello World")
 
 function App() {
   const [input, setInput] = useState(placeholder);
-  const { runPython, stdout, stderr, isLoading } = usePython();
+  const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
 
   return (
     <div className="min-w-full bg-white">
@@ -134,12 +134,10 @@ function App() {
                   <button
                     type="button"
                     className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    // disabled={isLoading || isRunning}
-                    disabled={isLoading}
+                    disabled={isLoading || isRunning}
                     onClick={() => runPython(input)}
                   >
-                    {/* {!isRunning ? "Run" : "Running..."} */}
-                    Run
+                    {!isRunning ? "Run" : "Running..."}
                   </button>
                   <div className="mt-4">
                     <p>Output</p>
