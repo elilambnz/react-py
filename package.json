@@ -1,6 +1,6 @@
 {
   "name": "react-py",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1",
   "description": "Run Python code directly from the browser",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -38,6 +38,8 @@
     "jsdom": "20.0.0",
     "jsdom-global": "3.0.2",
     "mocha": "^10.0.0",
+    "react": "^18.2.0",
+    "react-test-renderer": "^18.2.0",
     "standard-version": "^9.3.1",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
