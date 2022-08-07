@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "react-py",
+  "name": "Example page for react-py",
   "icons": [
     {
       "src": "favicon.ico",
