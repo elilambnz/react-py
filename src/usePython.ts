@@ -29,6 +29,8 @@ def run(code, preamble=''):
         type_, value, tracebac = sys.exc_info()
         tracebac = tracebac.tb_next
         raise value.with_traceback(tracebac)
+    finally:
+        print()
 `;
 
   const runPython = async (code: string, preamble = "") => {
