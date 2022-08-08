@@ -88,7 +88,7 @@ function App() {
           </Transition>
         </Popover>
         <main>
-          <div className="bg-gray-900 pt-10 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14">
+          <div className="bg-gray-900 pt-10 pb-8 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14">
             <div className="mx-auto max-w-7xl lg:px-8">
               <div className="lg:grid lg:grid-cols-2 lg:gap-8">
                 <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
@@ -115,10 +115,11 @@ function App() {
                 </h2>
               </div>
 
-              <div className="mt-8 flex rounded-md border border-black p-4">
-                <div className="w-1/2">
+              <div className="mt-8 flex flex-wrap rounded-md border border-black p-4 lg:flex-nowrap">
+                <div className="w-full lg:w-1/2">
                   <AceEditor
                     value={input}
+                    width="100%"
                     mode="python"
                     theme="github"
                     onChange={(newValue) => setInput(newValue)}
@@ -127,7 +128,7 @@ function App() {
                   />
                 </div>
 
-                <div className="ml-4 w-1/2 text-left">
+                <div className="my-4 ml-4 w-full text-left lg:my-0 lg:w-1/2">
                   <h2 className="text-base font-semibold uppercase tracking-wider text-cyan-600">
                     {isLoading ? "Loading..." : "Ready!"}
                   </h2>
@@ -148,14 +149,14 @@ function App() {
                     <p>
                       <b>Output</b>
                     </p>
-                    <pre className="mt-2 min-h-[2.5rem] rounded-md bg-slate-200 p-2">
+                    <pre className="mt-2 min-h-[2.5rem] overflow-auto rounded-md bg-slate-200 p-2">
                       <code>{stdout}</code>
                     </pre>
                     <br />
                     <p>
                       <b>Error</b>
                     </p>
-                    <pre className="mt-2 min-h-[2.5rem] rounded-md bg-slate-200 p-2 text-red-500">
+                    <pre className="mt-2 min-h-[2.5rem] overflow-auto rounded-md bg-slate-200 p-2 text-red-500">
                       <code>{stderr}</code>
                     </pre>
                   </div>
