@@ -9,10 +9,8 @@ function usePython() {
   const { run, output, isLoading } = useContext(PythonContext);
 
   useEffect(() => {
-    if (isRunning) {
-      setStdout(output.join("\n"));
-    }
-  }, [isRunning, output]);
+    setStdout(output.join("\n"));
+  }, [output]);
 
   const pythonRunnerCode = `
 import sys

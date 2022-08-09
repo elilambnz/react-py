@@ -13,10 +13,15 @@ const PythonContext = createContext({
   isLoading: false,
 });
 
+const suppressedMessages = ["Python initialization complete"];
+
+const separator = "#<ab@17943918#@>#";
+
 function PythonProvider(props: any) {
   const [hasScript, setHasScript] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pyodide, setPyodide] = useState<any>(null);
+  const [rawOutput, setRawOutput] = useState<string[]>([]);
   const [output, setOutput] = useState<string[]>([]);
 
   useEffect(() => {
@@ -45,12 +50,16 @@ function PythonProvider(props: any) {
           }
           setPyodide(
             await window.loadPyodide({
-              stdout: (msg: string) => setOutput((prev) => [...prev, msg]),
+              stdout: (msg: string) => {
+                // Suppress messages that are not useful for the user
+                if (suppressedMessages.includes(msg)) {
+                  return;
+                }
+                setRawOutput((prev) => [...prev, msg]);
+              },
             })
           );
         } catch (error) {
-          // NOTE: If error is "Error: Pyodide is already loading.", this is likely due to React running in Strict Mode.
-          // Strict Mode renders components twice (on dev but not production) in order to detect any problems with your code and warn you about them.
           console.error("Error loading Pyodide:", error);
         } finally {
           setIsLoading(false);
@@ -67,23 +76,32 @@ function PythonProvider(props: any) {
     }
   }, [pyodide]);
 
+  useEffect(() => {
+    if (rawOutput.length > 0) {
+      if (rawOutput[rawOutput.length - 1] === separator) {
+        setOutput(rawOutput.slice(0, -1));
+      }
+    }
+  }, [rawOutput]);
+
   const run = async (code: string) => {
     // Clear output
-    setOutput([]);
+    setRawOutput([]);
     if (!pyodide) {
       throw new Error("Pyodide is not loaded yet");
     }
     await pyodide.runPythonAsync(code);
-    return output.join("\n");
+    // Add separator to indicate end of output
+    setRawOutput((prev) => [...prev, separator]);
   };
 
   return (
     <PythonContext.Provider
       value={{
-        isLoading: !hasScript || isLoading,
         pyodide,
         run,
         output,
+        isLoading: !hasScript || isLoading,
       }}
       {...props}
     />
