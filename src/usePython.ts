@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { PythonContext } from "./PythonProvider";
+import { PythonContext, separator } from "./PythonProvider";
 
 function usePython() {
   const [isRunning, setIsRunning] = useState(false);
@@ -9,8 +9,12 @@ function usePython() {
   const { run, output, isLoading } = useContext(PythonContext);
 
   useEffect(() => {
-    setStdout(output.join("\n"));
-  }, [output]);
+    if (output.length > 0) {
+      if (output[output.length - 1] === separator) {
+        setStdout(output.slice(0, -1).join("\n"));
+      }
+    }
+  }, [isRunning]);
 
   const pythonRunnerCode = `
 import sys

@@ -15,13 +15,12 @@ const PythonContext = createContext({
 
 const suppressedMessages = ["Python initialization complete"];
 
-const separator = "#<ab@17943918#@>#";
+export const separator = "#<ab@17943918#@>#";
 
 function PythonProvider(props: any) {
   const [hasScript, setHasScript] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pyodide, setPyodide] = useState<any>(null);
-  const [rawOutput, setRawOutput] = useState<string[]>([]);
   const [output, setOutput] = useState<string[]>([]);
 
   useEffect(() => {
@@ -55,7 +54,7 @@ function PythonProvider(props: any) {
                 if (suppressedMessages.includes(msg)) {
                   return;
                 }
-                setRawOutput((prev) => [...prev, msg]);
+                setOutput((prev) => [...prev, msg]);
               },
             })
           );
@@ -76,23 +75,15 @@ function PythonProvider(props: any) {
     }
   }, [pyodide]);
 
-  useEffect(() => {
-    if (rawOutput.length > 0) {
-      if (rawOutput[rawOutput.length - 1] === separator) {
-        setOutput(rawOutput.slice(0, -1));
-      }
-    }
-  }, [rawOutput]);
-
   const run = async (code: string) => {
     // Clear output
-    setRawOutput([]);
+    setOutput([]);
     if (!pyodide) {
       throw new Error("Pyodide is not loaded yet");
     }
     await pyodide.runPythonAsync(code);
     // Add separator to indicate end of output
-    setRawOutput((prev) => [...prev, separator]);
+    setOutput((prev) => [...prev, separator]);
   };
 
   return (
