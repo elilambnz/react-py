@@ -7,18 +7,20 @@ import { MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-textmate";
 import "ace-builds/src-noconflict/ext-language_tools";
 import clsx from "clsx";
 
-const placeholder = `print("Hello World")`;
+import { snippets } from "./data/snippets";
 
 function App() {
-  const [input, setInput] = useState(placeholder);
+  const [input, setInput] = useState(
+    snippets[Math.floor(Math.random() * snippets.length)]
+  );
   const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
 
   return (
-    <div className="min-w-full bg-white">
+    <div className="min-w-full bg-white text-black">
       <div className="relative overflow-hidden">
         <Popover as="header" className="relative">
           <div className="bg-gray-900 pt-6">
@@ -107,7 +109,44 @@ function App() {
             </div>
           </div>
 
-          <div className="relative bg-gray-50 pt-16 pb-16 sm:pt-24 lg:pt-32">
+          <div
+            id="installation"
+            className="relative bg-gray-50 pt-8 pb-8 sm:pt-16"
+          >
+            <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8">
+              <div>
+                <h2 className="text-base font-semibold uppercase tracking-wider text-cyan-600">
+                  Installation
+                </h2>
+              </div>
+
+              <div className="mt-8 flex justify-center">
+                <div className="mockup-code">
+                  <pre data-prefix="$" className="w-fit">
+                    <code>npm i react-py</code>
+                  </pre>
+                </div>
+              </div>
+
+              <p className="mx-auto mt-5 max-w-prose text-xl text-gray-500">
+                Then simply follow the{" "}
+                <a
+                  href="https://github.com/elilambnz/react-py"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-600 hover:text-cyan-700"
+                >
+                  usage guide in the Readme
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="basic-example"
+            className="relative bg-gray-50 pt-8 pb-8 sm:pt-16"
+          >
             <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8">
               <div>
                 <h2 className="text-base font-semibold uppercase tracking-wider text-cyan-600">
@@ -121,7 +160,7 @@ function App() {
                     value={input}
                     width="100%"
                     mode="python"
-                    theme="github"
+                    theme="textmate"
                     onChange={(newValue) => setInput(newValue)}
                     name="codeblock"
                     editorProps={{ $blockScrolling: true }}
@@ -144,6 +183,17 @@ function App() {
                     onClick={() => runPython(input)}
                   >
                     {!isRunning ? "Run" : "Running..."}
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-2 mt-4 inline-flex items-center rounded-md border border-transparent bg-teal-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:cursor-pointer hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                    onClick={() =>
+                      setInput(
+                        snippets[Math.floor(Math.random() * snippets.length)]
+                      )
+                    }
+                  >
+                    Randomize example
                   </button>
                   <div className="mt-4">
                     <p>
