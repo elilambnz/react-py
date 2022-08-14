@@ -11,8 +11,7 @@ How to use `react-py` in your project.
 First, wrap your app in a `PythonProvider` component.
 
 ```tsx
-import { useState } from "react";
-import { usePython, PythonProvider } from "react-py";
+import { PythonProvider } from "react-py";
 
 function App() {
   return (
@@ -31,6 +30,9 @@ render(<App />, document.getElementById("root"));
 Use the `usePython` hook to run code and access both stdout and stderr.
 
 ```tsx
+import { useState } from "react";
+import { usePython } from "react-py";
+
 function Codeblock() {
   const [input, setInput] = useState("");
 

@@ -20,6 +20,33 @@
 
 ---
 
+## Quickstart
+
+Install `react-py` with:
+
+```bash
+npm i react-py
+```
+
+Then, wrap your app in a `PythonProvider` component.
+
+```tsx
+import { PythonProvider } from "react-py";
+
+function App() {
+  return (
+    // Add the provider to your app
+    <PythonProvider>
+      <Codeblock />
+    </PythonProvider>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+```
+
+Using the `usePython` hook, you can run code and access both stdout and stderr. For full usage instructions, see the [usage docs](https://elilambnz.github.io/react-py/docs/introduction/usage).
+
 ## Documentation
 
 For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.github.io/react-py/).
