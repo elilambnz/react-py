@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
@@ -8,16 +8,21 @@ import { ExternalLinkIcon, RefreshIcon } from "@heroicons/react/solid";
 import { useColorMode } from "@docusaurus/theme-common";
 
 function HomepageHeader() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   const { siteConfig } = useDocusaurusContext();
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    setIsDarkMode(colorMode === "dark");
+  }, [colorMode]);
+
   return (
     <header className="mx-auto mt-8 max-w-7xl px-4 sm:mt-16">
       <div className="text-center">
         <img
           className="mx-auto h-16 w-auto"
-          src={
-            colorMode === "dark" ? "img/logo-dark.png" : "img/logo-light.png"
-          }
+          src={isDarkMode ? "img/logo-dark.png" : "img/logo-light.png"}
           alt={siteConfig.title}
         />
         <p className="mx-auto mt-3 flex max-w-md items-center justify-center text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
