@@ -22,6 +22,8 @@ function App() {
     </PythonProvider>
   );
 }
+
+render(<App />, document.getElementById("root"));
 ```
 
 ## `usePython` Hook
@@ -64,6 +66,4 @@ function Codeblock() {
     </>
   );
 }
-
-render(<App />, document.getElementById("root"));
 ```

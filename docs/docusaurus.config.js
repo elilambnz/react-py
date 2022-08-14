@@ -74,26 +74,6 @@ const config = {
       },
       footer: {
         style: "dark",
-        links: [
-          {
-            title: "Docs",
-            items: [
-              {
-                label: "Introduction",
-                to: "/introduction/getting-started",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
-              {
-                label: "GitHub",
-                href: "https://github.com/elilambnz/react-py",
-              },
-            ],
-          },
-        ],
         copyright: `Made with ❤️ + ☕️ by <a href="https://github.com/elilambnz">Eli Lamb</a>. Licensed under the <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md">MIT License</a>.`,
       },
       prism: {

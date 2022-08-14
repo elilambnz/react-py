@@ -5,17 +5,21 @@ import Layout from "@theme/Layout";
 import CodeEditor from "../components/CodeEditor";
 import { snippets } from "../data/snippets";
 import { ExternalLinkIcon, RefreshIcon } from "@heroicons/react/solid";
+import { useColorMode } from "@docusaurus/theme-common";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
+  const { colorMode } = useColorMode();
   return (
     <header className="mx-auto mt-8 max-w-7xl px-4 sm:mt-16">
       <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
-          <span className="block bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent dark:from-teal-200 dark:to-cyan-400 xl:inline">
-            {siteConfig.title}
-          </span>
-        </h1>
+        <img
+          className="mx-auto h-16 w-auto"
+          src={
+            colorMode === "dark" ? "img/logo-dark.png" : "img/logo-light.png"
+          }
+          alt={siteConfig.title}
+        />
         <p className="mx-auto mt-3 flex max-w-md items-center justify-center text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
           {siteConfig.tagline}
         </p>

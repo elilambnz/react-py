@@ -1,73 +1,32 @@
-# react-py
+<p align="center">
+  <a href="https://elilambnz.github.io/react-py/#gh-light-mode-only" target="_blank">
+    <img src="./.github/logo-light.png" alt="react-py" width="350" height="70">
+  </a>
+  <a href="https://elilambnz.github.io/react-py/#gh-dark-mode-only" target="_blank">
+    <img src="./.github/logo-dark.png" alt="react-py" width="350" height="70">
+  </a>
+</p>
 
-<!-- [![Build Status](https://img.shields.io/github/workflow/status/elilambnz/react-py/Tests?style=flat-square&label=Tests)](https://github.com/elilambnz/react-py/actions?query=workflow%3ATests+branch%3Amain) -->
+<p align="center">
+  Run Python code directly in the browser. <a href="https://elilambnz.github.io/react-py">Try it out!</a>
+</p>
 
-[![CodeQL](https://img.shields.io/github/workflow/status/elilambnz/react-py/CodeQL?style=flat-square&label=CodeQL)](https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain)
-[![MIT License](https://img.shields.io/npm/l/react-py?style=flat-square)](https://github.com/elilambnz/react-py/blob/main/LICENSE.md)
-[![NPM Version](https://img.shields.io/npm/v/react-py?style=flat-square)](https://www.npmjs.com/package/react-py)
-[![NPM Bundle Size](https://img.shields.io/bundlephobia/min/react-py?style=flat-square)](https://bundlephobia.com/package/react-py)
+<p align="center">
+  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/elilambnz/react-py/CodeQL?style=flat-square&amp;label=CodeQL" alt="CodeQL"></a>
+  <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md"><img src="https://img.shields.io/npm/l/react-py?style=flat-square" alt="MIT License"></a>
+  <a href="https://www.npmjs.com/package/react-py"><img src="https://img.shields.io/npm/v/react-py?style=flat-square" alt="NPM Version"></a>
+  <a href="https://bundlephobia.com/package/react-py"><img src="https://img.shields.io/bundlephobia/min/react-py?style=flat-square" alt="NPM Bundle Size"></a>
+</p>
 
-Run Python code directly in the browser. [Try it out!](https://elilambnz.github.io/react-py)
+---
+
+## Documentation
+
+For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.github.io/react-py/).
 
 ## Examples
 
 [Basic example](https://elilambnz.github.io/react-py/docs/examples/basic-example)
-
-## Installation
-
-```
-npm install react-py
-```
-
-## Usage
-
-```tsx
-import { useState } from "react";
-import { usePython, PythonProvider } from "react-py";
-
-function App() {
-  return (
-    // Add the provider to your app
-    <PythonProvider>
-      <Codeblock />
-    </PythonProvider>
-  );
-}
-
-function Codeblock() {
-  const [input, setInput] = useState("");
-
-  // Use the usePython hook to run code and access both stdout and stderr
-  const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
-
-  return (
-    <>
-      {isLoading ? <p>Loading...</p> : <p>Ready!</p>}
-      <form>
-        <textarea
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter your code here"
-        />
-        <input
-          type="submit"
-          value={!isRunning ? "Run" : "Running..."}
-          disabled={isLoading || isRunning}
-          onClick={(e) => {
-            e.preventDefault();
-            runPython(input);
-          }}
-        />
-      </form>
-      <p>Output</p>
-      <pre>{stdout}</pre>
-      <p>Error</p>
-      <pre>{stderr}</pre>
-    </>
-  );
-}
-
-render(<App />, document.getElementById("root"));
-```
 
 ## Limitations
 
@@ -94,6 +53,6 @@ _react-py_ is available under the MIT License.
 Eli Lamb - [elilambnz](https://github.com/elilambnz)  
 James Ansley - [James-Ansley](https://github.com/James-Ansley)
 
-## Acknowlegments
+## Acknowledgments
 
 This project is heavily based on [Pyodide](https://pyodide.org/), a Python distribution for the browser and Node.js based on WebAssembly.
