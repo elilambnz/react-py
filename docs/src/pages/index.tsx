@@ -68,8 +68,8 @@ export default function Home(): JSX.Element {
       description="Description will go into a meta tag in <head />"
     >
       <HomepageHeader />
-      <main className="mx-auto mt-8 max-w-7xl px-4 text-center sm:mt-16">
-        <p>Or, try it out with some code!</p>
+      <main className="mx-auto max-w-7xl px-4 text-center sm:mt-16" style={{marginTop: "2rem"}}>
+        <p className="mt-0">Or, try it out with some code!</p>
         <button
           type="button"
           onClick={() => updateCode(grabCode())}
@@ -78,7 +78,7 @@ export default function Home(): JSX.Element {
           Randomise example
           <RefreshIcon className="ml-2 -mr-0.5 h-4 w-4" />
         </button>
-        <div className="mx-auto mt-4 max-w-6xl">
+        <div className="mx-auto mt-4 max-w-6xl" style={{width: "80ch"}}>
           <CodeEditor code={code} showButtons />
         </div>
       </main>
