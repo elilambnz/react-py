@@ -8,12 +8,10 @@ const editorOptions = {
   enableLiveAutocompletion: true,
   highlightActiveLine: false,
   showPrintMargin: false,
-  // showGutter: false,
 };
 
 const editorOnLoad = (editor) => {
   editor.renderer.setScrollMargin(10, 10, 0, 0);
-  // editor.renderer.setPadding(16);
   editor.moveCursorTo(0, 0);
 };
 
@@ -42,7 +40,7 @@ export default function CodeEditor(props) {
   }
 
   return (
-    <div className="relative py-4">
+    <div className="relative mb-10">
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
           const AceEditor = require("react-ace").default;
@@ -55,11 +53,12 @@ export default function CodeEditor(props) {
               value={input}
               mode="python"
               name="CodeBlock"
+              fontSize="0.9rem"
+              className="shadow-md rounded overflow-clip"
               theme={colorMode === "dark" ? "idle_fingers" : "textmate"}
               onChange={(newValue) => setInput(newValue)}
               width="100%"
               maxLines={Infinity}
-              // style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
               onLoad={editorOnLoad}
               editorProps={{ $blockScrolling: true }}
               setOptions={editorOptions}
@@ -68,7 +67,7 @@ export default function CodeEditor(props) {
         }}
       </BrowserOnly>
 
-      <span className="absolute top-2 right-2 z-10 mt-4 inline-flex rounded-md shadow-sm">
+      <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
         <button
           disabled={isLoading || isRunning}
           onClick={run}
