@@ -35,7 +35,7 @@
     "@types/mocha": "^9.1.1",
     "@types/react": "^18.0.15",
     "chai": "^4.3.6",
-    "jsdom": "20.0.0",
+    "jsdom": "20.0.1",
     "jsdom-global": "3.0.2",
     "mocha": "^10.0.0",
     "react-test-renderer": "^18.2.0",
