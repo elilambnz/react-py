@@ -54,6 +54,7 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 ## Examples
 
 [Basic example](https://elilambnz.github.io/react-py/docs/examples/basic-example)
+[Interrupting execution](https://elilambnz.github.io/react-py/docs/examples/interrupting-execution)
 
 ## Limitations
 
@@ -67,8 +68,8 @@ Most of the Python standard library is functional, except from some modules. The
 
 ## Roadmap
 
-- [ ] Add additional examples
-- [ ] Ability to run python in Web Workers
+- [x] Add additional examples
+- [x] Ability to run python in Web Workers
 - [ ] Extended API for custom configuration
 
 ## License

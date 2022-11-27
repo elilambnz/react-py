@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import { useColorMode } from "@docusaurus/theme-common";
 import { usePython } from "react-py";
+import clsx from "clsx";
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -25,13 +26,25 @@ export default function CodeEditor(props) {
     setShowOutput(false);
   }, [code]);
 
-  const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
+  const {
+    runPython,
+    stdout,
+    stderr,
+    isLoading,
+    isRunning,
+    interruptExecution,
+  } = usePython();
 
   const { colorMode } = useColorMode();
 
   function run() {
     setShowOutput(true);
     return runPython(input);
+  }
+
+  function stop() {
+    setShowOutput(false);
+    return interruptExecution();
   }
 
   function reset() {
@@ -54,7 +67,7 @@ export default function CodeEditor(props) {
               mode="python"
               name="CodeBlock"
               fontSize="0.9rem"
-              className="shadow-md rounded overflow-clip"
+              className="overflow-clip rounded shadow-md"
               theme={colorMode === "dark" ? "idle_fingers" : "textmate"}
               onChange={(newValue) => setInput(newValue)}
               width="100%"
@@ -68,18 +81,39 @@ export default function CodeEditor(props) {
       </BrowserOnly>
 
       <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
-        <button
-          disabled={isLoading || isRunning}
-          onClick={run}
-          type="button"
-          className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-        >
-          Run
-        </button>
+        {!isRunning ? (
+          <button
+            onClick={run}
+            type="button"
+            disabled={isLoading}
+            className={clsx(
+              "relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+              !isLoading
+                ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+                : "opacity-50"
+            )}
+          >
+            Run
+          </button>
+        ) : (
+          <button
+            onClick={stop}
+            type="button"
+            className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+          >
+            Stop
+          </button>
+        )}
         <button
           onClick={reset}
           type="button"
-          className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+          disabled={isRunning}
+          className={clsx(
+            "relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+            !isRunning
+              ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+              : "opacity-50"
+          )}
         >
           Reset
         </button>
@@ -87,7 +121,7 @@ export default function CodeEditor(props) {
       {showOutput && (
         <pre className="mt-4 text-left">
           <code>{stdout}</code>
-          {<code className="text-red-500">{stderr}</code>}
+          <code className="text-red-500">{stderr}</code>
         </pre>
       )}
     </div>
