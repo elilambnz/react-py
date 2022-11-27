@@ -21,36 +21,12 @@ export default function CodeEditor(props) {
   const [input, setInput] = useState(code.trimEnd());
   const [showOutput, setShowOutput] = useState(false);
 
+  const { colorMode } = useColorMode();
+
   useEffect(() => {
     setInput(code.trimEnd());
     setShowOutput(false);
   }, [code]);
-
-  const {
-    runPython,
-    stdout,
-    stderr,
-    isLoading,
-    isRunning,
-    interruptExecution,
-  } = usePython();
-
-  const { colorMode } = useColorMode();
-
-  function run() {
-    setShowOutput(true);
-    return runPython(input);
-  }
-
-  function stop() {
-    setShowOutput(false);
-    return interruptExecution();
-  }
-
-  function reset() {
-    setShowOutput(false);
-    setInput(code.trimEnd());
-  }
 
   return (
     <div className="relative mb-10">
@@ -79,51 +55,82 @@ export default function CodeEditor(props) {
           );
         }}
       </BrowserOnly>
+      <BrowserOnly fallback={<div>Loading...</div>}>
+        {() => {
+          const {
+            runPython,
+            stdout,
+            stderr,
+            isLoading,
+            isRunning,
+            interruptExecution,
+          } = usePython();
 
-      <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
-        {!isRunning ? (
-          <button
-            onClick={run}
-            type="button"
-            disabled={isLoading}
-            className={clsx(
-              "relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
-              !isLoading
-                ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-                : "opacity-50"
-            )}
-          >
-            Run
-          </button>
-        ) : (
-          <button
-            onClick={stop}
-            type="button"
-            className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-          >
-            Stop
-          </button>
-        )}
-        <button
-          onClick={reset}
-          type="button"
-          disabled={isRunning}
-          className={clsx(
-            "relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
-            !isRunning
-              ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-              : "opacity-50"
-          )}
-        >
-          Reset
-        </button>
-      </span>
-      {showOutput && (
-        <pre className="mt-4 text-left">
-          <code>{stdout}</code>
-          <code className="text-red-500">{stderr}</code>
-        </pre>
-      )}
+          function run() {
+            setShowOutput(true);
+            runPython(input);
+          }
+
+          function stop() {
+            setShowOutput(false);
+            interruptExecution();
+          }
+
+          function reset() {
+            setShowOutput(false);
+            setInput(code.trimEnd());
+          }
+
+          return (
+            <>
+              <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
+                {!isRunning ? (
+                  <button
+                    onClick={run}
+                    type="button"
+                    disabled={isLoading}
+                    className={clsx(
+                      "relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+                      !isLoading
+                        ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+                        : "opacity-50"
+                    )}
+                  >
+                    Run
+                  </button>
+                ) : (
+                  <button
+                    onClick={stop}
+                    type="button"
+                    className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+                  >
+                    Stop
+                  </button>
+                )}
+                <button
+                  onClick={reset}
+                  type="button"
+                  disabled={isRunning}
+                  className={clsx(
+                    "relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+                    !isRunning
+                      ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
+                      : "opacity-50"
+                  )}
+                >
+                  Reset
+                </button>
+              </span>
+              {showOutput && (
+                <pre className="mt-4 text-left">
+                  <code>{stdout}</code>
+                  <code className="text-red-500">{stderr}</code>
+                </pre>
+              )}
+            </>
+          );
+        }}
+      </BrowserOnly>
     </div>
   );
 }
