@@ -69,3 +69,26 @@ function Codeblock() {
   );
 }
 ```
+
+## Usage with Docusaurus
+
+We've encountered a Webpack issue when bundling a Docusaurus site with this package. The following plugin can be added to `docusaurus.config.js` to resolve this issue:
+
+```js
+plugins: [
+  async function disableUsedExports() {
+    return {
+      name: "disable-used-exports",
+      configureWebpack() {
+        return {
+          optimization: {
+            usedExports: false,
+          },
+        };
+      },
+    };
+  },
+];
+```
+
+[Read more about this issue here](https://github.com/facebook/docusaurus/issues/8389).
