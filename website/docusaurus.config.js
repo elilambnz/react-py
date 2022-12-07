@@ -83,14 +83,26 @@ const config = {
     }),
 
   plugins: [
-    async function myPlugin(context, options) {
+    async function tailwind() {
       return {
-        name: "docusaurus-tailwindcss",
+        name: "tailwindcss",
         configurePostCss(postcssOptions) {
           // Appends TailwindCSS and AutoPrefixer.
           postcssOptions.plugins.push(require("tailwindcss"));
           postcssOptions.plugins.push(require("autoprefixer"));
           return postcssOptions;
+        },
+      };
+    },
+    async function disableUsedExports() {
+      return {
+        name: "disable-used-exports",
+        configureWebpack() {
+          return {
+            optimization: {
+              usedExports: false,
+            },
+          };
         },
       };
     },
