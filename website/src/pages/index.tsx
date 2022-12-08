@@ -55,10 +55,13 @@ function HomepageHeader() {
 }
 
 export default function Home(): JSX.Element {
-  let [code, updateCode] = useState(grabCode());
+  const shuffle = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
+
+  const [code, updateCode] = useState(shuffle(snippets));
 
   function grabCode() {
-    return snippets[Math.floor(Math.random() * snippets.length)];
+    const next = shuffle(snippets);
+    return next !== code ? next : grabCode();
   }
 
   const { siteConfig } = useDocusaurusContext();
@@ -79,7 +82,7 @@ export default function Home(): JSX.Element {
           <RefreshIcon className="ml-2 -mr-0.5 h-4 w-4" />
         </button>
         <div className="mx-auto mt-4 max-w-80ch">
-          <CodeEditor code={code} showButtons />
+          <CodeEditor code={code} />
         </div>
       </main>
     </Layout>

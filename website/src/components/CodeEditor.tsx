@@ -120,7 +120,6 @@ function PythonControl(props: PythonControlProps) {
   }
 
   function reset() {
-    runPython(input);
     onReset && onReset();
   }
 
