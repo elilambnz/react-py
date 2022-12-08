@@ -18,26 +18,37 @@ export default function usePython() {
   const [output, setOutput] = useState<string[]>([]);
   const [stdout, setStdout] = useState("");
   const [stderr, setStderr] = useState("");
-  const [worker, setWorker] = useState<Worker>();
 
   const { timeout } = useContext(PythonContext);
 
+  const workerRef = useRef<Worker>();
   const runnerRef = useRef<Remote<Runner>>();
 
-  const createWorker = () =>
-    setWorker(new Worker(new URL("../workers/python-worker", import.meta.url)));
+  const createWorker = () => {
+    const worker = new Worker(
+      new URL("../workers/python-worker", import.meta.url)
+    );
+    workerRef.current = worker;
+  };
 
   useEffect(() => {
     // Spawn worker on mount
     createWorker();
+
+    // Terminate worker on unmount
+    return () => {
+      cleanup();
+    };
   }, []);
 
+  const isReady = !isLoading && pyodideVersion;
+
   useEffect(() => {
-    if (worker && !isReady) {
+    if (workerRef.current && !isReady) {
       const init = async () => {
         try {
           setIsLoading(true);
-          const runner: Remote<Runner> = wrap(worker);
+          const runner: Remote<Runner> = wrap(workerRef.current!);
           runnerRef.current = runner;
 
           await runner.init(
@@ -49,7 +60,9 @@ export default function usePython() {
               setOutput((prev) => [...prev, msg]);
             }),
             proxy((version) => {
+              // The runner is ready once the Pyodide version has been set
               setPyodideVersion(version);
+              console.debug("Loaded pyodide version:", pyodideVersion);
             })
           );
         } catch (error) {
@@ -60,21 +73,14 @@ export default function usePython() {
       };
       init();
     }
-  }, [worker]);
+  }, [workerRef.current]);
 
+  // Immediately set stdout upon receiving new input
   useEffect(() => {
-    if (pyodideVersion) {
-      console.debug("Loaded pyodide version:", pyodideVersion);
+    if (output.length > 0) {
+      setStdout(output.slice(0, -1).join("\n"));
     }
-  }, [pyodideVersion]);
-
-  useEffect(() => {
-    if (isRunning && output.length > 0) {
-      setStdout(output.join("\n"));
-    }
-  }, [isRunning, output]);
-
-  const isReady = !isLoading && pyodideVersion;
+  }, [output]);
 
   const pythonRunnerCode = `
 import sys
@@ -139,17 +145,21 @@ def run(code, preamble=''):
   };
 
   const interruptExecution = () => {
-    if (!worker) {
-      return;
-    }
-    console.debug("Terminating worker");
-    worker.terminate();
+    cleanup();
     setOutput([]);
     setIsRunning(false);
     setPyodideVersion(undefined);
 
     // Spawn new worker
     createWorker();
+  };
+
+  const cleanup = () => {
+    if (!workerRef.current) {
+      return;
+    }
+    console.debug("Terminating worker");
+    workerRef.current.terminate();
   };
 
   return {
