@@ -85,3 +85,7 @@ James Ansley - [James-Ansley](https://github.com/James-Ansley)
 ## Acknowledgments
 
 This project is heavily based on [Pyodide](https://pyodide.org/), a Python distribution for the browser and Node.js based on WebAssembly.
+
+## Contributing
+
+If you're interested in contributing, please read our [contributing docs](https://github.com/elilambnz/react-py/blob/master/.github/CONTRIBUTING.md) **before submitting a pull request**.
