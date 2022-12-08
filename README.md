@@ -88,4 +88,4 @@ This project is heavily based on [Pyodide](https://pyodide.org/), a Python distr
 
 ## Contributing
 
-If you're interested in contributing, please read our [contributing docs](https://github.com/elilambnz/react-py/blob/master/.github/CONTRIBUTING.md) **before submitting a pull request**.
+If you're interested in contributing, please read our [contributing docs](https://github.com/elilambnz/react-py/blob/master/CONTRIBUTING.md) **before submitting a pull request**.
