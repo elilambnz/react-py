@@ -1,6 +1,15 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PythonContext, suppressedMessages } from "../providers/PythonProvider";
 import { proxy, Remote, wrap } from "comlink";
+
+interface Runner {
+  init: (
+    stdout: (msg: string) => void,
+    onLoad: (pyodide: any) => void
+  ) => Promise<void>;
+  run: (code: string) => Promise<void>;
+  interruptExecution: () => void;
+}
 
 export default function usePython() {
   const [isLoading, setIsLoading] = useState(true);
@@ -9,16 +18,48 @@ export default function usePython() {
   const [output, setOutput] = useState<string[]>([]);
   const [stdout, setStdout] = useState("");
   const [stderr, setStderr] = useState("");
-  const [worker, setWorker] = useState<[string, Worker]>([
-    crypto.randomUUID(),
-    new Worker(new URL("../workers/python-worker", import.meta.url)),
-  ]);
+  const [worker, setWorker] = useState<Worker>();
 
   const { timeout } = useContext(PythonContext);
 
+  const runnerRef = useRef<Remote<Runner>>();
+
+  const createWorker = () =>
+    setWorker(new Worker(new URL("../workers/python-worker", import.meta.url)));
+
   useEffect(() => {
-    // Re-initialise if worker is updated
-    init();
+    // Spawn worker on mount
+    createWorker();
+  }, []);
+
+  useEffect(() => {
+    if (worker && !isReady) {
+      const init = async () => {
+        try {
+          setIsLoading(true);
+          const runner: Remote<Runner> = wrap(worker);
+          runnerRef.current = runner;
+
+          await runner.init(
+            proxy((msg) => {
+              // Suppress messages that are not useful for the user
+              if (suppressedMessages.includes(msg)) {
+                return;
+              }
+              setOutput((prev) => [...prev, msg]);
+            }),
+            proxy((version) => {
+              setPyodideVersion(version);
+            })
+          );
+        } catch (error) {
+          console.error("Error loading Pyodide:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      init();
+    }
   }, [worker]);
 
   useEffect(() => {
@@ -34,41 +75,6 @@ export default function usePython() {
   }, [isRunning, output]);
 
   const isReady = !isLoading && pyodideVersion;
-
-  const runner: Remote<{
-    init: (
-      id: string,
-      stdout: (id: string, msg: string) => void,
-      onLoad: (pyodide: any) => void
-    ) => Promise<void>;
-    run: (code: string) => Promise<void>;
-    interruptExecution: () => void;
-  }> = useMemo(() => {
-    return wrap(worker[1]);
-  }, [worker]);
-
-  const init = async () => {
-    try {
-      setIsLoading(true);
-      await runner.init(
-        worker[0],
-        proxy((id, msg) => {
-          // Suppress messages that are not useful for the user
-          if (id !== worker[0] || suppressedMessages.includes(msg)) {
-            return;
-          }
-          setOutput((prev) => [...prev, msg]);
-        }),
-        proxy((version) => {
-          setPyodideVersion(version);
-        })
-      );
-    } catch (error) {
-      console.error("Error loading Pyodide:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const pythonRunnerCode = `
 import sys
@@ -113,7 +119,7 @@ def run(code, preamble=''):
       setIsRunning(true);
       // Clear output
       setOutput([]);
-      if (!isReady) {
+      if (!isReady || !runnerRef.current) {
         throw new Error("Pyodide is not loaded yet");
       }
       if (timeout > 0) {
@@ -123,7 +129,7 @@ def run(code, preamble=''):
           interruptExecution();
         }, timeout);
       }
-      await runner.run(code);
+      await runnerRef.current.run(code);
     } catch (error: any) {
       setStderr("Traceback (most recent call last):\n" + error.message);
     } finally {
@@ -133,15 +139,17 @@ def run(code, preamble=''):
   };
 
   const interruptExecution = () => {
-    console.debug("Terminating worker:", worker[0]);
-    worker[1].terminate();
+    if (!worker) {
+      return;
+    }
+    console.debug("Terminating worker");
+    worker.terminate();
     setOutput([]);
     setIsRunning(false);
     setPyodideVersion(undefined);
-    setWorker([
-      crypto.randomUUID(),
-      new Worker(new URL("../workers/python-worker", import.meta.url)),
-    ]);
+
+    // Spawn new worker
+    createWorker();
   };
 
   return {

@@ -11,13 +11,9 @@ declare global {
 import { expose } from "comlink";
 
 const python = {
-  async init(
-    id: string,
-    stdout: (id: string, msg: string) => void,
-    onLoad: (version: string) => void
-  ) {
+  async init(stdout: (msg: string) => void, onLoad: (version: string) => void) {
     self.pyodide = await self.loadPyodide({
-      stdout: (msg: string) => stdout(id, msg),
+      stdout: (msg: string) => stdout(msg),
     });
     onLoad(self.pyodide.version);
   },
