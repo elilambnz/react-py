@@ -12,6 +12,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACI+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/elilambnz/react-py/CI?style=flat-square&amp;label=CI" alt="CI"></a>
   <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/elilambnz/react-py/CodeQL?style=flat-square&amp;label=CodeQL" alt="CodeQL"></a>
   <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md"><img src="https://img.shields.io/npm/l/react-py?style=flat-square" alt="MIT License"></a>
   <a href="https://www.npmjs.com/package/react-py"><img src="https://img.shields.io/npm/v/react-py?style=flat-square" alt="NPM Version"></a>
@@ -24,14 +25,14 @@
 
 Install `react-py` with:
 
-```bash
-npm i react-py
+```sh
+npm install react-py
 ```
 
 Then, wrap your app in a `PythonProvider` component.
 
 ```tsx
-import { PythonProvider } from "react-py";
+import { PythonProvider } from 'react-py'
 
 function App() {
   return (
@@ -39,10 +40,10 @@ function App() {
     <PythonProvider>
       <Codeblock />
     </PythonProvider>
-  );
+  )
 }
 
-render(<App />, document.getElementById("root"));
+render(<App />, document.getElementById('root'))
 ```
 
 Using the `usePython` hook, you can run code and access both stdout and stderr. For full usage instructions, see the [usage docs](https://elilambnz.github.io/react-py/docs/introduction/usage).
