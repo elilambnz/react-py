@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Interrupting execution
+# Interrupting Execution
 
 Execution can be interrupted at any time by calling the `interruptExecution` method. This will terminate the running worker and spawn a new one.
 

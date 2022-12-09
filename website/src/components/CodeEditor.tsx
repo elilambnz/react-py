@@ -59,7 +59,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               mode="python"
               name="CodeBlock"
               fontSize="0.9rem"
-              className="overflow-clip rounded shadow-md"
+              className="min-h-[3.5rem] overflow-clip rounded shadow-md"
               theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
               onChange={(newValue) => setInput(newValue)}
               width="100%"

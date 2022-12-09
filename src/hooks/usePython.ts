@@ -65,7 +65,7 @@ export default function usePython() {
             proxy((version) => {
               // The runner is ready once the Pyodide version has been set
               setPyodideVersion(version)
-              console.debug('Loaded pyodide version:', pyodideVersion)
+              console.debug('Loaded pyodide version:', version)
             })
           )
         } catch (error) {
@@ -81,7 +81,7 @@ export default function usePython() {
   // Immediately set stdout upon receiving new input
   useEffect(() => {
     if (output.length > 0) {
-      setStdout(output.slice(0, -1).join('\n'))
+      setStdout(output.join('\n'))
     }
   }, [output])
 

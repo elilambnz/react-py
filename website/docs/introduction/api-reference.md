@@ -35,19 +35,19 @@ Python stdout.
 
 ### stderr
 
-`String`
+`string`
 
 Python stderr.
 
 ### isLoading
 
-`Boolean`
+`boolean`
 
 True if the worker is still being initialised. False if ready.
 
 ### isRunning
 
-`Boolean`
+`boolean`
 
 True if code is being executed. False if idle.
 
