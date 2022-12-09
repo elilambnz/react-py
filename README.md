@@ -54,8 +54,9 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 ## Examples
 
-[Basic example](https://elilambnz.github.io/react-py/docs/examples/basic-example)
-[Interrupting execution](https://elilambnz.github.io/react-py/docs/examples/interrupting-execution)
+[Basic Example](https://elilambnz.github.io/react-py/docs/examples/basic-example)
+
+[Interrupting Execution](https://elilambnz.github.io/react-py/docs/examples/interrupting-execution)
 
 ## Limitations
 

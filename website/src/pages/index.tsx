@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import Link from "@docusaurus/Link";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import Layout from "@theme/Layout";
-import CodeEditor from "../components/CodeEditor";
-import { snippets } from "../data/snippets";
-import { ExternalLinkIcon, RefreshIcon } from "@heroicons/react/solid";
-import { useColorMode } from "@docusaurus/theme-common";
+import React, { useEffect, useState } from 'react'
+import Link from '@docusaurus/Link'
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import Layout from '@theme/Layout'
+import CodeEditor from '../components/CodeEditor'
+import { snippets } from '../data/snippets'
+import { ExternalLinkIcon, RefreshIcon } from '@heroicons/react/solid'
+import { useColorMode } from '@docusaurus/theme-common'
 
 function HomepageHeader() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
-  const { siteConfig } = useDocusaurusContext();
-  const { colorMode } = useColorMode();
+  const { siteConfig } = useDocusaurusContext()
+  const { colorMode } = useColorMode()
 
   useEffect(() => {
-    setIsDarkMode(colorMode === "dark");
-  }, [colorMode]);
+    setIsDarkMode(colorMode === 'dark')
+  }, [colorMode])
 
   return (
     <header className="mx-auto mt-8 max-w-7xl px-4 sm:mt-16">
       <div className="text-center">
         <img
           className="mx-auto h-16 w-auto"
-          src={isDarkMode ? "img/logo-dark.png" : "img/logo-light.png"}
+          src={isDarkMode ? 'img/logo-dark.png' : 'img/logo-light.png'}
           alt={siteConfig.title}
         />
         <p className="mx-auto mt-3 flex max-w-md items-center justify-center text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
@@ -51,24 +51,24 @@ function HomepageHeader() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
 export default function Home(): JSX.Element {
-  const shuffle = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
+  const shuffle = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]
 
-  const [code, updateCode] = useState(shuffle(snippets));
+  const [code, updateCode] = useState(shuffle(snippets))
 
   function grabCode() {
-    const next = shuffle(snippets);
-    return next !== code ? next : grabCode();
+    const next = shuffle(snippets)
+    return next !== code ? next : grabCode()
   }
 
-  const { siteConfig } = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext()
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      description="Run Python code directly in the browser."
     >
       <HomepageHeader />
       <main className="mx-auto mt-4 max-w-7xl px-4 text-center sm:mt-8">
@@ -81,10 +81,10 @@ export default function Home(): JSX.Element {
           Randomise example
           <RefreshIcon className="ml-2 -mr-0.5 h-4 w-4" />
         </button>
-        <div className="mx-auto mt-4 max-w-80ch">
+        <div className="max-w-80ch mx-auto mt-4">
           <CodeEditor code={code} />
         </div>
       </main>
     </Layout>
-  );
+  )
 }
