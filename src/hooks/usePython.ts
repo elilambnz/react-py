@@ -12,14 +12,15 @@ interface Runner {
 }
 
 export default function usePython() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
+  const [pendingCode, setPendingCode] = useState<string | undefined>()
 
-  const { timeout } = useContext(PythonContext)
+  const { timeout, lazy } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<Runner>>()
@@ -32,8 +33,10 @@ export default function usePython() {
   }
 
   useEffect(() => {
-    // Spawn worker on mount
-    createWorker()
+    if (!lazy) {
+      // Spawn worker on mount
+      createWorker()
+    }
 
     // Terminate worker on unmount
     return () => {
@@ -82,6 +85,17 @@ export default function usePython() {
     }
   }, [output])
 
+  // React to ready state and run delayed code if pending
+  useEffect(() => {
+    if (pendingCode && isReady) {
+      const delayedRun = async () => {
+        await runPython(pendingCode)
+        setPendingCode(undefined)
+      }
+      delayedRun()
+    }
+  }, [pendingCode, isReady])
+
   const pythonRunnerCode = `
 import sys
 
@@ -116,6 +130,12 @@ def run(code, preamble=''):
     // Clear stdout and stderr
     setStdout('')
     setStderr('')
+    if (lazy && !isReady) {
+      // Spawn worker and set pending code
+      createWorker()
+      setPendingCode(code)
+      return
+    }
     if (isLoading) {
       console.error('Pyodide is not loaded yet')
       return

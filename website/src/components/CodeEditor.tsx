@@ -1,58 +1,58 @@
-import React, { useEffect, useState } from "react";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import { useColorMode } from "@docusaurus/theme-common";
-import clsx from "clsx";
+import React, { useEffect, useState } from 'react'
+import BrowserOnly from '@docusaurus/BrowserOnly'
+import { useColorMode } from '@docusaurus/theme-common'
+import clsx from 'clsx'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
   enableLiveAutocompletion: true,
   highlightActiveLine: false,
   showPrintMargin: false,
-};
+}
 
 const editorOnLoad = (editor) => {
-  editor.renderer.setScrollMargin(10, 10, 0, 0);
-  editor.moveCursorTo(0, 0);
-};
+  editor.renderer.setScrollMargin(10, 10, 0, 0)
+  editor.moveCursorTo(0, 0)
+}
 
 interface CodeEditorProps {
-  code: string;
+  code: string
 }
 
 export default function CodeEditor(props: CodeEditorProps) {
-  const { code } = props;
-  const [input, setInput] = useState(code.trimEnd());
-  const [showOutput, setShowOutput] = useState(false);
+  const { code } = props
+  const [input, setInput] = useState(code.trimEnd())
+  const [showOutput, setShowOutput] = useState(false)
 
   useEffect(() => {
-    setInput(code.trimEnd());
-    setShowOutput(false);
-  }, [code]);
+    setInput(code.trimEnd())
+    setShowOutput(false)
+  }, [code])
 
-  const { colorMode } = useColorMode();
+  const { colorMode } = useColorMode()
 
   function onRun() {
-    setShowOutput(true);
+    setShowOutput(true)
   }
 
   function onStop() {
-    setShowOutput(false);
+    setShowOutput(false)
   }
 
   function onReset() {
-    setShowOutput(false);
-    setInput(code.trimEnd());
+    setShowOutput(false)
+    setInput(code.trimEnd())
   }
 
   return (
     <div className="relative mb-10">
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
-          const AceEditor = require("react-ace").default;
-          require("ace-builds/src-noconflict/mode-python");
-          require("ace-builds/src-noconflict/theme-textmate");
-          require("ace-builds/src-noconflict/theme-idle_fingers");
-          require("ace-builds/src-noconflict/ext-language_tools");
+          const AceEditor = require('react-ace').default
+          require('ace-builds/src-noconflict/mode-python')
+          require('ace-builds/src-noconflict/theme-textmate')
+          require('ace-builds/src-noconflict/theme-idle_fingers')
+          require('ace-builds/src-noconflict/ext-language_tools')
           return (
             <AceEditor
               value={input}
@@ -60,7 +60,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               name="CodeBlock"
               fontSize="0.9rem"
               className="overflow-clip rounded shadow-md"
-              theme={colorMode === "dark" ? "idle_fingers" : "textmate"}
+              theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
               onChange={(newValue) => setInput(newValue)}
               width="100%"
               maxLines={Infinity}
@@ -68,7 +68,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               editorProps={{ $blockScrolling: true }}
               setOptions={editorOptions}
             />
-          );
+          )
         }}
       </BrowserOnly>
 
@@ -84,21 +84,21 @@ export default function CodeEditor(props: CodeEditorProps) {
         )}
       </BrowserOnly>
     </div>
-  );
+  )
 }
 
 interface PythonControlProps {
-  input: string;
-  showOutput: boolean;
-  onRun?: () => void;
-  onStop?: () => void;
-  onReset?: () => void;
+  input: string
+  showOutput: boolean
+  onRun?: () => void
+  onStop?: () => void
+  onReset?: () => void
 }
 
 function PythonControl(props: PythonControlProps) {
-  const { input, showOutput, onRun, onStop, onReset } = props;
+  const { input, showOutput, onRun, onStop, onReset } = props
 
-  const { usePython } = require("react-py");
+  const { usePython } = require('react-py')
 
   const {
     runPython,
@@ -107,20 +107,20 @@ function PythonControl(props: PythonControlProps) {
     isLoading,
     isRunning,
     interruptExecution,
-  } = usePython();
+  } = usePython({ lazy: true })
 
   function run() {
-    runPython(input);
-    onRun && onRun();
+    runPython(input)
+    onRun && onRun()
   }
 
   function stop() {
-    interruptExecution();
-    onStop && onStop();
+    interruptExecution()
+    onStop && onStop()
   }
 
   function reset() {
-    onReset && onReset();
+    onReset && onReset()
   }
 
   return (
@@ -132,10 +132,10 @@ function PythonControl(props: PythonControlProps) {
             type="button"
             disabled={isLoading || isRunning}
             className={clsx(
-              "relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+              'relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
               !isLoading
-                ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-                : "opacity-50"
+                ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
+                : 'opacity-50'
             )}
           >
             Run
@@ -154,10 +154,10 @@ function PythonControl(props: PythonControlProps) {
           type="button"
           disabled={isRunning}
           className={clsx(
-            "relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700",
+            'relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
             !isRunning
-              ? "opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-              : "opacity-50"
+              ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
+              : 'opacity-50'
           )}
         >
           Reset
@@ -170,5 +170,5 @@ function PythonControl(props: PythonControlProps) {
         </pre>
       )}
     </>
-  );
+  )
 }
