@@ -14,6 +14,6 @@ Learn how to get `react-py` set up in your project.
 
 Install `react-py` with:
 
-```bash
-npm i react-py
+```sh
+npm install react-py
 ```
