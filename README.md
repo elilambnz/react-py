@@ -58,6 +58,8 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 [Interrupting Execution](https://elilambnz.github.io/react-py/docs/examples/interrupting-execution)
 
+[Using Packages](https://elilambnz.github.io/react-py/docs/examples/using-packages)
+
 ## Limitations
 
 Most of the Python standard library is functional, except from some modules. The following modules can be imported, but are not functional due to the limitations of the WebAssembly VM:
@@ -67,12 +69,6 @@ Most of the Python standard library is functional, except from some modules. The
 - sockets
 
 [Learn more about the limitations here](https://pyodide.org/en/stable/usage/wasm-constraints.html).
-
-## Roadmap
-
-- [x] Add additional examples
-- [x] Ability to run python in Web Workers
-- [ ] Extended API for custom configuration
 
 ## License
 

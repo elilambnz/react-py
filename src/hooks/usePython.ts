@@ -33,10 +33,10 @@ export default function usePython(props?: UsePythonProps) {
   const [hasRun, setHasRun] = useState(false)
 
   const {
+    packages: globalPackages,
     timeout,
     lazy,
     terminateOnCompletion,
-    packages: globalPackages,
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()

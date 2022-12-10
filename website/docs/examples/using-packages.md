@@ -22,7 +22,7 @@ There is a list of official packages included with Pyodide, [view the full list 
 
 These packages can be imported either globally through the provider, or per hook usage. For more info, see the [API reference docs](../introduction/api-reference).
 
-Example using [asciitree](https://pypi.org/project/asciitree/).
+Example using [asciitree](https://github.com/mbr/asciitree).
 
 ```python
 from asciitree import LeftAligned
@@ -56,7 +56,7 @@ Micropip can be used to install pure Python packages with wheels available on Py
 
 Like the official packages, these packages can also be imported either globally through the provider, or per hook usage. For more info, see the [API reference docs](../introduction/api-reference).
 
-Example using [python-cowsay](https://pypi.org/project/python-cowsay/).
+Example using [python-cowsay](https://github.com/James-Ansley/cowsay).
 
 ```python
 from cowsay import cowsay

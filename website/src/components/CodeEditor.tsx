@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { useColorMode } from '@docusaurus/theme-common'
+import { usePython } from '@site/../dist'
 import clsx from 'clsx'
 
 const editorOptions = {
@@ -31,15 +32,26 @@ export default function CodeEditor(props: CodeEditorProps) {
 
   const { colorMode } = useColorMode()
 
-  function onRun() {
+  const {
+    runPython,
+    stdout,
+    stderr,
+    isLoading,
+    isRunning,
+    interruptExecution,
+  } = usePython()
+
+  function run() {
+    runPython(input)
     setShowOutput(true)
   }
 
-  function onStop() {
+  function stop() {
+    interruptExecution()
     setShowOutput(false)
   }
 
-  function onReset() {
+  function reset() {
     setShowOutput(false)
     setInput(code.trimEnd())
   }
@@ -72,59 +84,6 @@ export default function CodeEditor(props: CodeEditorProps) {
         }}
       </BrowserOnly>
 
-      <BrowserOnly fallback={<div>Loading...</div>}>
-        {() => (
-          <PythonControl
-            input={input}
-            showOutput={showOutput}
-            onRun={onRun}
-            onStop={onStop}
-            onReset={onReset}
-          />
-        )}
-      </BrowserOnly>
-    </div>
-  )
-}
-
-interface PythonControlProps {
-  input: string
-  showOutput: boolean
-  onRun?: () => void
-  onStop?: () => void
-  onReset?: () => void
-}
-
-function PythonControl(props: PythonControlProps) {
-  const { input, showOutput, onRun, onStop, onReset } = props
-
-  const { usePython } = require('react-py')
-
-  const {
-    runPython,
-    stdout,
-    stderr,
-    isLoading,
-    isRunning,
-    interruptExecution,
-  } = usePython()
-
-  function run() {
-    runPython(input)
-    onRun && onRun()
-  }
-
-  function stop() {
-    interruptExecution()
-    onStop && onStop()
-  }
-
-  function reset() {
-    onReset && onReset()
-  }
-
-  return (
-    <>
       <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
         {!isRunning ? (
           <button
@@ -169,6 +128,6 @@ function PythonControl(props: PythonControlProps) {
           <code className="text-red-500">{stderr}</code>
         </pre>
       )}
-    </>
+    </div>
   )
 }

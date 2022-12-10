@@ -69,37 +69,3 @@ function Codeblock() {
   )
 }
 ```
-
-## Usage with Docusaurus
-
-Wrap your site with the `<Root>` component https://docusaurus.io/docs/swizzling#wrapper-your-site-with-root. Then wrap your site with the `PythonProvider` component:
-
-```tsx
-import React from 'react'
-import { PythonProvider } from 'react-py'
-
-export default function Root({ children }) {
-  return <PythonProvider>{children}</PythonProvider>
-}
-```
-
-We've encountered a Webpack issue when bundling a Docusaurus site with this package. The following plugin can be added to `docusaurus.config.js` to resolve this issue:
-
-```js
-plugins: [
-  async function disableUsedExports() {
-    return {
-      name: 'disable-used-exports',
-      configureWebpack() {
-        return {
-          optimization: {
-            usedExports: false,
-          },
-        }
-      },
-    }
-  },
-]
-```
-
-[Read more about this issue here](https://github.com/facebook/docusaurus/issues/8389).
