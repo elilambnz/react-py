@@ -107,7 +107,7 @@ function PythonControl(props: PythonControlProps) {
     isLoading,
     isRunning,
     interruptExecution,
-  } = usePython({ lazy: true })
+  } = usePython()
 
   function run() {
     runPython(input)

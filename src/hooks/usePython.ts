@@ -1,17 +1,28 @@
-import { useContext, useEffect, useRef, useState } from 'react'
-import { PythonContext, suppressedMessages } from '../providers/PythonProvider'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Packages,
+  PythonContext,
+  suppressedMessages,
+} from '../providers/PythonProvider'
 import { proxy, Remote, wrap } from 'comlink'
 
 interface Runner {
   init: (
     stdout: (msg: string) => void,
-    onLoad: (version: string) => void
+    onLoad: (version: string) => void,
+    packages: string[][]
   ) => Promise<void>
   run: (code: string) => Promise<void>
   interruptExecution: () => void
 }
 
-export default function usePython() {
+interface UsePythonProps {
+  packages?: Packages
+}
+
+export default function usePython(props: UsePythonProps) {
+  const { packages = {} } = props ?? {}
+
   const [isLoading, setIsLoading] = useState(false)
   const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [isRunning, setIsRunning] = useState(false)
@@ -19,8 +30,14 @@ export default function usePython() {
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
+  const [hasRun, setHasRun] = useState(false)
 
-  const { timeout, lazy } = useContext(PythonContext)
+  const {
+    timeout,
+    lazy,
+    terminateOnCompletion,
+    packages: globalPackages,
+  } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<Runner>>()
@@ -40,9 +57,25 @@ export default function usePython() {
 
     // Terminate worker on unmount
     return () => {
-      cleanup()
+      terminate()
     }
   }, [])
+
+  const allPackages = useMemo(() => {
+    const official = [
+      ...new Set([
+        ...(globalPackages.official ?? []),
+        ...(packages.official ?? []),
+      ]),
+    ]
+    const micropip = [
+      ...new Set([
+        ...(globalPackages.micropip ?? []),
+        ...(packages.micropip ?? []),
+      ]),
+    ]
+    return [official, micropip]
+  }, [globalPackages, packages])
 
   const isReady = !isLoading && pyodideVersion
 
@@ -66,7 +99,8 @@ export default function usePython() {
               // The runner is ready once the Pyodide version has been set
               setPyodideVersion(version)
               console.debug('Loaded pyodide version:', version)
-            })
+            }),
+            allPackages
           )
         } catch (error) {
           console.error('Error loading Pyodide:', error)
@@ -95,6 +129,13 @@ export default function usePython() {
       delayedRun()
     }
   }, [pendingCode, isReady])
+
+  // React to run completion and run cleanup if worker should terminate on completion
+  useEffect(() => {
+    if (terminateOnCompletion && hasRun && !isRunning) {
+      cleanup()
+    }
+  }, [terminateOnCompletion, hasRun, isRunning])
 
   const pythonRunnerCode = `
 import sys
@@ -143,6 +184,7 @@ def run(code, preamble=''):
     let timeoutTimer
     try {
       setIsRunning(true)
+      setHasRun(true)
       // Clear output
       setOutput([])
       if (!isReady || !runnerRef.current) {
@@ -167,15 +209,19 @@ def run(code, preamble=''):
 
   const interruptExecution = () => {
     cleanup()
-    setOutput([])
-    setIsRunning(false)
-    setPyodideVersion(undefined)
 
     // Spawn new worker
     createWorker()
   }
 
   const cleanup = () => {
+    terminate()
+    setOutput([])
+    setIsRunning(false)
+    setPyodideVersion(undefined)
+  }
+
+  const terminate = () => {
     if (!workerRef.current) {
       return
     }
