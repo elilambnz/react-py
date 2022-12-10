@@ -19,7 +19,7 @@ export default function Root({ children }) {
 
 ## Overriding the CodeBlock component
 
-You can override the default CodeBlock by swizzling the component, (more about swizzling)[https://docusaurus.io/docs/swizzling].
+You can override the default CodeBlock by swizzling the component, [more about swizzling](https://docusaurus.io/docs/swizzling).
 
 For a full example, check out an example of a Docusaurus site using `react-py` at https://github.com/James-Ansley/latenights-textbook, specifically `src/theme/CodeBlock` and `src/components/CodeEditor`.
 

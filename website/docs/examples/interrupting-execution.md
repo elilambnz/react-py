@@ -19,5 +19,5 @@ for i in range(0, 10):
    time.sleep(1)
 endTime = time.time()
 elapsedTime = endTime - startTime
-print("Elapsed Time = %s" % elapsedTime)
+print(f"Elapsed Time = {elapsedTime:.2f}")
 ```

@@ -8,7 +8,7 @@ How to use `react-py` in your project.
 
 ## `PythonProvider` Provider
 
-First, wrap your app in a `PythonProvider` component.
+First, wrap your app in a `PythonProvider` component. For props, see the [API reference docs](../introduction/api-reference).
 
 ```tsx
 import { PythonProvider } from 'react-py'
@@ -27,7 +27,7 @@ render(<App />, document.getElementById('root'))
 
 ## `usePython` Hook
 
-Use the `usePython` hook to run code and access both stdout and stderr.
+Use the `usePython` hook to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference).
 
 ```tsx
 import { useState } from 'react'

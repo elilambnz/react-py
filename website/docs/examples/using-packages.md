@@ -4,9 +4,51 @@ sidebar_position: 3
 
 # Using Packages
 
+## Defining imports
+
+Imports are defined using the following `Packages` object and can be imported either globally through the provider, or per instance. For props, see the [API reference docs](../introduction/api-reference).
+
+Example importing packages globally:
+
+```tsx
+import { PythonProvider } from 'react-py'
+
+function App() {
+  const packages = {
+    official: ['asciitree'],
+    micropip: ['python-cowsay'],
+  }
+
+  return (
+    <PythonProvider packages={packages}>
+      <Codeblock />
+    </PythonProvider>
+  )
+}
+
+...
+```
+
+Example importing packages per instance:
+
+```tsx
+import { usePython } from 'react-py'
+
+const packages = {
+  official: ['asciitree'],
+  micropip: ['python-cowsay'],
+}
+
+function Codeblock() {
+  const { runPython, ... } = usePython(packages)
+
+  ...
+}
+```
+
 ## Python standard library
 
-The Python standard library is available without needing to install any packages, [view the full list here](https://docs.python.org/3/library/).
+The Python standard library is available without needing to install any packages, [view the full list here](https://docs.python.org/3/library).
 
 Example using [uuid](https://docs.python.org/3/library/uuid.html).
 
@@ -19,8 +61,6 @@ print(uuid.uuid4())
 ## Pyodide official packages
 
 There is a list of official packages included with Pyodide, [view the full list here](https://pyodide.org/en/stable/usage/packages-in-pyodide.html).
-
-These packages can be imported either globally through the provider, or per hook usage. For more info, see the [API reference docs](../introduction/api-reference).
 
 Example using [asciitree](https://github.com/mbr/asciitree).
 
@@ -53,8 +93,6 @@ print(tr(tree))
 ## Installing packages with micropip
 
 Micropip can be used to install pure Python packages with wheels available on PyPI [or from other URLs](https://pyodide.org/en/stable/usage/loading-packages.html#installing-wheels-from-arbitrary-urls).
-
-Like the official packages, these packages can also be imported either globally through the provider, or per hook usage. For more info, see the [API reference docs](../introduction/api-reference).
 
 Example using [python-cowsay](https://github.com/James-Ansley/cowsay).
 

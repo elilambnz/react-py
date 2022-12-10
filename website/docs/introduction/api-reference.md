@@ -8,18 +8,18 @@ sidebar_position: 3
 
 Props which can be provided to the `<PythonProvider>` component.
 
-| Prop                  | Required | Type      | Default   | Description                                                                                    |
-| --------------------- | -------- | --------- | --------- | ---------------------------------------------------------------------------------------------- |
-| packages              | No       | `Package` | undefined | Packages to be loaded globally for usage by all instances.                                     |
-| timeout               | No       | `number`  | 0         | Time in ms until a running instance is terminated, 0 means there is no time limit.             |
-| lazy                  | No       | `boolean` | false     | If true, prevents the web worker from spawning until `runPython` is called for the first time. |
-| terminateOnCompletion | No       | `boolean` | false     | If true, the web worker will terminate on completion.                                          |
+| Prop                  | Required | Type                    | Default   | Description                                                                                    |
+| --------------------- | -------- | ----------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| packages              | No       | [`Packages`](#packages) | undefined | Packages to be loaded globally for usage by all instances.                                     |
+| timeout               | No       | `number`                | 0         | Time in ms until a running instance is terminated, 0 means there is no time limit.             |
+| lazy                  | No       | `boolean`               | false     | If true, prevents the web worker from spawning until `runPython` is called for the first time. |
+| terminateOnCompletion | No       | `boolean`               | false     | If true, the web worker will terminate on completion.                                          |
 
 ## usePython hook
 
-| Prop     | Required | Type      | Default   | Description                                       |
-| -------- | -------- | --------- | --------- | ------------------------------------------------- |
-| packages | No       | `Package` | undefined | Packages to be loaded for usage by this instance. |
+| Prop     | Required | Type                    | Default   | Description                                       |
+| -------- | -------- | ----------------------- | --------- | ------------------------------------------------- |
+| packages | No       | [`Packages`](#packages) | undefined | Packages to be loaded for usage by this instance. |
 
 ### runPython
 
@@ -65,32 +65,21 @@ Can be called to immediately interrupt ongoing execution. Will terminate the run
 
 ## Types
 
-### `Package`
+### Packages
 
-Props:
+Example:
 
-`official`: `string[]` (optional) - Pyodide official packages
-
-`micropip`: `string[]` (optional) - Packages imported using micropip
-
-Example usage:
-
-```tsx
-import { PythonProvider } from 'react-py'
-
-function App() {
-  const packages = {
-    official: ['asciitree'],
-    micropip: ['python-cowsay'],
-  }
-
-  return (
-    // Add the provider to your app
-    <PythonProvider packages={packages}>
-      <Codeblock />
-    </PythonProvider>
-  )
+```js
+{
+  official: ['asciitree'],
+  micropip: ['python-cowsay'],
 }
-
-render(<App />, document.getElementById('root'))
 ```
+
+#### official
+
+`string[]` (optional) - Pyodide official packages
+
+#### micropip
+
+`string[]` (optional) - Packages imported using micropip

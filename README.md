@@ -50,7 +50,7 @@ Using the `usePython` hook, you can run code and access both stdout and stderr. 
 
 ## Documentation
 
-For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.github.io/react-py/).
+For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.github.io/react-py).
 
 ## Examples
 
@@ -81,7 +81,7 @@ James Ansley - [James-Ansley](https://github.com/James-Ansley)
 
 ## Acknowledgments
 
-This project is heavily based on [Pyodide](https://pyodide.org/), a Python distribution for the browser and Node.js based on WebAssembly.
+This project is heavily based on [Pyodide](https://pyodide.org), a Python distribution for the browser and Node.js based on WebAssembly.
 
 ## Contributing
 
