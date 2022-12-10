@@ -4,9 +4,7 @@ sidebar_position: 3
 
 # Using Packages
 
-## Defining imports
-
-Imports are defined using the following `Packages` object and can be imported either globally through the provider, or per instance. For props, see the [API reference docs](../introduction/api-reference).
+Packages can be installed using the following `Packages` object and can be imported either globally through the provider, or per instance. For props, see the [API reference docs](../introduction/api-reference).
 
 Example importing packages globally:
 
