@@ -8,10 +8,11 @@ sidebar_position: 3
 
 Props which can be provided to the `<PythonProvider>` component.
 
-| Prop    | Required | Type      | Default | Description                                                                                    |
-| ------- | -------- | --------- | ------- | ---------------------------------------------------------------------------------------------- |
-| timeout | No       | `number`  | 0       | Time in ms until a running instance is terminated, 0 means there is no time limit.             |
-| lazy    | No       | `boolean` | false   | If true, prevents the web worker from spawning until `runPython` is called for the first time. |
+| Prop                  | Required | Type      | Default | Description                                                                                                       |
+| --------------------- | -------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| timeout               | No       | `number`  | 0       | Time in ms until a running instance is terminated, 0 means there is no time limit.                                |
+| lazy                  | No       | `boolean` | false   | If true, prevents the web worker from spawning until `runPython` is called for the first time.                    |
+| terminateOnCompletion | No       | `boolean` | false   | If true, the web worker will terminate on completion. Useful for preventing too many web workers running at once. |
 
 ## usePython hook
 

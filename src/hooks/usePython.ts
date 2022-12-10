@@ -55,9 +55,9 @@ export default function usePython(props: UsePythonProps) {
       createWorker()
     }
 
-    // Terminate worker on unmount
+    // Cleanup worker on unmount
     return () => {
-      terminate()
+      cleanup()
     }
   }, [])
 
@@ -164,6 +164,13 @@ def run(code, preamble=''):
 `
 
   const runPython = async (code: string, preamble = '') => {
+    if (lazy && !isReady) {
+      // Spawn worker and set pending code
+      createWorker()
+      setPendingCode(code)
+      return
+    }
+
     code = `${pythonRunnerCode}\n\nrun(${JSON.stringify(
       code
     )}, ${JSON.stringify(preamble)})`
@@ -171,12 +178,6 @@ def run(code, preamble=''):
     // Clear stdout and stderr
     setStdout('')
     setStderr('')
-    if (lazy && !isReady) {
-      // Spawn worker and set pending code
-      createWorker()
-      setPendingCode(code)
-      return
-    }
     if (isLoading) {
       console.error('Pyodide is not loaded yet')
       return
@@ -209,19 +210,15 @@ def run(code, preamble=''):
 
   const interruptExecution = () => {
     cleanup()
+    setOutput([])
+    setIsRunning(false)
+    setPyodideVersion(undefined)
 
     // Spawn new worker
     createWorker()
   }
 
   const cleanup = () => {
-    terminate()
-    setOutput([])
-    setIsRunning(false)
-    setPyodideVersion(undefined)
-  }
-
-  const terminate = () => {
     if (!workerRef.current) {
       return
     }
