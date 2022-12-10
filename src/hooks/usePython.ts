@@ -134,6 +134,8 @@ export default function usePython(props: UsePythonProps) {
   useEffect(() => {
     if (terminateOnCompletion && hasRun && !isRunning) {
       cleanup()
+      setIsRunning(false)
+      setPyodideVersion(undefined)
     }
   }, [terminateOnCompletion, hasRun, isRunning])
 
@@ -210,9 +212,9 @@ def run(code, preamble=''):
 
   const interruptExecution = () => {
     cleanup()
-    setOutput([])
     setIsRunning(false)
     setPyodideVersion(undefined)
+    setOutput([])
 
     // Spawn new worker
     createWorker()
