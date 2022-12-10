@@ -20,7 +20,7 @@ interface UsePythonProps {
   packages?: Packages
 }
 
-export default function usePython(props: UsePythonProps) {
+export default function usePython(props?: UsePythonProps) {
   const { packages = {} } = props ?? {}
 
   const [isLoading, setIsLoading] = useState(false)
@@ -166,6 +166,10 @@ def run(code, preamble=''):
 `
 
   const runPython = async (code: string, preamble = '') => {
+    // Clear stdout and stderr
+    setStdout('')
+    setStderr('')
+
     if (lazy && !isReady) {
       // Spawn worker and set pending code
       createWorker()
@@ -177,9 +181,6 @@ def run(code, preamble=''):
       code
     )}, ${JSON.stringify(preamble)})`
 
-    // Clear stdout and stderr
-    setStdout('')
-    setStderr('')
     if (isLoading) {
       console.error('Pyodide is not loaded yet')
       return
