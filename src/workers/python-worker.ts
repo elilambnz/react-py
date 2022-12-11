@@ -5,6 +5,7 @@ interface Pyodide {
   runPythonAsync: (code: string) => Promise<void>
   loadPackage: (packages: string[]) => Promise<void>
   pyimport: (pkg: string) => micropip
+  FS: any
 }
 
 interface micropip {
@@ -49,6 +50,12 @@ const python = {
   },
   async run(code: string) {
     await self.pyodide.runPythonAsync(code)
+  },
+  async readFile(name: string) {
+    return await self.pyodide.FS.readFile(name, { encoding: 'utf8' })
+  },
+  async writeFile(name: string, data: any) {
+    return await self.pyodide.FS.writeFile(name, data, { encoding: 'utf8' })
   },
 }
 

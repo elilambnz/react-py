@@ -13,6 +13,8 @@ interface Runner {
     packages: string[][]
   ) => Promise<void>
   run: (code: string) => Promise<void>
+  readFile: (name: string) => Promise<any>
+  writeFile: (name: string, data: any) => Promise<any>
   interruptExecution: () => void
 }
 
@@ -211,6 +213,14 @@ def run(code, preamble=''):
     }
   }
 
+  const readFile = async (name: string) => {
+    return await runnerRef.current?.readFile(name)
+  }
+
+  const writeFile = async (name: string, data: any) => {
+    return await runnerRef.current?.writeFile(name, data)
+  }
+
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
@@ -236,5 +246,7 @@ def run(code, preamble=''):
     isLoading,
     isRunning,
     interruptExecution,
+    readFile,
+    writeFile,
   }
 }

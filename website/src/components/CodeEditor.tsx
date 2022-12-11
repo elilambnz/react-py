@@ -39,6 +39,8 @@ export default function CodeEditor(props: CodeEditorProps) {
     isLoading,
     isRunning,
     interruptExecution,
+    readFile,
+    writeFile,
   } = usePython()
 
   function run() {
@@ -54,6 +56,16 @@ export default function CodeEditor(props: CodeEditorProps) {
   function reset() {
     setShowOutput(false)
     setInput(code.trimEnd())
+  }
+
+  async function read() {
+    let file = await readFile('/hello.txt')
+    console.log(file)
+  }
+
+  async function write() {
+    let data = 'hello world!'
+    await writeFile('/hello.txt', data)
   }
 
   return (
@@ -128,6 +140,21 @@ export default function CodeEditor(props: CodeEditorProps) {
           <code className="text-red-500">{stderr}</code>
         </pre>
       )}
+
+      <button
+        onClick={read}
+        type="button"
+        className="relative mt-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700"
+      >
+        Read
+      </button>
+      <button
+        onClick={write}
+        type="button"
+        className="relative mt-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700"
+      >
+        Write
+      </button>
     </div>
   )
 }
