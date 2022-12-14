@@ -221,6 +221,13 @@ def run(code, preamble=''):
     return await runnerRef.current?.writeFile(name, data)
   }
 
+  const loadModule = async (name: string, code: string) => {
+    await writeFile(`${name}.py`, code)
+    await runPython(`import importlib, sys
+importlib.reload(sys.modules['${name}'])`)
+    console.log('loaded', name)
+  }
+
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
@@ -248,5 +255,6 @@ def run(code, preamble=''):
     interruptExecution,
     readFile,
     writeFile,
+    loadModule,
   }
 }
