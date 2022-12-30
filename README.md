@@ -12,8 +12,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACI+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/elilambnz/react-py/CI?style=flat-square&amp;label=CI" alt="CI"></a>
-  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/elilambnz/react-py/CodeQL?style=flat-square&amp;label=CodeQL" alt="CodeQL"></a>
+  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACI+branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/elilambnz/react-py/ci.yml?branch=main&style=flat-square&label=CI" alt="CI"></a>
+  <a href="https://github.com/elilambnz/react-py/actions?query=workflow%3ACodeQL+branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/elilambnz/react-py/codeql-analysis.yml?branch=main&style=flat-square&label=CodeQL" alt="CodeQL"></a>
   <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md"><img src="https://img.shields.io/npm/l/react-py?style=flat-square" alt="MIT License"></a>
   <a href="https://www.npmjs.com/package/react-py"><img src="https://img.shields.io/npm/v/react-py?style=flat-square" alt="NPM Version"></a>
   <a href="https://bundlephobia.com/package/react-py"><img src="https://img.shields.io/bundlephobia/min/react-py?style=flat-square" alt="NPM Bundle Size"></a>
