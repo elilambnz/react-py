@@ -14,11 +14,13 @@ Then call `watchModules()` to automatically reload the module before running cod
 
 The following example shows this in action. To try it out:
 
-- Click `Write file` and then `Run`
-- Make a change to `utils.py` and click `Write file`, note that when you `Run` again, the imported module is unchanged
-- Click `Watch` and then observe the module has been reloaded when you `Run` again
+- Click `Write file` which will call `writeFile()` and create `utils.py` with the code in the editor window
+- Run `main.py` by clicking `Run`
+- Make a change to `utils.py` and click `Write file` again, note that when you `Run` again, the imported module is unchanged
+- Click `Watch` which will call `watchModules(['utils'])` and then observe the module has been reloaded when you `Run` again
 - You will still need to click `Write file` again if you make any further changes
+- To no longer automatically reload the module, you can click `Unwatch` which will call `unwatchModules(['utils'])`
 
 <CustomModuleExample />
 
-You find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/CustomModuleExample.tsx).
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/CustomModuleExample.tsx).
