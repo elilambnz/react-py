@@ -13,11 +13,11 @@ interface Runner {
     packages: string[][]
   ) => Promise<void>
   run: (code: string) => Promise<void>
-  readFile: (name: string) => Promise<any>
-  writeFile: (name: string, data: any) => Promise<any>
   interruptExecution: () => void
-  mkdir: (name: string) => Promise<any>,
-  rmdir: (name: string) => Promise<any>,
+  readFile: (name: string) => void
+  writeFile: (name: string, data: string) => void
+  mkdir: (name: string) => void
+  rmdir: (name: string) => void
 }
 
 interface UsePythonProps {
@@ -170,6 +170,7 @@ def run(code, preamble=''):
         print()
 `
 
+  // prettier-ignore
   const moduleReloadCode = (modules: Set<string>) => `
 import importlib
 import sys
@@ -230,28 +231,30 @@ del sys
     }
   }
 
-  const readFile = async (name: string) => {
-    return await runnerRef.current?.readFile(name)
+  const readFile = (name: string) => {
+    return runnerRef.current?.readFile(name)
   }
 
-  const writeFile = async (name: string, data: any) => {
-    return await runnerRef.current?.writeFile(name, data)
+  const writeFile = (name: string, data: string) => {
+    return runnerRef.current?.writeFile(name, data)
   }
 
-  const mkdir = async (name: string) => {
-    return await runnerRef.current?.mkdir(name)
+  const mkdir = (name: string) => {
+    return runnerRef.current?.mkdir(name)
   }
 
-  const rmdir = async (name: string) => {
-    return await runnerRef.current?.rmdir(name)
+  const rmdir = (name: string) => {
+    return runnerRef.current?.rmdir(name)
   }
 
   const watchModules = (moduleNames: string[]) => {
-    setWatchedModules(prev => new Set([...prev, ...moduleNames]))
+    setWatchedModules((prev) => new Set([...prev, ...moduleNames]))
   }
 
   const unwatchModules = (moduleNames: string[]) => {
-    setWatchedModules(prev => new Set([...prev].filter(e => !moduleNames.includes(e))))
+    setWatchedModules(
+      (prev) => new Set([...prev].filter((e) => !moduleNames.includes(e)))
+    )
   }
 
   const interruptExecution = () => {

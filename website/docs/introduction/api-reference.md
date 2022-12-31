@@ -63,6 +63,40 @@ True if code is being executed. False if idle.
 
 Can be called to immediately interrupt ongoing execution. Will terminate the running worker and spawn a new one.
 
+### readFile
+
+`(name: string) => void`
+
+Exposes `pyodide.FS.readFile`, encoding is `utf8`.
+
+### writeFile
+
+`(name: string, data: string) => void`
+
+Exposes `pyodide.FS.writeFile`, encoding is `utf8`.
+
+### mkdir
+
+`(name: string) => void`
+
+Exposes `pyodide.FS.mkdir`.
+
+### rmdir
+
+Exposes `pyodide.FS.rmdir`.
+
+### watchModules
+
+`(modules: string[]) => void`
+
+Adds modules to be reloaded before code is run.
+
+### unwatchModules
+
+`(modules: string[]) => void`
+
+Removes modules to be reloaded before code is run.
+
 ## Types
 
 ### Packages

@@ -4,7 +4,7 @@ const PythonContext = createContext({
   packages: {} as Packages,
   timeout: 0,
   lazy: false,
-  terminateOnCompletion: false,
+  terminateOnCompletion: false
 })
 
 export const suppressedMessages = ['Python initialization complete']
@@ -28,7 +28,7 @@ function PythonProvider(props: PythonProviderProps) {
     packages = {},
     timeout = 0,
     lazy = false,
-    terminateOnCompletion = false,
+    terminateOnCompletion = false
   } = props
 
   return (
@@ -37,7 +37,7 @@ function PythonProvider(props: PythonProviderProps) {
         packages,
         timeout,
         lazy,
-        terminateOnCompletion,
+        terminateOnCompletion
       }}
       {...props}
     />
