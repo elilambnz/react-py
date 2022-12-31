@@ -4,9 +4,9 @@ sidebar_position: 3
 
 # API Reference
 
-## Python provider
+## `<PythonProvider>`
 
-Props which can be provided to the `<PythonProvider>` component.
+Props which can be provided to the `PythonProvider` component.
 
 | Prop                  | Required | Type                    | Default   | Description                                                                                    |
 | --------------------- | -------- | ----------------------- | --------- | ---------------------------------------------------------------------------------------------- |
@@ -15,7 +15,9 @@ Props which can be provided to the `<PythonProvider>` component.
 | lazy                  | No       | `boolean`               | false     | If true, prevents the web worker from spawning until `runPython` is called for the first time. |
 | terminateOnCompletion | No       | `boolean`               | false     | If true, the web worker will terminate on completion.                                          |
 
-## usePython hook
+## `usePython` hook
+
+Props which can be provided to the `usePython` hook.
 
 | Prop     | Required | Type                    | Default   | Description                                       |
 | -------- | -------- | ----------------------- | --------- | ------------------------------------------------- |
@@ -96,6 +98,28 @@ Adds modules to be reloaded before code is run.
 `(modules: string[]) => void`
 
 Removes modules to be reloaded before code is run.
+
+## `react_py` module
+
+### http
+
+The `http` module has the following methods:
+
+#### get
+
+`(url: string) => string`
+
+#### post
+
+`(url: string, body: JSON) => string`
+
+#### put
+
+`(url: string, body: JSON) => string`
+
+#### delete
+
+`(url: string) => string`
 
 ## Types
 

@@ -6,10 +6,9 @@ sidebar_position: 4
 
 Some internal Pyodide file system methods are exposed.
 
-For more info, see the [API reference docs](../introduction/api-reference).
+For more info, see the [API reference docs](../introduction/api-reference#usepython-hook).
 
 ```tsx
-import { useEffect } from 'react'
 import { usePython } from 'react-py'
 
 function Codeblock() {

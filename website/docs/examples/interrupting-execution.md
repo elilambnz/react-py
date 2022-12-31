@@ -8,7 +8,7 @@ Execution can be interrupted at any time by calling the `interruptExecution` met
 
 Try running the example below and stopping the execution before it finishes.
 
-You can also set a timeout globally, see the [API reference docs](../introduction/api-reference).
+You can also set a timeout globally, see the [API reference docs](../introduction/api-reference#pythonprovider).
 
 ```python
 import time

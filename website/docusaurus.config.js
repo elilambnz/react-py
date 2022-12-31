@@ -75,7 +75,7 @@ const config = {
             type: 'doc',
             docId: 'introduction/getting-started',
             position: 'left',
-            label: 'Introduction'
+            label: 'Docs'
           },
           {
             href: 'https://github.com/elilambnz/react-py',

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+
+import { Packages } from '@site/../dist/providers/PythonProvider'
+
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
@@ -18,10 +21,11 @@ const editorOnLoad = (editor) => {
 
 interface CodeEditorProps {
   code: string
+  packages?: Packages
 }
 
 export default function CodeEditor(props: CodeEditorProps) {
-  const { code } = props
+  const { code, packages } = props
   const [input, setInput] = useState(code.trimEnd())
   const [showOutput, setShowOutput] = useState(false)
 
@@ -39,7 +43,7 @@ export default function CodeEditor(props: CodeEditorProps) {
     isLoading,
     isRunning,
     interruptExecution
-  } = usePython()
+  } = usePython({ packages })
 
   function run() {
     runPython(input)
