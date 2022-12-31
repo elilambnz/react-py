@@ -10,11 +10,14 @@ By default, Python modules are cached. If you intend to make changes to an impor
 
 Create a module using the file system APIs or write the file using Python, [examples here](file-system).
 
+Then call `watchModules()` to automatically reload the module before running code. For more info, see the [API reference docs](../introduction/api-reference).
+
 The following example shows this in action. To try it out:
 
 - Click `Write file` and then `Run`
 - Make a change to `utils.py` and click `Write file`, note that when you `Run` again, the imported module is unchanged
 - Click `Watch` and then observe the module has been reloaded when you `Run` again
+- You will still need to click `Write file` again if you make any further changes
 
 <CustomModuleExample />
 
