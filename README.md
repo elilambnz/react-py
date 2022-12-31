@@ -60,6 +60,12 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 [Using Packages](https://elilambnz.github.io/react-py/docs/examples/using-packages)
 
+[File System](https://elilambnz.github.io/react-py/docs/examples/file-system)
+
+[Custom Modules](https://elilambnz.github.io/react-py/docs/examples/custom-modules)
+
+[Making API Calls](https://elilambnz.github.io/react-py/docs/examples/making-api-calls)
+
 ## Limitations
 
 Most of the Python standard library is functional, except from some modules. The following modules can be imported, but are not functional due to the limitations of the WebAssembly VM:

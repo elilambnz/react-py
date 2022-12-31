@@ -28,6 +28,8 @@ print(f"Number of watchers: {data['watchers_count']} 👀")
 print("*" * 50)
 ```
 
+If you find this repository useful, consider giving it a star on GitHub: https://github.com/elilambnz/react-py.
+
 ## `GET`
 
 ```python
