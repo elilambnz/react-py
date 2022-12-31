@@ -57,6 +57,12 @@ const python = {
   async writeFile(name: string, data: any) {
     return await self.pyodide.FS.writeFile(name, data, { encoding: 'utf8' })
   },
+  async mkdir(name: string) {
+    await self.pyodide.FS.mkdir(name)
+  },
+  async rmdir(name: string) {
+    await self.pyodide.FS.rmdir(name)
+  }
 }
 
 expose(python)
