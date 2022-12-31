@@ -8,7 +8,7 @@ const editorOptions = {
   enableBasicAutocompletion: true,
   enableLiveAutocompletion: true,
   highlightActiveLine: false,
-  showPrintMargin: false,
+  showPrintMargin: false
 }
 
 const editorOnLoad = (editor) => {
@@ -38,7 +38,7 @@ export default function CodeEditor(props: CodeEditorProps) {
     stderr,
     isLoading,
     isRunning,
-    interruptExecution,
+    interruptExecution
   } = usePython()
 
   function run() {

@@ -5,6 +5,12 @@ interface Pyodide {
   runPythonAsync: (code: string) => Promise<void>
   loadPackage: (packages: string[]) => Promise<void>
   pyimport: (pkg: string) => micropip
+  FS: {
+    readFile: (name: string, options: unknown) => void
+    writeFile: (name: string, data: string, options: unknown) => void
+    mkdir: (name: string) => void
+    rmdir: (name: string) => void
+  }
 }
 
 interface micropip {
@@ -14,7 +20,7 @@ interface micropip {
 declare global {
   interface Window {
     loadPyodide: ({
-      stdout,
+      stdout
     }: {
       stdout: (msg: string) => void
     }) => Promise<Pyodide>
@@ -35,7 +41,7 @@ const python = {
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({
-      stdout: (msg: string) => stdout(msg),
+      stdout: (msg: string) => stdout(msg)
     })
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
@@ -50,6 +56,18 @@ const python = {
   async run(code: string) {
     await self.pyodide.runPythonAsync(code)
   },
+  readFile(name: string) {
+    return self.pyodide.FS.readFile(name, { encoding: 'utf8' })
+  },
+  writeFile(name: string, data: string) {
+    return self.pyodide.FS.writeFile(name, data, { encoding: 'utf8' })
+  },
+  mkdir(name: string) {
+    self.pyodide.FS.mkdir(name)
+  },
+  rmdir(name: string) {
+    self.pyodide.FS.rmdir(name)
+  }
 }
 
 expose(python)

@@ -1,0 +1,21 @@
+---
+sidebar_position: 5
+---
+
+import CustomModuleExample from '../../src/components/CustomModuleExample'
+
+# Custom Modules
+
+By default, Python modules are cached. If you intend to make changes to an imported module, it needs to be watched and reloaded.
+
+Create a module using the file system APIs or write the file using Python, [examples here](file-system).
+
+The following example shows this in action. To try it out:
+
+- Click `Write file` and then `Run`
+- Make a change to `utils.py` and click `Write file`, note that when you `Run` again, the imported module is unchanged
+- Click `Watch` and then observe the module has been reloaded when you `Run` again
+
+<CustomModuleExample />
+
+You find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/CustomModuleExample.tsx).

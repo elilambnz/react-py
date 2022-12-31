@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Packages,
   PythonContext,
-  suppressedMessages,
+  suppressedMessages
 } from '../providers/PythonProvider'
 import { proxy, Remote, wrap } from 'comlink'
 
@@ -14,6 +14,10 @@ interface Runner {
   ) => Promise<void>
   run: (code: string) => Promise<void>
   interruptExecution: () => void
+  readFile: (name: string) => void
+  writeFile: (name: string, data: string) => void
+  mkdir: (name: string) => void
+  rmdir: (name: string) => void
 }
 
 interface UsePythonProps {
@@ -31,12 +35,13 @@ export default function usePython(props?: UsePythonProps) {
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
   const [hasRun, setHasRun] = useState(false)
+  const [watchedModules, setWatchedModules] = useState<Set<string>>(new Set())
 
   const {
     packages: globalPackages,
     timeout,
     lazy,
-    terminateOnCompletion,
+    terminateOnCompletion
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -65,14 +70,14 @@ export default function usePython(props?: UsePythonProps) {
     const official = [
       ...new Set([
         ...(globalPackages.official ?? []),
-        ...(packages.official ?? []),
-      ]),
+        ...(packages.official ?? [])
+      ])
     ]
     const micropip = [
       ...new Set([
         ...(globalPackages.micropip ?? []),
-        ...(packages.micropip ?? []),
-      ]),
+        ...(packages.micropip ?? [])
+      ])
     ]
     return [official, micropip]
   }, [globalPackages, packages])
@@ -165,6 +170,18 @@ def run(code, preamble=''):
         print()
 `
 
+  // prettier-ignore
+  const moduleReloadCode = (modules: Set<string>) => `
+import importlib
+import sys
+${Array.from(modules).map((name) => `
+if """${name}""" in sys.modules:
+    importlib.reload(sys.modules["""${name}"""])
+`).join('')}
+del importlib
+del sys
+`
+
   const runPython = async (code: string, preamble = '') => {
     // Clear stdout and stderr
     setStdout('')
@@ -201,6 +218,9 @@ def run(code, preamble=''):
           interruptExecution()
         }, timeout)
       }
+      if (watchedModules.size > 0) {
+        await runnerRef.current.run(moduleReloadCode(watchedModules))
+      }
       await runnerRef.current.run(code)
       // eslint-disable-next-line
     } catch (error: any) {
@@ -209,6 +229,32 @@ def run(code, preamble=''):
       setIsRunning(false)
       clearTimeout(timeoutTimer)
     }
+  }
+
+  const readFile = (name: string) => {
+    return runnerRef.current?.readFile(name)
+  }
+
+  const writeFile = (name: string, data: string) => {
+    return runnerRef.current?.writeFile(name, data)
+  }
+
+  const mkdir = (name: string) => {
+    return runnerRef.current?.mkdir(name)
+  }
+
+  const rmdir = (name: string) => {
+    return runnerRef.current?.rmdir(name)
+  }
+
+  const watchModules = (moduleNames: string[]) => {
+    setWatchedModules((prev) => new Set([...prev, ...moduleNames]))
+  }
+
+  const unwatchModules = (moduleNames: string[]) => {
+    setWatchedModules(
+      (prev) => new Set([...prev].filter((e) => !moduleNames.includes(e)))
+    )
   }
 
   const interruptExecution = () => {
@@ -236,5 +282,11 @@ def run(code, preamble=''):
     isLoading,
     isRunning,
     interruptExecution,
+    readFile,
+    writeFile,
+    watchModules,
+    unwatchModules,
+    mkdir,
+    rmdir
   }
 }
