@@ -1,10 +1,11 @@
 importScripts('https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js')
 
 interface Pyodide {
-  version: string
-  runPythonAsync: (code: string) => Promise<void>
   loadPackage: (packages: string[]) => Promise<void>
   pyimport: (pkg: string) => micropip
+  registerJsModule(name: string, module: object): unknown
+  runPythonAsync: (code: string) => Promise<void>
+  version: string
   FS: {
     readFile: (name: string, options: unknown) => void
     writeFile: (name: string, data: string, options: unknown) => void
@@ -34,6 +35,57 @@ console.log = () => {}
 
 import { expose } from 'comlink'
 
+function isSuccessStatus(status: number) {
+  return status >= 200 && status < 300
+}
+
+const reactPyModule = {
+  http: {
+    get: function (url: string) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, false)
+      xhr.send()
+      if (isSuccessStatus(xhr.status)) {
+        return xhr.responseText
+      } else {
+        throw new Error(xhr.statusText)
+      }
+    },
+    post: function (url: string, data: JSON) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', url, false)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.send(JSON.stringify(data))
+      if (isSuccessStatus(xhr.status)) {
+        return xhr.responseText
+      } else {
+        throw new Error(xhr.statusText)
+      }
+    },
+    put: function (url: string, data: JSON) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('PUT', url, false)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.send(JSON.stringify(data))
+      if (isSuccessStatus(xhr.status)) {
+        return xhr.responseText
+      } else {
+        throw new Error(xhr.statusText)
+      }
+    },
+    delete: function (url: string) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('DELETE', url, false)
+      xhr.send()
+      if (isSuccessStatus(xhr.status)) {
+        return xhr.responseText
+      } else {
+        throw new Error(xhr.statusText)
+      }
+    }
+  }
+}
+
 const python = {
   async init(
     stdout: (msg: string) => void,
@@ -51,6 +103,7 @@ const python = {
       const micropip = self.pyodide.pyimport('micropip')
       await micropip.install(packages[1])
     }
+    self.pyodide.registerJsModule('react_py', reactPyModule)
     onLoad(self.pyodide.version)
   },
   async run(code: string) {
