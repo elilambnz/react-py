@@ -1,8 +1,10 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Usage with Docusaurus
+
+`react-py` is not Server-Side Rendering (SSR) friendly, due to client only APIs such as web workers. To use this package with [Docusaurus](https://docusaurus.io), ensure it is loaded on the client side only.
 
 ## Adding the `PythonProvider`
 
@@ -35,12 +37,12 @@ plugins: [
       configureWebpack() {
         return {
           optimization: {
-            usedExports: false,
-          },
+            usedExports: false
+          }
         }
-      },
+      }
     }
-  },
+  }
 ]
 ```
 
