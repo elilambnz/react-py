@@ -2,6 +2,7 @@
   "name": "react-py",
   "version": "1.6.1",
   "description": "Run Python code directly in the browser",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
