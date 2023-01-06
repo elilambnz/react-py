@@ -1,6 +1,6 @@
 {
   "name": "react-py",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Run Python code directly in the browser",
   "type": "module",
   "main": "dist/index.js",
