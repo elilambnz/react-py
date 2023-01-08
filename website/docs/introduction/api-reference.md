@@ -99,30 +99,6 @@ Adds modules to be reloaded before code is run.
 
 Removes modules to be reloaded before code is run.
 
-## `react_py` module
-
-### http
-
-The `http` module has the following methods:
-
-#### get
-
-`(url: string) => string`
-
-#### post
-
-`(url: string, body: JSON) => string`
-
-#### put
-
-`(url: string, body: JSON) => string`
-
-#### delete
-
-`(url: string) => string`
-
-## Types
-
 ### Packages
 
 Example:

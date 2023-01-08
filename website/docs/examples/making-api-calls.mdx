@@ -1,0 +1,98 @@
+---
+sidebar_position: 7
+---
+
+import CodeEditor from '../../src/components/CodeEditor'
+
+# Making API Calls
+
+Due to sockets being unavailable in Pyodide, packages such as `requests` are [currently unsupported](https://pyodide.org/en/stable/project/roadmap.html#write-http-client-in-terms-of-web-apis) out of the box.
+
+The package [Pyodide-HTTP](https://github.com/koenvo/pyodide-http) can be used to patch common http libraries such as `requests`. See [Using Packages](using-packages) for package installation instructions. To use this package, the following `Packages` object must be used:
+
+```js
+{ official: ['pyodide-http'], micropip: ['requests'] }
+```
+
+Try it out:
+
+export const exampleCode = `import pyodide_http
+pyodide_http.patch_all()\n
+import requests
+response = requests.get('https://api.github.com/repos/elilambnz/react-py')
+data = response.json()\n
+print("*" * 50)
+print(f"Repository: {data['full_name']}")
+print(f"Owner: {data['owner']['login']}")
+print(f"Number of stars: {data['stargazers_count']} ⭐️")
+print(f"Number of forks: {data['forks_count']} 🍴")
+print(f"Number of watchers: {data['watchers_count']} 👀")
+print("*" * 50)
+`
+
+<CodeEditor
+  code={exampleCode}
+  packages={{ official: ['pyodide-http'], micropip: ['requests'] }}
+/>
+
+If you find this repository useful, consider giving it a star on GitHub: https://github.com/elilambnz/react-py.
+
+## `GET`
+
+export const exampleGetCode = `import pyodide_http
+pyodide_http.patch_all()\n
+import requests
+response = requests.get('https://reqres.in/api/users/2')
+data = response.json()\n
+print(data)
+`
+
+<CodeEditor
+  code={exampleGetCode}
+  packages={{ official: ['pyodide-http'], micropip: ['requests'] }}
+/>
+
+## `POST`
+
+export const examplePostCode = `import pyodide_http
+pyodide_http.patch_all()\n
+import requests
+response = requests.post('https://reqres.in/api/users', { "name": "morpheus", "job": "leader" })
+data = response.json()\n
+print(data)
+`
+
+<CodeEditor
+  code={examplePostCode}
+  packages={{ official: ['pyodide-http'], micropip: ['requests'] }}
+/>
+
+## `PUT`
+
+export const examplePutCode = `import pyodide_http
+pyodide_http.patch_all()\n
+import requests
+response = requests.put('https://reqres.in/api/users/2', { "name": "morpheus", "job": "zion resident" })
+data = response.json()\n
+print(data)
+`
+
+<CodeEditor
+  code={examplePutCode}
+  packages={{ official: ['pyodide-http'], micropip: ['requests'] }}
+/>
+
+## `DELETE`
+
+export const exampleDeleteCode = `import pyodide_http
+pyodide_http.patch_all()\n
+import requests
+response = requests.delete('https://reqres.in/api/users/2')\n
+if response.status_code == 204:
+  print ('Success')
+`
+
+<CodeEditor
+  code={exampleDeleteCode}
+  packages={{ official: ['pyodide-http'], micropip: ['requests'] }}
+/>
