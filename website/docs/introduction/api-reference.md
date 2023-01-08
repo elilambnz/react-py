@@ -99,6 +99,8 @@ Adds modules to be reloaded before code is run.
 
 Removes modules to be reloaded before code is run.
 
+## Types
+
 ### Packages
 
 Example:
