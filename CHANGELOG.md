@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/elilambnz/react-py/compare/v1.6.3...v1.7.0) (2023-01-08)
+
 ### [1.6.3](https://github.com/elilambnz/react-py/compare/v1.6.2-alpha.1...v1.6.3) (2023-01-06)
 
 ### [1.6.2](https://github.com/elilambnz/react-py/compare/v1.6.2-alpha.1...v1.6.2) (2023-01-06)
