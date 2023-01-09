@@ -8,6 +8,7 @@ import { proxy, Remote, wrap } from 'comlink'
 
 interface Runner {
   init: (
+    stdin: () => string,
     stdout: (msg: string) => void,
     onLoad: (version: string) => void,
     packages: string[][]
@@ -18,6 +19,11 @@ interface Runner {
   writeFile: (name: string, data: string) => void
   mkdir: (name: string) => void
   rmdir: (name: string) => void
+  initConsole: (
+    initConsoleCode: string,
+    stdoutCallback: (s: string) => void
+  ) => Promise<string>
+  push: (code: string) => Promise<{ state: string; error?: string }>
 }
 
 interface UsePythonProps {
@@ -93,6 +99,7 @@ export default function usePython(props?: UsePythonProps) {
           runnerRef.current = runner
 
           await runner.init(
+            proxy(() => 'foo'),
             proxy((msg) => {
               // Suppress messages that are not useful for the user
               if (suppressedMessages.includes(msg)) {
@@ -257,6 +264,45 @@ del sys
     )
   }
 
+  const initConsoleCode = `
+import sys
+from pyodide.ffi import to_js
+from pyodide.console import PyodideConsole, repr_shorten, BANNER
+import __main__
+BANNER = "Welcome to the Pyodide terminal emulator 🐍\\n" + BANNER
+pyconsole = PyodideConsole(__main__.__dict__)
+import builtins
+async def await_fut(fut):
+  res = await fut
+  if res is not None:
+    builtins._ = res
+  return to_js([res], depth=1)
+def clear_console():
+  pyconsole.buffer = []
+`
+
+  const initConsole = async (stdoutCallback: (s: string) => void) => {
+    if (isLoading) {
+      console.error('Pyodide is not loaded yet')
+      return
+    }
+    return await runnerRef.current?.initConsole(
+      initConsoleCode,
+      proxy(stdoutCallback)
+    )
+  }
+
+  const push = async (code: string) => {
+    try {
+      setIsRunning(true)
+      return await runnerRef.current?.push(code)
+    } catch (error) {
+      console.error('Error pushing to console:', error)
+    } finally {
+      setIsRunning(false)
+    }
+  }
+
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
@@ -280,6 +326,7 @@ del sys
     stdout,
     stderr,
     isLoading,
+    isReady,
     isRunning,
     interruptExecution,
     readFile,
@@ -287,6 +334,8 @@ del sys
     watchModules,
     unwatchModules,
     mkdir,
-    rmdir
+    rmdir,
+    initConsole,
+    push
   }
 }
