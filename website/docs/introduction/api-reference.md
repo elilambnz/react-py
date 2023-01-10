@@ -15,9 +15,9 @@ Props which can be provided to the `PythonProvider` component.
 | lazy                  | No       | `boolean`               | false     | If true, prevents the web worker from spawning until `runPython` is called for the first time. |
 | terminateOnCompletion | No       | `boolean`               | false     | If true, the web worker will terminate on completion.                                          |
 
-## `usePython` hook
+## `usePython` and `usePythonConsole` hooks
 
-Props which can be provided to the `usePython` hook.
+Props which can be provided to the `usePython` and `usePythonConsole` hooks.
 
 | Prop     | Required | Type                    | Default   | Description                                       |
 | -------- | -------- | ----------------------- | --------- | ------------------------------------------------- |
@@ -51,7 +51,13 @@ Python stderr.
 
 `boolean`
 
-True if the worker is still being initialised. False if ready.
+True if the worker is still being initialised. False if loaded.
+
+### isReady
+
+`boolean`
+
+True if instance is ready to run Python code. False otherwise.
 
 ### isRunning
 
@@ -99,6 +105,20 @@ Adds modules to be reloaded before code is run.
 
 Removes modules to be reloaded before code is run.
 
+## `usePythonConsole` hook
+
+### banner
+
+`string`
+
+Python banner.
+
+### consoleState
+
+`ConsoleState | undefined`
+
+Current state of console.
+
 ## Types
 
 ### Packages
@@ -119,3 +139,9 @@ Example:
 #### micropip
 
 `string[]` (optional) - Packages imported using micropip
+
+### ConsoleState
+
+Enum representing console state.
+
+`'complete' | 'incomplete' | 'syntax-error'`
