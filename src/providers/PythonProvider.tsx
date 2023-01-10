@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+import { Packages } from '../types/Packages'
 
 const PythonContext = createContext({
   packages: {} as Packages,
@@ -8,11 +9,6 @@ const PythonContext = createContext({
 })
 
 export const suppressedMessages = ['Python initialization complete']
-
-export interface Packages {
-  official?: string[]
-  micropip?: string[]
-}
 
 interface PythonProviderProps {
   packages?: Packages

@@ -3,7 +3,8 @@ importScripts('https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js')
 interface Pyodide {
   loadPackage: (packages: string[]) => Promise<void>
   pyimport: (pkg: string) => micropip
-  runPythonAsync: (code: string) => Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  runPythonAsync: (code: string, namespace?: any) => Promise<void>
   version: string
   FS: {
     readFile: (name: string, options: unknown) => void
@@ -11,6 +12,9 @@ interface Pyodide {
     mkdir: (name: string) => void
     rmdir: (name: string) => void
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  globals: any
+  isPyProxy: (value: unknown) => boolean
 }
 
 interface micropip {
@@ -22,7 +26,7 @@ declare global {
     loadPyodide: ({
       stdout
     }: {
-      stdout: (msg: string) => void
+      stdout?: (msg: string) => void
     }) => Promise<Pyodide>
     pyodide: Pyodide
   }
@@ -37,11 +41,11 @@ import { expose } from 'comlink'
 const python = {
   async init(
     stdout: (msg: string) => void,
-    onLoad: (version: string) => void,
+    onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({
-      stdout: (msg: string) => stdout(msg)
+      stdout
     })
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
@@ -51,7 +55,8 @@ const python = {
       const micropip = self.pyodide.pyimport('micropip')
       await micropip.install(packages[1])
     }
-    onLoad(self.pyodide.version)
+    const version = self.pyodide.version
+    onLoad({ version })
   },
   async run(code: string) {
     await self.pyodide.runPythonAsync(code)

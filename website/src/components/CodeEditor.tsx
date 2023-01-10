@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Packages } from '@site/../dist/providers/PythonProvider'
+import { Packages } from '@site/../dist/types/Packages'
 
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { useColorMode } from '@docusaurus/theme-common'
