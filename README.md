@@ -68,6 +68,8 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 [Interactive Console](https://elilambnz.github.io/react-py/docs/examples/interactive-console)
 
+[User Input](https://elilambnz.github.io/react-py/docs/examples/user-input)
+
 ## Limitations
 
 Most of the Python standard library is functional, except from some modules. The following modules can be imported, but are not functional due to the limitations of the WebAssembly VM:

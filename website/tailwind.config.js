@@ -9,6 +9,9 @@ module.exports = {
     }
   },
   darkMode: ['class', '[data-theme="dark"]'],
-  plugins: [require('prettier-plugin-tailwindcss')],
+  plugins: [
+    require('prettier-plugin-tailwindcss'),
+    require('@tailwindcss/forms')
+  ],
   corePlugins: { preflight: false }
 }
