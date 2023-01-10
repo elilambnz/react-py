@@ -47,11 +47,11 @@ You can find the source code for this example [here](https://github.com/elilambn
 ```python
 import builtins
 
-def fake_input(prompt):
+def mock_input(prompt):
     print(prompt)
-    return "Fake"
+    return "Jeff"
 
-builtins.input = fake_input
+builtins.input = mock_input
 
 name = input("Enter your name:")
 

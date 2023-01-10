@@ -78,7 +78,7 @@ ${input}
           type="text"
           name="text"
           id="userInput"
-          className="block w-full rounded-md border-gray-300 bg-slate-800 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+          className="block w-full rounded-md border-none bg-slate-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:bg-slate-800 sm:text-sm"
           placeholder="Jeff"
           onChange={(e) => setUserInput(e.target.value.trim())}
         />

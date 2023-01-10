@@ -75,22 +75,23 @@ export default function Console() {
 
   return (
     <div className="relative mb-10">
-      <pre className="mt-4 max-h-[calc(100vh_-_20rem)] min-h-[3.5rem] text-left">
+      <pre className="mt-4 max-h-[calc(100vh_-_20rem)] min-h-[3.5rem] text-left text-base">
         {!isReady && <code>Loading...</code>}
         {output.map((line, i) => (
           <code className={line.className} key={i}>
             {line.text}
           </code>
         ))}
-        <div className="mt-2 flex">
+        <div className="relative mt-2 flex">
           <code className="mt-2">{getPrompt()}</code>
           <textarea
             ref={textArea}
-            className="highlight-white/5 w-full resize-none rounded-md bg-slate-800 p-2 text-sm shadow-sm ring-0 ring-slate-900/10"
+            className="-ml-1 w-full resize-none rounded-md border-none bg-slate-200 py-2 pl-1 pr-2 !outline-none !ring-0 focus:bg-transparent dark:bg-slate-800 dark:focus:bg-transparent"
             style={{
               height: input
-                ? `${input.split('\n').length * 1.25 + 1}rem`
-                : '2.25rem'
+                ? `${input.split('\n').length * 1.5 + 1}rem`
+                : '2.5rem',
+              fontFamily: 'unset'
             }}
             value={input}
             onChange={(e) => {
