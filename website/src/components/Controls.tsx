@@ -16,8 +16,8 @@ export default function Controls(props: ControlProps) {
   const visibleItems = items.filter((item) => !item.hidden)
 
   return (
-    <div className="z-10 -mb-16 flex justify-end p-2">
-      <div className="rounded-md bg-white p-1 opacity-80 shadow-md hover:opacity-100">
+    <div className="pointer-events-none z-10 -mb-16 flex justify-end p-2">
+      <div className="pointer-events-auto rounded-md bg-white p-1 opacity-80 shadow-md hover:opacity-100">
         <span className="isolate inline-flex rounded-md">
           {visibleItems.map((item, i) => (
             <button
@@ -29,7 +29,7 @@ export default function Controls(props: ControlProps) {
                 'relative inline-flex items-center border border-none border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 focus:z-10 focus:outline-none focus:ring-0',
                 !item.disabled
                   ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                  : 'opacity-50',
+                  : 'opacity-50 hover:cursor-not-allowed',
                 i === 0 && 'rounded-l-md',
                 i === visibleItems.length - 1 && 'rounded-r-md'
               )}
