@@ -56,6 +56,8 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 [Basic Example](https://elilambnz.github.io/react-py/docs/examples/basic-example)
 
+[REPL](https://elilambnz.github.io/react-py/docs/examples/repl)
+
 [Interrupting Execution](https://elilambnz.github.io/react-py/docs/examples/interrupting-execution)
 
 [Using Packages](https://elilambnz.github.io/react-py/docs/examples/using-packages)
@@ -65,8 +67,6 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 [Custom Modules](https://elilambnz.github.io/react-py/docs/examples/custom-modules)
 
 [Making API Calls](https://elilambnz.github.io/react-py/docs/examples/making-api-calls)
-
-[Interactive Console](https://elilambnz.github.io/react-py/docs/examples/interactive-console)
 
 [User Input](https://elilambnz.github.io/react-py/docs/examples/user-input)
 
