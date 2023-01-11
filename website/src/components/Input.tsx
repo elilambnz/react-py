@@ -85,7 +85,7 @@ ${input}
             name="name"
             id="name"
             className="block w-full rounded-md border-none bg-neutral-200 placeholder-gray-400 shadow-sm focus:ring-0 dark:bg-neutral-600 sm:text-sm"
-            placeholder="Jeff"
+            placeholder="Type a name"
             onChange={(e) => setUserInput(e.target.value.trim())}
           />
         </div>

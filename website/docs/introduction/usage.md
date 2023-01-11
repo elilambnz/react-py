@@ -76,7 +76,7 @@ function Codeblock() {
 
 Use the `usePythonConsole` hook to emulate a Python console to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference#usepython-hook).
 
-Try the example, [Interactive Console](../examples/interactive-console.mdx).
+Try the example, [REPL](../examples/repl.mdx).
 
 :::note
 The Python console is not affected by the globally set `lazy` or `terminateOnCompletion` props.
