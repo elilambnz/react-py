@@ -108,7 +108,7 @@ export default function Example() {
             </div>
           </div>
           <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-            <div className="md:grid md:grid-cols-2 md:gap-8">
+            <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
                   Docs
@@ -146,7 +146,7 @@ export default function Example() {
                 </ul>
               </div>
             </div>
-            <div className="md:grid md:grid-cols-2 md:gap-8">
+            <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
                   Available On

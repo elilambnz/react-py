@@ -117,7 +117,7 @@ function Demo() {
                   key={tab.name}
                   className={({ selected }) =>
                     clsx(
-                      'w-full rounded-lg border-none py-1.5 px-2 text-sm font-medium leading-5 outline-none',
+                      'm-0 w-full rounded-lg border-none py-1.5 px-2 text-sm font-medium leading-5 outline-none',
                       'hover:cursor-pointer focus:outline-none',
                       selected
                         ? 'bg-white stroke-sky-500 text-slate-900 shadow'
