@@ -5,7 +5,9 @@ import { Packages } from '@site/../dist/types/Packages'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
-import clsx from 'clsx'
+
+import Controls from './Controls'
+import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -70,20 +72,50 @@ ${input}
 
   return (
     <>
-      <div>
-        <label htmlFor="userInput" className="sr-only">
-          User input
+      <div className="mb-4 lg:w-1/2">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-100"
+        >
+          Name
         </label>
-        <input
-          type="text"
-          name="text"
-          id="userInput"
-          className="block w-full rounded-md border-none bg-slate-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:bg-slate-800 sm:text-sm"
-          placeholder="Jeff"
-          onChange={(e) => setUserInput(e.target.value.trim())}
-        />
+        <div className="mt-1">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            className="block w-full rounded-md border-none bg-neutral-200 placeholder-gray-400 shadow-sm focus:ring-0 dark:bg-neutral-600 sm:text-sm"
+            placeholder="Jeff"
+            onChange={(e) => setUserInput(e.target.value.trim())}
+          />
+        </div>
       </div>
-      <div className="relative mt-4 mb-10">
+
+      <div className="relative mb-10 flex flex-col">
+        <Controls
+          items={[
+            {
+              label: 'Run',
+              icon: PlayIcon,
+              onClick: run,
+              disabled: isLoading || isRunning,
+              hidden: isRunning
+            },
+            {
+              label: 'Stop',
+              icon: StopIcon,
+              onClick: stop,
+              hidden: !isRunning
+            },
+            {
+              label: 'Reset',
+              icon: ArrowPathIcon,
+              onClick: reset,
+              disabled: isRunning
+            }
+          ]}
+        />
+
         <BrowserOnly fallback={<div>Loading...</div>}>
           {() => {
             const AceEditor = require('react-ace').default
@@ -97,7 +129,7 @@ ${input}
                 mode="python"
                 name="CodeBlock"
                 fontSize="0.9rem"
-                className="min-h-[3.5rem] overflow-clip rounded shadow-md"
+                className="min-h-[4rem] overflow-clip rounded shadow-md"
                 theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
                 onChange={(newValue) => setInput(newValue)}
                 width="100%"
@@ -110,44 +142,6 @@ ${input}
           }}
         </BrowserOnly>
 
-        <span className="absolute top-2 right-2 z-10 inline-flex rounded-md shadow-sm">
-          {!isRunning ? (
-            <button
-              onClick={run}
-              type="button"
-              disabled={isLoading || isRunning}
-              className={clsx(
-                'relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
-                !isLoading
-                  ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                  : 'opacity-50'
-              )}
-            >
-              Run
-            </button>
-          ) : (
-            <button
-              onClick={stop}
-              type="button"
-              className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-            >
-              Stop
-            </button>
-          )}
-          <button
-            onClick={reset}
-            type="button"
-            disabled={isRunning}
-            className={clsx(
-              'relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
-              !isRunning
-                ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                : 'opacity-50'
-            )}
-          >
-            Reset
-          </button>
-        </span>
         {showOutput && (
           <pre className="mt-4 text-left">
             <code>{stdout}</code>

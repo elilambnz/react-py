@@ -84,10 +84,6 @@ const config = {
           }
         ]
       },
-      footer: {
-        style: 'dark',
-        copyright: `Made with ❤️ + ☕️ by <a href="https://github.com/elilambnz">Eli Lamb</a>. Licensed under the <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md">MIT License</a>.`
-      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme

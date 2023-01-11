@@ -2,7 +2,16 @@ import React, { useState } from 'react'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
-import clsx from 'clsx'
+
+import Controls from './Controls'
+import {
+  ArrowPathIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  PencilIcon,
+  PlayIcon,
+  StopIcon
+} from '@heroicons/react/24/solid'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -91,13 +100,36 @@ export default function CustomModuleExample() {
           return (
             <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
               <div className="flex-1">
-                <h2>utils.py</h2>
+                <div className="relative flex justify-between">
+                  <h2>utils.py</h2>
+                  <div className="absolute right-0 top-0 -m-2 -mt-3">
+                    <Controls
+                      items={[
+                        {
+                          label: 'Write',
+                          icon: PencilIcon,
+                          onClick: write
+                        },
+                        {
+                          label: 'Watch',
+                          icon: EyeIcon,
+                          onClick: watch
+                        },
+                        {
+                          label: 'Unwatch',
+                          icon: EyeSlashIcon,
+                          onClick: unwatch
+                        }
+                      ]}
+                    />
+                  </div>
+                </div>
                 <AceEditor
                   value={module}
                   mode="python"
                   name="CodeBlock"
                   fontSize="0.9rem"
-                  className="min-h-[3.5rem] overflow-clip rounded shadow-md"
+                  className="min-h-[4rem] overflow-clip rounded shadow-md"
                   theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
                   onChange={(newValue) => setModule(newValue)}
                   width="100%"
@@ -106,44 +138,43 @@ export default function CustomModuleExample() {
                   editorProps={{ $blockScrolling: true }}
                   setOptions={editorOptions}
                 />
-                <span className="mt-4 inline-flex rounded-md shadow-sm">
-                  <button
-                    onClick={write}
-                    type="button"
-                    disabled={isLoading}
-                    className={clsx(
-                      'relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
-                      !isLoading
-                        ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                        : 'opacity-50'
-                    )}
-                  >
-                    Write file
-                  </button>
-                  <button
-                    onClick={watch}
-                    type="button"
-                    className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-                  >
-                    Watch
-                  </button>
-                  <button
-                    onClick={unwatch}
-                    type="button"
-                    className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-                  >
-                    Unwatch
-                  </button>
-                </span>
               </div>
+
               <div className="flex-1">
-                <h2>main.py</h2>
+                <div className="relative flex justify-between">
+                  <h2>main.py</h2>
+                  <div className="absolute right-0 top-0 -m-2 -mt-3">
+                    <Controls
+                      items={[
+                        {
+                          label: 'Run',
+                          icon: PlayIcon,
+                          onClick: run,
+                          disabled: isLoading || isRunning,
+                          hidden: isRunning
+                        },
+                        {
+                          label: 'Stop',
+                          icon: StopIcon,
+                          onClick: stop,
+                          hidden: !isRunning
+                        },
+                        {
+                          label: 'Reset',
+                          icon: ArrowPathIcon,
+                          onClick: reset,
+                          disabled: isRunning
+                        }
+                      ]}
+                    />
+                  </div>
+                </div>
                 <AceEditor
                   value={input}
                   mode="python"
                   name="CodeBlock"
                   fontSize="0.9rem"
-                  className="min-h-[3.5rem] overflow-clip rounded shadow-md"
+                  className="min-h-[4rem] overflow-clip rounded shadow-md"
                   theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
                   onChange={(newValue) => setInput(newValue)}
                   width="100%"
@@ -152,44 +183,6 @@ export default function CustomModuleExample() {
                   editorProps={{ $blockScrolling: true }}
                   setOptions={editorOptions}
                 />
-                <span className="mt-4 inline-flex rounded-md shadow-sm">
-                  {!isRunning ? (
-                    <button
-                      onClick={run}
-                      type="button"
-                      disabled={isLoading || isRunning}
-                      className={clsx(
-                        'relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
-                        !isLoading
-                          ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                          : 'opacity-50'
-                      )}
-                    >
-                      Run
-                    </button>
-                  ) : (
-                    <button
-                      onClick={stop}
-                      type="button"
-                      className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100"
-                    >
-                      Stop
-                    </button>
-                  )}
-                  <button
-                    onClick={reset}
-                    type="button"
-                    disabled={isRunning}
-                    className={clsx(
-                      'relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700',
-                      !isRunning
-                        ? 'opacity-75 hover:cursor-pointer hover:bg-gray-50 hover:opacity-100'
-                        : 'opacity-50'
-                    )}
-                  >
-                    Reset
-                  </button>
-                </span>
               </div>
             </div>
           )

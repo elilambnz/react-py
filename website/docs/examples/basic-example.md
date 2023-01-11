@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Basic Example
 
-This is a basic example using [react-ace](https://www.npmjs.com/package/react-ace) to render an interactive code block.
+This is a basic example of using the `usePython` hook and [react-ace](https://www.npmjs.com/package/react-ace) to render an interactive code block.
 
 ```python
 import random
