@@ -95,7 +95,7 @@ export default function Console() {
         />
       </div>
 
-      <pre className="z-10 max-h-[calc(100vh_-_20rem)] min-h-[20rem] text-left text-base shadow-md">
+      <pre className="z-10 max-h-[calc(100vh_-_20rem)] min-h-[18rem] text-left text-base shadow-md">
         {!isReady && <code>Loading...</code>}
         {output.map((line, i) => (
           <code className={line.className} key={i}>

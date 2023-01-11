@@ -34,7 +34,7 @@ function HomepageHeader() {
   return (
     <div>
       <img
-        className="mx-auto h-16 w-auto"
+        className="mx-auto h-auto max-h-16 w-auto"
         src={
           isDarkMode
             ? require('@site/static/img/logo-dark.png').default
@@ -42,7 +42,7 @@ function HomepageHeader() {
         }
         alt={siteConfig.title}
       />
-      <p className="mx-auto mt-3 max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
+      <p className="mx-auto mt-3 text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
         {siteConfig.tagline}
       </p>
       <div className="mt-10 sm:flex sm:justify-center lg:justify-start">
@@ -201,10 +201,10 @@ export default function Home(): JSX.Element {
     >
       <header className="mx-auto mt-16 max-w-7xl px-4 sm:mt-24 lg:mt-32">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:text-left">
+          <div className="sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:text-left xl:col-span-4">
             <HomepageHeader />
           </div>
-          <div className="relative mt-12 sm:mx-auto sm:max-w-lg lg:col-span-6 lg:mx-0 lg:mt-0 lg:flex lg:max-w-none lg:items-center">
+          <div className="relative mt-12 sm:mx-auto sm:max-w-2xl lg:col-span-6 lg:mx-0 lg:-mt-12 lg:flex lg:max-w-none lg:items-center xl:col-span-8">
             <Demo />
           </div>
         </div>

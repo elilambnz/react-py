@@ -1,21 +1,4 @@
 export const snippets = [
-  `import random;
-
-def bogo_sort(data):
-  while not is_sorted(data):
-      random.shuffle(data)
-
-
-def is_sorted(data):
-  for i in range(len(data) - 1):
-      if data[i] > data[i + 1]:
-          return False
-  return True
-
-
-data = [4, 2, 3, 1]
-bogo_sort(data)
-print(data) `,
   `import math
 
 def jump_search(data, item):
@@ -76,27 +59,6 @@ print(is_palindrome('taco the cat'))`,
 
 
 fizzbuzz(15)`,
-  `import math
-
-def draw_line_graph(data):
-  max_value = math.ceil(max(data))
-  min_value = math.floor(min(data))
-  for y in range(max_value, min_value - 1, -1):
-      print('{:<3}|'.format(y), end='')
-      for x in range(len(data)):
-          if round(data[x]) == y:
-              print('*', end='')
-          elif y == 0:
-              print('-', end='')
-          else:
-              print(' ', end='')
-      print()
-
-
-fidelity = 60
-height = 5
-data = [height * math.sin(math.pi * x / fidelity * 2) for x in range(fidelity)]
-draw_line_graph(data)`,
   `def merge(list1, list2):
   result = []
   i, j = 0, 0
@@ -128,5 +90,5 @@ print(merge([1, 2, 3, 7], [4, 5, 6, 8]))`,
 
 amount = 24
 change = get_change(amount)
-print('The change to give for \${} is {}'.format(amount, change))`,
-];
+print('The change to give for \${} is {}'.format(amount, change))`
+]
