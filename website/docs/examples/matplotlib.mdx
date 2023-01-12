@@ -1,0 +1,53 @@
+---
+sidebar_position: 9
+---
+
+import MatplotlibExample from '../../src/components/MatplotlibExample'
+
+# Matplotlib
+
+By default, matplotlib relies on the import statement `from js import document`, which does not work from within a web worker.
+
+One workaround is to patch the default behaviour of `matplotlib.pyplot.show`.
+
+## Patching `matplotlib.pyplot.show`
+
+The following patch sets matplotlib to use the `AGG` renderer. [Source](https://github.com/pyodide/matplotlib-pyodide/issues/6#issuecomment-1242747625).
+
+:::caution
+This workaround relies on the base64 string to be printed to `stdout`.
+:::
+
+export const matplotlibCode = `import os
+import base64
+from io import BytesIO\n
+# Set this _before_ importing matplotlib
+os.environ['MPLBACKEND'] = 'AGG'\n
+import matplotlib.pyplot as plt\n
+# Patch
+def ensure_matplotlib_patch():
+  _old_show = plt.show\n
+  def show():
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    # Encode to a base64 str
+    img = 'data:image/png;base64,' + \\
+    base64.b64encode(buf.read()).decode('utf-8')
+    # Write to stdout
+    print(img)
+    plt.clf()\n
+  plt.show = show\n\n
+ensure_matplotlib_patch()\n
+# Plot
+fig, ax = plt.subplots()
+ax.plot([1,3,2])\n
+plt.show()
+`
+
+<MatplotlibExample
+  code={matplotlibCode}
+  packages={{ official: ['matplotlib'] }}
+/>
+
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/MatplotlibExample.tsx).
