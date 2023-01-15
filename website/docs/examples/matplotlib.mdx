@@ -18,9 +18,7 @@ The following patch sets matplotlib to use the `AGG` renderer. [Source](https://
 This workaround relies on the base64 string to be printed to `stdout`.
 :::
 
-export const matplotlibCode = `import os
-import base64
-from io import BytesIO\n
+export const matplotlibCode = `import os, io, base64\n
 # Set this _before_ importing matplotlib
 os.environ['MPLBACKEND'] = 'AGG'\n
 import matplotlib.pyplot as plt\n
@@ -28,7 +26,7 @@ import matplotlib.pyplot as plt\n
 def ensure_matplotlib_patch():
   _old_show = plt.show\n
   def show():
-    buf = BytesIO()
+    buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
     # Encode to a base64 str

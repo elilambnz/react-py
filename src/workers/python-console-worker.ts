@@ -15,6 +15,8 @@ interface Pyodide {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globals: any
   isPyProxy: (value: unknown) => boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  registerJsModule: any
 }
 
 interface micropip {
@@ -68,7 +70,15 @@ let pythonConsole: {
 const python = {
   async init(
     stdout: (msg: string) => void,
-    onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
+    onLoad: ({
+      id,
+      version,
+      banner
+    }: {
+      id: string
+      version: string
+      banner?: string
+    }) => void,
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({})
@@ -80,6 +90,7 @@ const python = {
       const micropip = self.pyodide.pyimport('micropip')
       await micropip.install(packages[1])
     }
+    const id = self.crypto.randomUUID()
     const version = self.pyodide.version
 
     const namespace = self.pyodide.globals.get('dict')()
@@ -101,7 +112,7 @@ const python = {
       clearConsole
     }
 
-    onLoad({ version, banner })
+    onLoad({ id, version, banner })
   },
   async run(
     code: string

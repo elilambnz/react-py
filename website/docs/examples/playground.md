@@ -8,13 +8,9 @@ draft: true
 Used for testing bugs etc.
 
 ```python
-with open("/hello.txt", "w") as fh:
-  fh.write("hello world!")
-  print("done")
-```
-
-```python
-with open("/hello.txt", "r") as fh:
-  data = fh.read()
-print(data)
+print('before')
+x = input('Enter something: ')
+print('foo')
+print(x)
+print('after')
 ```

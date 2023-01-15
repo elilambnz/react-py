@@ -8,6 +8,7 @@ import { usePython } from '@site/../dist'
 
 import Controls from './Controls'
 import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
+import Input from './Input'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -44,7 +45,9 @@ export default function CodeEditor(props: CodeEditorProps) {
     stderr,
     isLoading,
     isRunning,
-    interruptExecution
+    interruptExecution,
+    isAwaitingInput,
+    sendInput
   } = usePython({ packages })
 
   function run() {
@@ -81,6 +84,7 @@ export default function CodeEditor(props: CodeEditorProps) {
             disabled: isRunning
           }
         ]}
+        isAwaitingInput={isAwaitingInput}
       />
 
       <BrowserOnly fallback={<div>Loading...</div>}>
@@ -108,6 +112,8 @@ export default function CodeEditor(props: CodeEditorProps) {
           )
         }}
       </BrowserOnly>
+
+      {isAwaitingInput && <Input onSubmit={sendInput} />}
 
       {showOutput && (
         <pre className="mt-4 text-left">
