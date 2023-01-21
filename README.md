@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  Run Python code directly in the browser. <a href="https://elilambnz.github.io/react-py">Try it out!</a>
+  Effortlessly run Python code in your React apps. <a href="https://elilambnz.github.io/react-py">Try it out!</a>
 </p>
 
 <p align="center">

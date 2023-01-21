@@ -197,7 +197,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Run Python code directly in the browser."
+      description="Effortlessly run Python code in your React apps."
     >
       <header className="mx-auto mt-16 max-w-7xl px-4 sm:mt-24 lg:mt-32">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
