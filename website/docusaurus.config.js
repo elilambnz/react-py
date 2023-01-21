@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'react-py',
-  tagline: 'Run Python code directly in the browser.',
+  tagline: 'Effortlessly run Python code in your React apps.',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/react-py/',
   // onBrokenLinks: "throw",
