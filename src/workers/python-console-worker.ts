@@ -12,8 +12,12 @@ interface Pyodide {
     mkdir: (name: string) => void
     rmdir: (name: string) => void
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globals: any
+  globals: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get: (variable: string) => any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    set: (variable: string, value: any) => void
+  }
   isPyProxy: (value: unknown) => boolean
 }
 

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { PythonContext, suppressedMessages } from '../providers/PythonProvider'
 import { proxy, Remote, wrap } from 'comlink'
+import useGlobals from './useGlobals'
 import useFilesystem from './useFilesystem'
 
 import { Packages } from '../types/Packages'
@@ -31,6 +32,8 @@ export default function usePython(props?: UsePythonProps) {
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
+
+  const { getGlobal, setGlobal } = useGlobals({ runner: runnerRef?.current })
 
   const {
     readFile,
@@ -144,6 +147,7 @@ import sys
 
 sys.tracebacklimit = 0
 
+# Patch time.sleep
 import time
 def sleep(seconds):
     start = now = time.time()
@@ -151,7 +155,10 @@ def sleep(seconds):
         now = time.time()
 time.sleep = sleep
 
+globals_ = {}
+
 def run(code, preamble=''):
+    global globals_
     globals_ = {}
     try:
         exec(preamble, globals_)
@@ -251,6 +258,8 @@ del sys
     isReady,
     isRunning,
     interruptExecution,
+    getGlobal,
+    setGlobal,
     readFile,
     writeFile,
     mkdir,
