@@ -45,7 +45,7 @@ export default function usePython(props?: UsePythonProps) {
   const createWorker = () => {
     const worker = new Worker(
       new URL('../workers/python-worker', import.meta.url),
-      { type: 'module' }
+      { type: 'classic' }
     )
     workerRef.current = worker
   }
