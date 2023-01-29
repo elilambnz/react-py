@@ -1,42 +1,15 @@
-importScripts('https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js')
-
-interface Pyodide {
-  loadPackage: (packages: string[]) => Promise<void>
-  pyimport: (pkg: string) => micropip
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  runPythonAsync: (code: string, namespace?: any) => Promise<void>
-  version: string
-  FS: {
-    readFile: (name: string, options: unknown) => void
-    writeFile: (name: string, data: string, options: unknown) => void
-    mkdir: (name: string) => void
-    rmdir: (name: string) => void
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globals: any
-  isPyProxy: (value: unknown) => boolean
-}
-
-interface micropip {
-  install: (packages: string[]) => Promise<void>
-}
-
-declare global {
-  interface Window {
-    loadPyodide: ({
-      stdout
-    }: {
-      stdout?: (msg: string) => void
-    }) => Promise<Pyodide>
-    pyodide: Pyodide
-  }
-}
+import { loadPyodide, PyodideInterface } from 'pyodide'
+import { expose } from 'comlink'
 
 // Monkey patch console.log to prevent the script from outputting logs
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 console.log = () => {}
 
-import { expose } from 'comlink'
+declare global {
+  interface Window {
+    pyodide: PyodideInterface
+  }
+}
 
 const python = {
   async init(
@@ -44,7 +17,7 @@ const python = {
     onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
     packages: string[][]
   ) {
-    self.pyodide = await self.loadPyodide({
+    self.pyodide = await loadPyodide({
       stdout
     })
     if (packages[0].length > 0) {
