@@ -1,8 +1,10 @@
-// @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const CopyPlugin = require('copy-webpack-plugin')
+const path = require('path')
+const { WorkerPlugin, ExternalsPlugin } = require('webpack')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -104,17 +106,40 @@ const config = {
     },
     async function disableUsedExports() {
       return {
-        name: 'disable-used-exports',
-        configureWebpack() {
+        name: 'copy-pyodide',
+        configureWebpack(config) {
           return {
-            optimization: {
-              usedExports: false
-            }
+            // optimization: {
+            //   usedExports: false,
+            // },
+            // externals: {
+            //   pyodide: path.resolve(
+            //     __dirname,
+            //     '"node_modules/react_py/node_modules/pyodide"'
+            //   )
+            // },
+            // plugins: [
+            //   new CopyPlugin({
+            //     patterns: [
+            //       {
+            //         // context: 'node_modules/pyodide/',
+            //         context: 'node_modules/react-py/node_modules/pyodide',
+            //         from: '**/*',
+            //         to: 'assets/js/'
+            //       }
+            //     ]
+            //   }),
+            //   new WorkerPlugin({
+            //     plugins: [new ExternalsPlugin(`commonjs`, config.externals)]
+            //   })
+            // ]
           }
         }
       }
     }
   ],
+
+  // staticDirectories: ['node_modules/pyodide'],
 
   scripts: [
     {
