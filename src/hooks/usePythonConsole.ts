@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { PythonContext, suppressedMessages } from '../providers/PythonProvider'
 import { proxy, Remote, wrap } from 'comlink'
 import useFilesystem from './useFilesystem'
@@ -70,7 +77,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && pyodideVersion && banner
+  const isReady = !isLoading && !!pyodideVersion && !!banner
 
   useEffect(() => {
     if (workerRef.current && !isReady) {
@@ -120,43 +127,46 @@ del importlib
 del sys
 `
 
-  const runPython = async (code: string) => {
-    // Clear stdout and stderr
-    setStdout('')
-    setStderr('')
+  const runPython = useCallback(
+    async (code: string) => {
+      // Clear stdout and stderr
+      setStdout('')
+      setStderr('')
 
-    if (isLoading) {
-      throw new Error('Pyodide is not loaded yet')
-    }
-    let timeoutTimer
-    try {
-      setIsRunning(true)
-      if (!isReady || !runnerRef.current) {
+      if (!isReady) {
         throw new Error('Pyodide is not loaded yet')
       }
-      if (timeout > 0) {
-        timeoutTimer = setTimeout(() => {
-          setStdout('')
-          setStderr(`Execution timed out. Reached limit of ${timeout} ms.`)
-          interruptExecution()
-        }, timeout)
+      let timeoutTimer
+      try {
+        setIsRunning(true)
+        if (!isReady || !runnerRef.current) {
+          throw new Error('Pyodide is not loaded yet')
+        }
+        if (timeout > 0) {
+          timeoutTimer = setTimeout(() => {
+            setStdout('')
+            setStderr(`Execution timed out. Reached limit of ${timeout} ms.`)
+            interruptExecution()
+          }, timeout)
+        }
+        if (watchedModules.size > 0) {
+          await runnerRef.current.run(moduleReloadCode(watchedModules))
+        }
+        const { state, error } = await runnerRef.current.run(code)
+        setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
+        if (error) {
+          setStderr(error)
+        }
+        // eslint-disable-next-line
+      } catch (error: any) {
+        console.error('Error pushing to console:', error)
+      } finally {
+        setIsRunning(false)
+        clearTimeout(timeoutTimer)
       }
-      if (watchedModules.size > 0) {
-        await runnerRef.current.run(moduleReloadCode(watchedModules))
-      }
-      const { state, error } = await runnerRef.current.run(code)
-      setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
-      if (error) {
-        setStderr(error)
-      }
-      // eslint-disable-next-line
-    } catch (error: any) {
-      console.error('Error pushing to console:', error)
-    } finally {
-      setIsRunning(false)
-      clearTimeout(timeoutTimer)
-    }
-  }
+    },
+    [isReady, timeout, watchedModules]
+  )
 
   const interruptExecution = () => {
     cleanup()
