@@ -9,7 +9,8 @@ const PythonContext = createContext({
   lazy: false,
   terminateOnCompletion: false,
   loading: false,
-  getRunner: async () => '',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getRunner: async (msgCallback: (msg: string) => void) => '',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   run: async (id: string, code: string) => {},
   output: new Map<string, string[]>()
@@ -17,7 +18,7 @@ const PythonContext = createContext({
 
 export const suppressedMessages = ['Python initialization complete']
 
-const BUFFER = 3
+const BUFFER = 2
 
 interface PythonProviderProps {
   packages?: Packages
@@ -39,21 +40,15 @@ function PythonProvider(props: PythonProviderProps) {
   const workerRef = useRef<Map<string, Worker>>(new Map())
   const runnerRef = useRef<Map<string, Remote<PythonRunner>>>(new Map())
   const assignedRunners = useRef<Set<string>>(new Set())
+  const output = useRef<Map<string, string[]>>(new Map())
+
+  const msgCallbacks = useRef<Map<string, (msg: string) => void>>(new Map())
 
   const [loading, setLoading] = useState(true)
-  const [output, setOutput] = useState<Map<string, string[]>>(new Map())
 
   useEffect(() => {
     if (!lazy) {
-      // print buffer in big banner
-      console.log(
-        '%cWorker Pool 🏊‍♀️',
-        'background: #000; color: #fff; font-size: 2rem; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.5rem;'
-      )
-      console.log(
-        '%cBuffer size: ' + BUFFER,
-        'background: #000; color: #fff; font-size: 1rem; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.5rem;'
-      )
+      console.log('Buffer size:', BUFFER)
 
       for (let i = 0; i < BUFFER; i++) {
         createInstance()
@@ -86,12 +81,13 @@ function PythonProvider(props: PythonProviderProps) {
           if (suppressedMessages.includes(msg)) {
             return
           }
-          console.log('- Python output:', msg)
 
-          setOutput((prev) => {
-            const prevOutput = prev.get(id) ?? []
-            return prev.set(id, [...prevOutput, msg])
-          })
+          const callback = msgCallbacks.current.get(id)
+          if (callback) {
+            callback(msg)
+          } else {
+            console.warn('No callback found for runner', id)
+          }
         }),
         proxy(({ version }) => {
           console.debug('Loaded pyodide version:', version)
@@ -104,7 +100,7 @@ function PythonProvider(props: PythonProviderProps) {
     }
   }
 
-  const getRunner = async () => {
+  const getRunner = async (msgCallback: (msg: string) => void) => {
     if (lazy) {
       await createInstance()
     }
@@ -123,6 +119,9 @@ function PythonProvider(props: PythonProviderProps) {
 
     assignedRunners.current.add(id)
 
+    // register callback
+    msgCallbacks.current.set(id, msgCallback)
+
     // if available is less than buffer, create a new instance
     if (availableRunners.length - 1 < BUFFER) {
       createInstance()
@@ -132,8 +131,6 @@ function PythonProvider(props: PythonProviderProps) {
   }
 
   const run = async (id: string, code: string) => {
-    console.log('Python run', id)
-
     const runner = runnerRef.current.get(id)
     if (!runner) {
       throw new Error('Runner not found')
@@ -164,7 +161,7 @@ function PythonProvider(props: PythonProviderProps) {
         loading,
         getRunner,
         run,
-        output
+        output: output.current
       }}
       {...props}
     />

@@ -38,8 +38,7 @@ export default function usePython(props?: UsePythonProps) {
     terminateOnCompletion,
     loading,
     getRunner,
-    run,
-    output: runnerOutput
+    run
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -55,11 +54,14 @@ export default function usePython(props?: UsePythonProps) {
     watchedModules
   } = useFilesystem({ runner: runnerRef?.current })
 
-  useEffect(() => {
-    if (runnerOutput) {
-      console.log('runnerOutput', runnerOutput)
+  // send a callback to the worker to handle the output
+  const handleOutput = (msg: string) => {
+    // Suppress messages that are not useful for the user
+    if (suppressedMessages.includes(msg)) {
+      return
     }
-  }, [runnerOutput])
+    setOutput((prev) => [...prev, msg])
+  }
 
   // const createWorker = () => {
   //   const worker = new Worker(
@@ -206,9 +208,9 @@ del sys
       setStderr('')
 
       let newRunnerId
-      if (!runnerId) {
-        console.log('no runnerId, getting runner')
-        newRunnerId = await getRunner()
+      if (!runnerId || terminateOnCompletion) {
+        console.log('no runnerId or term on done, getting runner')
+        newRunnerId = await getRunner(handleOutput)
         setRunnerId(newRunnerId)
       }
 

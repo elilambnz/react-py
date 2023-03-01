@@ -5,6 +5,7 @@ import { ConsoleState } from '@site/../dist/types/Console'
 
 import Controls from './Controls'
 import { ArrowPathIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
 
 const ps1 = '>>> '
 const ps2 = '... '
@@ -106,7 +107,10 @@ export default function Console() {
           <code className="mt-2">{getPrompt()}</code>
           <textarea
             ref={textArea}
-            className="-ml-1 w-full resize-none rounded-md border-none bg-neutral-200 py-2 pl-1 pr-2 !outline-none !ring-0 focus:bg-transparent dark:bg-neutral-600 dark:focus:bg-transparent"
+            className={clsx(
+              '-ml-1 w-full resize-none rounded-md border-none bg-transparent py-2 pl-1 pr-2 !outline-none !ring-0',
+              !isReady && 'cursor-not-allowed'
+            )}
             style={{
               height: input
                 ? `${input.split('\n').length * 1.5 + 1}rem`
