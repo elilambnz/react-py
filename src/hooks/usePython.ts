@@ -20,7 +20,7 @@ interface UsePythonProps {
 export default function usePython(props?: UsePythonProps) {
   const { packages = {} } = props ?? {}
 
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
   const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
@@ -29,11 +29,17 @@ export default function usePython(props?: UsePythonProps) {
   const [pendingCode, setPendingCode] = useState<string | undefined>()
   const [hasRun, setHasRun] = useState(false)
 
+  const [runnerId, setRunnerId] = useState<string>()
+
   const {
     packages: globalPackages,
     timeout,
     lazy,
-    terminateOnCompletion
+    terminateOnCompletion,
+    loading,
+    getRunner,
+    run,
+    output: runnerOutput
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -49,24 +55,30 @@ export default function usePython(props?: UsePythonProps) {
     watchedModules
   } = useFilesystem({ runner: runnerRef?.current })
 
-  const createWorker = () => {
-    const worker = new Worker(
-      new URL('../workers/python-worker', import.meta.url)
-    )
-    workerRef.current = worker
-  }
-
   useEffect(() => {
-    if (!lazy) {
-      // Spawn worker on mount
-      createWorker()
+    if (runnerOutput) {
+      console.log('runnerOutput', runnerOutput)
     }
+  }, [runnerOutput])
 
-    // Cleanup worker on unmount
-    return () => {
-      cleanup()
-    }
-  }, [])
+  // const createWorker = () => {
+  //   const worker = new Worker(
+  //     new URL('../workers/python-worker', import.meta.url)
+  //   )
+  //   workerRef.current = worker
+  // }
+
+  // useEffect(() => {
+  //   if (!lazy) {
+  //     // Spawn worker on mount
+  //     createWorker()
+  //   }
+
+  //   // Cleanup worker on unmount
+  //   return () => {
+  //     cleanup()
+  //   }
+  // }, [])
 
   const allPackages = useMemo(() => {
     const official = [
@@ -84,40 +96,43 @@ export default function usePython(props?: UsePythonProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && !!pyodideVersion
+  // const isReady = !isLoading && !!pyodideVersion
+  const isReady = !!runnerId
 
-  useEffect(() => {
-    if (workerRef.current && !isReady) {
-      const init = async () => {
-        try {
-          setIsLoading(true)
-          const runner: Remote<PythonRunner> = wrap(workerRef.current as Worker)
-          runnerRef.current = runner
+  const isLoading = loading && !isReady
 
-          await runner.init(
-            proxy((msg: string) => {
-              // Suppress messages that are not useful for the user
-              if (suppressedMessages.includes(msg)) {
-                return
-              }
-              setOutput((prev) => [...prev, msg])
-            }),
-            proxy(({ version }) => {
-              // The runner is ready once the Pyodide version has been set
-              setPyodideVersion(version)
-              console.debug('Loaded pyodide version:', version)
-            }),
-            allPackages
-          )
-        } catch (error) {
-          console.error('Error loading Pyodide:', error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-      init()
-    }
-  }, [workerRef.current])
+  // useEffect(() => {
+  //   if (workerRef.current && !isReady) {
+  //     const init = async () => {
+  //       try {
+  //         setIsLoading(true)
+  //         const runner: Remote<PythonRunner> = wrap(workerRef.current as Worker)
+  //         runnerRef.current = runner
+
+  //         await runner.init(
+  //           proxy((msg: string) => {
+  //             // Suppress messages that are not useful for the user
+  //             if (suppressedMessages.includes(msg)) {
+  //               return
+  //             }
+  //             setOutput((prev) => [...prev, msg])
+  //           }),
+  //           proxy(({ version }) => {
+  //             // The runner is ready once the Pyodide version has been set
+  //             setPyodideVersion(version)
+  //             console.debug('Loaded pyodide version:', version)
+  //           }),
+  //           allPackages
+  //         )
+  //       } catch (error) {
+  //         console.error('Error loading Pyodide:', error)
+  //       } finally {
+  //         setIsLoading(false)
+  //       }
+  //     }
+  //     init()
+  //   }
+  // }, [workerRef.current])
 
   // Immediately set stdout upon receiving new input
   useEffect(() => {
@@ -127,15 +142,15 @@ export default function usePython(props?: UsePythonProps) {
   }, [output])
 
   // React to ready state and run delayed code if pending
-  useEffect(() => {
-    if (pendingCode && isReady) {
-      const delayedRun = async () => {
-        await runPython(pendingCode)
-        setPendingCode(undefined)
-      }
-      delayedRun()
-    }
-  }, [pendingCode, isReady])
+  // useEffect(() => {
+  //   if (pendingCode && isReady) {
+  //     const delayedRun = async () => {
+  //       await runPython(pendingCode)
+  //       setPendingCode(undefined)
+  //     }
+  //     delayedRun()
+  //   }
+  // }, [pendingCode, isReady])
 
   // React to run completion and run cleanup if worker should terminate on completion
   useEffect(() => {
@@ -190,29 +205,43 @@ del sys
       setStdout('')
       setStderr('')
 
-      if (lazy && !isReady) {
-        // Spawn worker and set pending code
-        createWorker()
-        setPendingCode(code)
+      let newRunnerId
+      if (!runnerId) {
+        console.log('no runnerId, getting runner')
+        newRunnerId = await getRunner()
+        setRunnerId(newRunnerId)
+      }
+
+      const r = runnerId || newRunnerId
+
+      if (!r) {
+        console.log('no runnerId, returning')
         return
       }
+
+      // if (lazy && !isReady) {
+      //   // Spawn worker and set pending code
+      //   createWorker()
+      //   setPendingCode(code)
+      //   return
+      // }
 
       code = `${pythonRunnerCode}\n\nrun(${JSON.stringify(
         code
       )}, ${JSON.stringify(preamble)})`
 
-      if (!isReady) {
-        throw new Error('Pyodide is not loaded yet')
-      }
+      // if (!isReady) {
+      //   throw new Error('Pyodide is not loaded yet')
+      // }
       let timeoutTimer
       try {
         setIsRunning(true)
         setHasRun(true)
         // Clear output
         setOutput([])
-        if (!isReady || !runnerRef.current) {
-          throw new Error('Pyodide is not loaded yet')
-        }
+        // if (!isReady || !runnerRef.current) {
+        //   throw new Error('Pyodide is not loaded yet')
+        // }
         if (timeout > 0) {
           timeoutTimer = setTimeout(() => {
             setStdout('')
@@ -221,9 +250,9 @@ del sys
           }, timeout)
         }
         if (watchedModules.size > 0) {
-          await runnerRef.current.run(moduleReloadCode(watchedModules))
+          await run(r, moduleReloadCode(watchedModules))
         }
-        await runnerRef.current.run(code)
+        await run(r, code)
         // eslint-disable-next-line
       } catch (error: any) {
         setStderr('Traceback (most recent call last):\n' + error.message)
@@ -232,7 +261,13 @@ del sys
         clearTimeout(timeoutTimer)
       }
     },
-    [lazy, isReady, timeout, watchedModules]
+    [
+      runnerId,
+      lazy,
+      //  isReady,
+      timeout,
+      watchedModules
+    ]
   )
 
   const interruptExecution = () => {
@@ -242,7 +277,7 @@ del sys
     setOutput([])
 
     // Spawn new worker
-    createWorker()
+    // createWorker()
   }
 
   const cleanup = () => {
