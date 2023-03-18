@@ -7,7 +7,7 @@ import {
   useState
 } from 'react'
 import { PythonContext, suppressedMessages } from '../providers/PythonProvider'
-import { proxy, Remote, wrap } from 'comlink'
+import { Remote } from 'comlink'
 import useFilesystem from './useFilesystem'
 
 import { Packages } from '../types/Packages'
@@ -18,30 +18,25 @@ interface UsePythonProps {
 }
 
 export default function usePython(props?: UsePythonProps) {
-  const { packages = {} } = props ?? {}
+  const { packages } = props ?? {}
 
-  // const [isLoading, setIsLoading] = useState(false)
-  const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
+  const [runnerId, setRunnerId] = useState<string>()
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
-  const [pendingCode, setPendingCode] = useState<string | undefined>()
   const [hasRun, setHasRun] = useState(false)
 
-  const [runnerId, setRunnerId] = useState<string>()
-
   const {
-    packages: globalPackages,
     timeout,
     lazy,
     terminateOnCompletion,
     loading,
     getRunner,
-    run
+    run,
+    terminate
   } = useContext(PythonContext)
 
-  const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
 
   const {
@@ -54,87 +49,12 @@ export default function usePython(props?: UsePythonProps) {
     watchedModules
   } = useFilesystem({ runner: runnerRef?.current })
 
-  // send a callback to the worker to handle the output
-  const handleOutput = (msg: string) => {
-    // Suppress messages that are not useful for the user
-    if (suppressedMessages.includes(msg)) {
-      return
+  useEffect(() => {
+    // Cleanup worker on unmount
+    return () => {
+      cleanup()
     }
-    setOutput((prev) => [...prev, msg])
-  }
-
-  // const createWorker = () => {
-  //   const worker = new Worker(
-  //     new URL('../workers/python-worker', import.meta.url)
-  //   )
-  //   workerRef.current = worker
-  // }
-
-  // useEffect(() => {
-  //   if (!lazy) {
-  //     // Spawn worker on mount
-  //     createWorker()
-  //   }
-
-  //   // Cleanup worker on unmount
-  //   return () => {
-  //     cleanup()
-  //   }
-  // }, [])
-
-  const allPackages = useMemo(() => {
-    const official = [
-      ...new Set([
-        ...(globalPackages.official ?? []),
-        ...(packages.official ?? [])
-      ])
-    ]
-    const micropip = [
-      ...new Set([
-        ...(globalPackages.micropip ?? []),
-        ...(packages.micropip ?? [])
-      ])
-    ]
-    return [official, micropip]
-  }, [globalPackages, packages])
-
-  // const isReady = !isLoading && !!pyodideVersion
-  const isReady = !!runnerId
-
-  const isLoading = loading && !isReady
-
-  // useEffect(() => {
-  //   if (workerRef.current && !isReady) {
-  //     const init = async () => {
-  //       try {
-  //         setIsLoading(true)
-  //         const runner: Remote<PythonRunner> = wrap(workerRef.current as Worker)
-  //         runnerRef.current = runner
-
-  //         await runner.init(
-  //           proxy((msg: string) => {
-  //             // Suppress messages that are not useful for the user
-  //             if (suppressedMessages.includes(msg)) {
-  //               return
-  //             }
-  //             setOutput((prev) => [...prev, msg])
-  //           }),
-  //           proxy(({ version }) => {
-  //             // The runner is ready once the Pyodide version has been set
-  //             setPyodideVersion(version)
-  //             console.debug('Loaded pyodide version:', version)
-  //           }),
-  //           allPackages
-  //         )
-  //       } catch (error) {
-  //         console.error('Error loading Pyodide:', error)
-  //       } finally {
-  //         setIsLoading(false)
-  //       }
-  //     }
-  //     init()
-  //   }
-  // }, [workerRef.current])
+  }, [])
 
   // Immediately set stdout upon receiving new input
   useEffect(() => {
@@ -143,25 +63,32 @@ export default function usePython(props?: UsePythonProps) {
     }
   }, [output])
 
-  // React to ready state and run delayed code if pending
-  // useEffect(() => {
-  //   if (pendingCode && isReady) {
-  //     const delayedRun = async () => {
-  //       await runPython(pendingCode)
-  //       setPendingCode(undefined)
-  //     }
-  //     delayedRun()
-  //   }
-  // }, [pendingCode, isReady])
+  const cleanup = () => {
+    if (runnerId) {
+      terminate(runnerId)
+    }
+    setIsRunning(false)
+    setRunnerId(undefined)
+    setHasRun(false)
+    setOutput([])
+    setStdout('')
+    setStderr('')
+  }
 
   // React to run completion and run cleanup if worker should terminate on completion
   useEffect(() => {
     if (terminateOnCompletion && hasRun && !isRunning) {
       cleanup()
-      setIsRunning(false)
-      setPyodideVersion(undefined)
     }
   }, [terminateOnCompletion, hasRun, isRunning])
+
+  const interruptExecution = () => {
+    cleanup()
+  }
+
+  const isReady = !!runnerId
+
+  const isLoading = loading && !isReady
 
   const pythonRunnerCode = `
 import sys
@@ -189,6 +116,15 @@ def run(code, preamble=''):
         print()
 `
 
+  // send a callback to the worker to handle the output
+  const handleOutput = (msg: string) => {
+    // Suppress messages that are not useful for the user
+    if (suppressedMessages.includes(msg)) {
+      return
+    }
+    setOutput((prev) => [...prev, msg])
+  }
+
   // prettier-ignore
   const moduleReloadCode = (modules: Set<string>) => `
 import importlib
@@ -208,9 +144,9 @@ del sys
       setStderr('')
 
       let newRunnerId
-      if (!runnerId || terminateOnCompletion) {
-        console.log('no runnerId or term on done, getting runner')
-        newRunnerId = await getRunner(handleOutput)
+      if (!runnerId || terminateOnCompletion || packages) {
+        console.log('no runnerId, getting runner')
+        newRunnerId = await getRunner(handleOutput, packages)
         setRunnerId(newRunnerId)
       }
 
@@ -220,13 +156,6 @@ del sys
         console.log('no runnerId, returning')
         return
       }
-
-      // if (lazy && !isReady) {
-      //   // Spawn worker and set pending code
-      //   createWorker()
-      //   setPendingCode(code)
-      //   return
-      // }
 
       code = `${pythonRunnerCode}\n\nrun(${JSON.stringify(
         code
@@ -263,32 +192,8 @@ del sys
         clearTimeout(timeoutTimer)
       }
     },
-    [
-      runnerId,
-      lazy,
-      //  isReady,
-      timeout,
-      watchedModules
-    ]
+    [runnerId, lazy, timeout, watchedModules]
   )
-
-  const interruptExecution = () => {
-    cleanup()
-    setIsRunning(false)
-    setPyodideVersion(undefined)
-    setOutput([])
-
-    // Spawn new worker
-    // createWorker()
-  }
-
-  const cleanup = () => {
-    if (!workerRef.current) {
-      return
-    }
-    console.debug('Terminating worker')
-    workerRef.current.terminate()
-  }
 
   return {
     runPython,
@@ -306,3 +211,19 @@ del sys
     unwatchModules
   }
 }
+
+// const allPackages = useMemo(() => {
+//   const official = [
+//     ...new Set([
+//       ...(globalPackages.official ?? []),
+//       ...(packages.official ?? [])
+//     ])
+//   ]
+//   const micropip = [
+//     ...new Set([
+//       ...(globalPackages.micropip ?? []),
+//       ...(packages.micropip ?? [])
+//     ])
+//   ]
+//   return [official, micropip]
+// }, [globalPackages, packages])

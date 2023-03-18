@@ -10,10 +10,13 @@ const PythonContext = createContext({
   terminateOnCompletion: false,
   loading: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getRunner: async (msgCallback: (msg: string) => void) => '',
+  getRunner: async (msgCallback: (msg: string) => void, packages?: Packages) =>
+    '',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   run: async (id: string, code: string) => {},
-  output: new Map<string, string[]>()
+  output: new Map<string, string[]>(),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  terminate: (id: string) => {}
 })
 
 export const suppressedMessages = ['Python initialization complete']
@@ -151,6 +154,20 @@ function PythonProvider(props: PythonProviderProps) {
     }
   }
 
+  const terminate = (id: string) => {
+    console.log('Python terminate')
+
+    runnerRef.current.delete(id)
+    assignedRunners.current.delete(id)
+
+    const worker = workerRef.current.get(id)
+    if (!worker) {
+      console.error('Worker not found')
+      return
+    }
+    worker.terminate()
+  }
+
   return (
     <PythonContext.Provider
       value={{
@@ -161,7 +178,8 @@ function PythonProvider(props: PythonProviderProps) {
         loading,
         getRunner,
         run,
-        output: output.current
+        output: output.current,
+        terminate
       }}
       {...props}
     />
