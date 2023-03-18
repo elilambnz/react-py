@@ -17,6 +17,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: |
+          npm install --legacy-peer-deps
+          cd website
           npm install
       - name: Build website
         run: |
@@ -26,4 +28,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: build
+          folder: website/build
