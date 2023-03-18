@@ -4,7 +4,9 @@ sidebar_position: 4
 
 # Usage with Next.js
 
+:::info
 `react-py` is not Server-Side Rendering (SSR) friendly, due to client only APIs such as web workers. To use this package with [Next.js](https://nextjs.org), ensure it is loaded on the client side only.
+:::
 
 These docs are current as of Next 13. In the future, this will become easier with [Client Components](https://beta.nextjs.org/docs/rendering/server-and-client-components#client-components).
 
