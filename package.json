@@ -49,6 +49,6 @@
   },
   "dependencies": {
     "comlink": "^4.4.1",
-    "pyodide": "^0.22.1"
+    "pyodide": "^0.23.0"
   }
 }
