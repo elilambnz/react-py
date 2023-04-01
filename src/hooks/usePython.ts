@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { PythonContext, suppressedMessages } from '../providers/PythonProvider'
 import { proxy, Remote, wrap } from 'comlink'
 import useFilesystem from './useFilesystem'
@@ -78,7 +85,7 @@ export default function usePython(props?: UsePythonProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && pyodideVersion
+  const isReady = !isLoading && !!pyodideVersion
 
   useEffect(() => {
     if (workerRef.current && !isReady) {
@@ -178,53 +185,56 @@ del importlib
 del sys
 `
 
-  const runPython = async (code: string, preamble = '') => {
-    // Clear stdout and stderr
-    setStdout('')
-    setStderr('')
+  const runPython = useCallback(
+    async (code: string, preamble = '') => {
+      // Clear stdout and stderr
+      setStdout('')
+      setStderr('')
 
-    if (lazy && !isReady) {
-      // Spawn worker and set pending code
-      createWorker()
-      setPendingCode(code)
-      return
-    }
+      if (lazy && !isReady) {
+        // Spawn worker and set pending code
+        createWorker()
+        setPendingCode(code)
+        return
+      }
 
-    code = `${pythonRunnerCode}\n\nrun(${JSON.stringify(
-      code
-    )}, ${JSON.stringify(preamble)})`
+      code = `${pythonRunnerCode}\n\nrun(${JSON.stringify(
+        code
+      )}, ${JSON.stringify(preamble)})`
 
-    if (isLoading) {
-      throw new Error('Pyodide is not loaded yet')
-    }
-    let timeoutTimer
-    try {
-      setIsRunning(true)
-      setHasRun(true)
-      // Clear output
-      setOutput([])
-      if (!isReady || !runnerRef.current) {
+      if (!isReady) {
         throw new Error('Pyodide is not loaded yet')
       }
-      if (timeout > 0) {
-        timeoutTimer = setTimeout(() => {
-          setStdout('')
-          setStderr(`Execution timed out. Reached limit of ${timeout} ms.`)
-          interruptExecution()
-        }, timeout)
+      let timeoutTimer
+      try {
+        setIsRunning(true)
+        setHasRun(true)
+        // Clear output
+        setOutput([])
+        if (!isReady || !runnerRef.current) {
+          throw new Error('Pyodide is not loaded yet')
+        }
+        if (timeout > 0) {
+          timeoutTimer = setTimeout(() => {
+            setStdout('')
+            setStderr(`Execution timed out. Reached limit of ${timeout} ms.`)
+            interruptExecution()
+          }, timeout)
+        }
+        if (watchedModules.size > 0) {
+          await runnerRef.current.run(moduleReloadCode(watchedModules))
+        }
+        await runnerRef.current.run(code)
+        // eslint-disable-next-line
+      } catch (error: any) {
+        setStderr('Traceback (most recent call last):\n' + error.message)
+      } finally {
+        setIsRunning(false)
+        clearTimeout(timeoutTimer)
       }
-      if (watchedModules.size > 0) {
-        await runnerRef.current.run(moduleReloadCode(watchedModules))
-      }
-      await runnerRef.current.run(code)
-      // eslint-disable-next-line
-    } catch (error: any) {
-      setStderr('Traceback (most recent call last):\n' + error.message)
-    } finally {
-      setIsRunning(false)
-      clearTimeout(timeoutTimer)
-    }
-  }
+    },
+    [lazy, isReady, timeout, watchedModules]
+  )
 
   const interruptExecution = () => {
     cleanup()

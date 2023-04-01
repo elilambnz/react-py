@@ -143,7 +143,7 @@ const config = {
 
   scripts: [
     {
-      src: 'https://plausible.elilamb.nz/js/plausible.js',
+      src: 'https://plausible.pixellab.nz/js/plausible.js',
       defer: true,
       'data-domain': 'elilambnz.github.io/react-py'
     }

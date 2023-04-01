@@ -4,7 +4,9 @@ sidebar_position: 5
 
 # Usage with Docusaurus
 
+:::info
 `react-py` is not Server-Side Rendering (SSR) friendly, due to client only APIs such as web workers. To use this package with [Docusaurus](https://docusaurus.io), ensure it is loaded on the client side only.
+:::
 
 ## Adding the `PythonProvider`
 
@@ -47,3 +49,7 @@ plugins: [
 ```
 
 [Read more about this issue here](https://github.com/facebook/docusaurus/issues/8389).
+
+## Python Docusaurus Template
+
+Get started with `react-py` and Docusaurus, you can use the [Python Docusaurus Template](https://github.com/James-Ansley/python-docusaurus-template). Click the green "Use this template" button on the repository page to clone, then follow the Docusaurus configuration steps for your specific site.
