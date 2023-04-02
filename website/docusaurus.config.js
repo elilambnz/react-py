@@ -1,6 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path')
+
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
@@ -109,6 +111,20 @@ const config = {
           return {
             optimization: {
               usedExports: false
+            }
+          }
+        }
+      }
+    },
+    async function resolveReact() {
+      return {
+        name: 'resolve-react',
+        configureWebpack() {
+          return {
+            resolve: {
+              alias: {
+                react: path.resolve('./node_modules/react')
+              }
             }
           }
         }
