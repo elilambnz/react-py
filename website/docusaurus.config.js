@@ -1,5 +1,7 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path')
+
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 const CopyPlugin = require('copy-webpack-plugin')
@@ -133,6 +135,20 @@ const config = {
             //     plugins: [new ExternalsPlugin(`commonjs`, config.externals)]
             //   })
             // ]
+          }
+        }
+      }
+    },
+    async function resolveReact() {
+      return {
+        name: 'resolve-react',
+        configureWebpack() {
+          return {
+            resolve: {
+              alias: {
+                react: path.resolve('./node_modules/react')
+              }
+            }
           }
         }
       }

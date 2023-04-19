@@ -17,7 +17,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: |
-          npm install --legacy-peer-deps
+          npm install
           cd website
           npm install
       - name: Build website
