@@ -66,4 +66,6 @@ npm link react-py
 
 Now, you can make changes to the react-py code and see the changes reflected in the website.
 
+TIP: You can use the `npm run watch` command to automatically rebuild and run `npm link` when you make changes.
+
 NOTE: When using React and `npm link`, this can cause issues with multiple copies of React being loaded. A webpack plugin `resolveReact` has been added to the Docusaurus config to resolve this issue.

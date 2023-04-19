@@ -13,7 +13,8 @@
     "release": "standard-version",
     "publish": "git push --follow-tags origin main && npm publish",
     "lint": "eslint .",
-    "style": "prettier --check src"
+    "style": "prettier --check src",
+    "watch": "onchange 'src/**/*.ts' --delay 500 -- npm link"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "eslint": "^8.29.0",
     "jsdom": "21.1.1",
     "jsdom-global": "3.0.2",
+    "onchange": "^7.1.0",
     "prettier": "^2.8.1",
     "standard-version": "^9.3.1",
     "typescript": "^5.0.3"
