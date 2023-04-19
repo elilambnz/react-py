@@ -108,12 +108,21 @@ const config = {
     },
     async function disableUsedExports() {
       return {
+        name: 'disable-used-exports',
+        configureWebpack() {
+          return {
+            optimization: {
+              usedExports: false
+            }
+          }
+        }
+      }
+    },
+    async function copyPyodide() {
+      return {
         name: 'copy-pyodide',
         configureWebpack(config) {
           return {
-            // optimization: {
-            //   usedExports: false,
-            // },
             // externals: {
             //   pyodide: path.resolve(
             //     __dirname,
@@ -139,6 +148,7 @@ const config = {
         }
       }
     },
+    // Fixes the issue where React is loaded twice. Only required for local development.
     async function resolveReact() {
       return {
         name: 'resolve-react',
@@ -154,8 +164,6 @@ const config = {
       }
     }
   ],
-
-  // staticDirectories: ['node_modules/pyodide'],
 
   scripts: [
     {

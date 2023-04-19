@@ -31,3 +31,39 @@ npm run build && npm test
 ```
 
 Please ensure that the tests are passing when submitting a pull request. If you're adding new features, please include tests.
+
+## Development
+
+Developing react-py locally requires some additional steps.
+
+You'll need to install [Node.js](https://nodejs.org/en/). Once you have Node.js installed, you can install the project's dependencies by running:
+
+```sh
+git clone git@github.com:elilambnz/react-py.git
+cd react-py
+npm install
+```
+
+This repo also contains the documentation site, which can be used to test your changes. To get started with the website, run:
+
+```sh
+cd website
+npm install
+npm run docusaurus
+```
+
+You will need to link the local version of react-py to the website. To do this, run in the root of the project:
+
+```sh
+npm link
+```
+
+Then, in the website directory, run:
+
+```sh
+npm link react-py
+```
+
+Now, you can make changes to the react-py code and see the changes reflected in the website.
+
+NOTE: When using React and `npm link`, this can cause issues with multiple copies of React being loaded. A webpack plugin `resolveReact` has been added to the Docusaurus config to resolve this issue.
