@@ -46,10 +46,10 @@
   },
   "peerDependencies": {
     "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "pyodide": "0.21.3"
   },
   "dependencies": {
-    "comlink": "^4.4.1",
-    "pyodide": "^0.23.0"
+    "comlink": "^4.4.1"
   }
 }

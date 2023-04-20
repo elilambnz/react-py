@@ -49,7 +49,7 @@ This repo also contains the documentation site, which can be used to test your c
 ```sh
 cd website
 npm install
-npm run docusaurus
+npm run start
 ```
 
 You will need to link the local version of react-py to the website. To do this, run in the root of the project:
