@@ -1,10 +1,11 @@
-// @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-
-const path = require('path')
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const CopyPlugin = require('copy-webpack-plugin')
+const path = require('path')
+const { WorkerPlugin, ExternalsPlugin } = require('webpack')
+const { PyodidePlugin } = require('@pyodide/webpack-plugin')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -93,6 +94,21 @@ const config = {
     }),
 
   plugins: [
+    async function pyodide() {
+      return {
+        name: 'pyodide',
+        configureWebpack() {
+          return {
+            plugins: [new PyodidePlugin()],
+            resolve: {
+              fallback: {
+                url: require.resolve('url/')
+              }
+            }
+          }
+        }
+      }
+    },
     async function tailwind() {
       return {
         name: 'tailwindcss',
@@ -116,6 +132,37 @@ const config = {
         }
       }
     },
+    async function copyPyodide() {
+      return {
+        name: 'copy-pyodide',
+        configureWebpack(config) {
+          return {
+            // externals: {
+            //   pyodide: path.resolve(
+            //     __dirname,
+            //     '"node_modules/react_py/node_modules/pyodide"'
+            //   )
+            // },
+            // plugins: [
+            //   new CopyPlugin({
+            //     patterns: [
+            //       {
+            //         // context: 'node_modules/pyodide/',
+            //         context: 'node_modules/react-py/node_modules/pyodide',
+            //         from: '**/*',
+            //         to: 'assets/js/'
+            //       }
+            //     ]
+            //   }),
+            //   new WorkerPlugin({
+            //     plugins: [new ExternalsPlugin(`commonjs`, config.externals)]
+            //   })
+            // ]
+          }
+        }
+      }
+    },
+    // Fixes the issue where React is loaded twice. Only required for local development.
     async function resolveReact() {
       return {
         name: 'resolve-react',
@@ -123,7 +170,8 @@ const config = {
           return {
             resolve: {
               alias: {
-                react: path.resolve('./node_modules/react')
+                react: path.resolve('./node_modules/react'),
+                pyodide: path.resolve('./node_modules/pyodide')
               }
             }
           }

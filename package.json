@@ -1,6 +1,6 @@
 {
   "name": "react-py",
-  "version": "1.8.5",
+  "version": "1.8.5-alpha.2",
   "description": "Effortlessly run Python code in your React apps",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,8 @@
     "release": "standard-version",
     "publish": "git push --follow-tags origin main && npm publish",
     "lint": "eslint .",
-    "style": "prettier --check src"
+    "style": "prettier --check src",
+    "watch": "onchange 'src/**/*.ts' --delay 500 -- npm link"
   },
   "repository": {
     "type": "git",
@@ -31,19 +32,22 @@
   },
   "homepage": "https://github.com/elilambnz/react-py#readme",
   "devDependencies": {
-    "@types/react": "^18.0.32",
+    "@types/node": "^18.11.9",
+    "@types/react": "^18.0.15",
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.0",
     "eslint": "^8.29.0",
+    "jsdom": "21.1.1",
+    "jsdom-global": "3.0.2",
+    "onchange": "^7.1.0",
     "prettier": "^2.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "standard-version": "^9.3.1",
     "typescript": "^5.0.3"
   },
   "peerDependencies": {
     "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "pyodide": "0.21.3"
   },
   "dependencies": {
     "comlink": "^4.4.1"
