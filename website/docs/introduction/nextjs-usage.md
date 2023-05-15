@@ -8,28 +8,25 @@ sidebar_position: 4
 `react-py` is not Server-Side Rendering (SSR) friendly, due to client only APIs such as web workers. To use this package with [Next.js](https://nextjs.org), ensure it is loaded on the client side only.
 :::
 
-These docs are current as of Next 13. In the future, this will become easier with [Client Components](https://beta.nextjs.org/docs/rendering/server-and-client-components#client-components).
+You can ensure that a component is loaded on the client side only by using [Client Components](https://nextjs.org/docs/getting-started/react-essentials#client-components).
 
 ## Adding the `PythonProvider`
 
-The provider needs to be imported dynamically using [Dynamic Import](https://nextjs.org/docs/advanced-features/dynamic-import) without SSR. Add the following to `_app.tsx`:
+To ensure proper usage of the provider, import it only on the client side. Make sure any hooks using the provider are placed below the provider import. For example, your `page.tsx` file may look like:
 
 ```tsx
-import type { AppProps } from 'next/app'
+'use client'
 
-import dynamic from 'next/dynamic'
+import { PythonProvider } from 'react-py'
 
-const PythonProvider = dynamic(
-  () => import('react-py').then((module) => module.PythonProvider),
-  {
-    ssr: false
-  }
-)
+import Codeblock from './components/Codeblock'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function Home() {
   return (
     <PythonProvider>
-      <Component {...pageProps} />
+      <main>
+        <Codeblock />
+      </main>
     </PythonProvider>
   )
 }
@@ -37,23 +34,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ## Using the `usePython` hook
 
-Ensure that components using the `usePython` hook are loaded on the client side only. For example, `index.tsx` may look like:
+Then simply use hooks in `components/Codeblock.tsx` as follows:
 
 ```tsx
-import dynamic from 'next/dynamic'
+'use client'
 
-const Codeblock = dynamic(() => import('../components/Codeblock'), {
-  ssr: false
-})
-
-export default function Home() {
-  return <Codeblock />
-}
-```
-
-As long as the component is imported as shown in the previous step, hooks can be used in `components/Codeblock.tsx` as follows:
-
-```tsx
 import { useState } from 'react'
 import { usePython } from 'react-py'
 
