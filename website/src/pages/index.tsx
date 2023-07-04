@@ -199,7 +199,7 @@ export default function Home(): JSX.Element {
       title={`${siteConfig.title}`}
       description="Effortlessly run Python code in your React apps."
     >
-      <header className="mx-auto mt-16 max-w-7xl px-4 sm:mt-24 lg:mt-32">
+      <header className="mx-auto mt-16 w-full max-w-7xl px-4 sm:mt-24 lg:mt-32">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:text-left xl:col-span-4">
             <HomepageHeader />

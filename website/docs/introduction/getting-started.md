@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Getting Started
 
-Run Python (3.10) code directly in the browser using [Pyodide](https://pyodide.org).
+Run Python (3.11) code directly in the browser using [Pyodide](https://pyodide.org).
 
 Learn how to get `react-py` set up in your project.
 
