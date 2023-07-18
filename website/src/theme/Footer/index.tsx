@@ -12,6 +12,7 @@ const navigation = {
     { name: 'API Reference', href: '/react-py/docs/introduction/api-reference' }
   ],
   links: [
+    { name: 'NPM', href: 'https://www.npmjs.com/package/react-py' },
     { name: 'GitHub', href: 'https://github.com/elilambnz/react-py' },
     {
       name: 'License',
@@ -22,12 +23,19 @@ const navigation = {
       href: 'https://github.com/elilambnz/react-py/blob/main/CONTRIBUTING.md'
     }
   ],
-  availableOn: [
-    { name: 'NPM', href: 'https://www.npmjs.com/package/react-py' }
-  ],
   tryExamples: [
     { name: 'Basic Example', href: '/react-py/docs/examples/basic-example' },
     { name: 'REPL', href: '/react-py/docs/examples/repl' }
+  ],
+  seeAlso: [
+    {
+      name: 'PyRepl.io - Python Editor',
+      href: 'https://pyrepl.io'
+    },
+    {
+      name: 'Pixel Lab - Portfolio',
+      href: 'https://pixellab.nz'
+    }
   ]
 }
 
@@ -149,15 +157,13 @@ export default function Example() {
             <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Available On
+                  Try Examples
                 </h3>
                 <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.availableOn.map((item) => (
+                  {navigation.tryExamples.map((item) => (
                     <li key={item.name}>
                       <a
                         href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
                       >
                         {item.name}
@@ -168,13 +174,15 @@ export default function Example() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Try Examples
+                  See Also
                 </h3>
                 <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.tryExamples.map((item) => (
+                  {navigation.seeAlso.map((item) => (
                     <li key={item.name}>
                       <a
                         href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
                       >
                         {item.name}

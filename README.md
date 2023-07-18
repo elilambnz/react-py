@@ -21,6 +21,8 @@
 
 ---
 
+> ✨ <a href="https://pyrepl.io">PyRepl.io</a> is a Python interpreter in your browser. Embed interactive Python examples in your documentation, blog posts, presentations and more. <a href="https://pyrepl.io">Get started for free.</a>
+
 ## Quickstart
 
 Install `react-py` with:
