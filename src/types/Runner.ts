@@ -4,6 +4,10 @@ export interface Runner {
     onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
     packages?: string[][]
   ) => Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getGlobal: (variable: string) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setGlobal: (variable: string, value: any) => void
   interruptExecution: () => void
   readFile: (name: string) => void
   writeFile: (name: string, data: string) => void

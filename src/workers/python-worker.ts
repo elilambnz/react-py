@@ -12,8 +12,12 @@ interface Pyodide {
     mkdir: (name: string) => void
     rmdir: (name: string) => void
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globals: any
+  globals: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get: (variable: string) => any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    set: (variable: string, value: any) => void
+  }
   isPyProxy: (value: unknown) => boolean
 }
 
@@ -60,6 +64,17 @@ const python = {
   },
   async run(code: string) {
     await self.pyodide.runPythonAsync(code)
+    const g = self.pyodide.globals.get('globals_') // dict
+    console.debug('y', g.get('y')) // 5
+  },
+  getGlobal(variable: string) {
+    const g = self.pyodide.globals.get('globals_') // undefined
+    console.debug('y', g.get('y')) // (crashed in prev step)
+
+    return g.get(variable)
+  },
+  setGlobal(variable: string, value: unknown) {
+    return self.pyodide.globals.set(variable, value)
   },
   readFile(name: string) {
     return self.pyodide.FS.readFile(name, { encoding: 'utf8' })
