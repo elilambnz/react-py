@@ -3,11 +3,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 
 interface InputProps {
+  prompt: string
   onSubmit: (value: string) => void
 }
 
 export default function Input(props: InputProps) {
-  const { onSubmit } = props
+  const { prompt, onSubmit } = props
   const [input, setInput] = useState('')
 
   const inputRef = useRef<HTMLInputElement>()
@@ -34,7 +35,7 @@ export default function Input(props: InputProps) {
             name="input"
             id="input"
             className="block w-full rounded-l-md border-none bg-neutral-200 px-2 py-1.5 placeholder-gray-400 shadow-sm focus:ring-0 dark:bg-neutral-600 sm:text-sm"
-            placeholder="Type something"
+            placeholder={prompt}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSubmit(input)}
           />

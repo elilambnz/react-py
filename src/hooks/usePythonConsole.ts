@@ -23,7 +23,6 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
 
   const [runnerId, setRunnerId] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
-  const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [banner, setBanner] = useState<string | undefined>()
   const [consoleState, setConsoleState] = useState<ConsoleState>()
   const [isRunning, setIsRunning] = useState(false)
@@ -34,7 +33,8 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     packages: globalPackages,
     timeout,
     sendInput,
-    workerAwaitingInputIds
+    workerAwaitingInputIds,
+    getPrompt
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -176,7 +176,7 @@ del sys
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
-    setPyodideVersion(undefined)
+    setRunnerId(undefined)
     setBanner(undefined)
     setConsoleState(undefined)
 
@@ -220,6 +220,7 @@ del sys
     banner,
     consoleState,
     isAwaitingInput,
-    sendInput: sendUserInput
+    sendInput: sendUserInput,
+    prompt: runnerId ? getPrompt(runnerId) : ''
   }
 }

@@ -35,7 +35,8 @@ export default function usePython(props?: UsePythonProps) {
     lazy,
     terminateOnCompletion,
     sendInput,
-    workerAwaitingInputIds
+    workerAwaitingInputIds,
+    getPrompt
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -280,6 +281,7 @@ del sys
     watchModules,
     unwatchModules,
     isAwaitingInput,
-    sendInput: sendUserInput
+    sendInput: sendUserInput,
+    prompt: runnerId ? getPrompt(runnerId) : ''
   }
 }

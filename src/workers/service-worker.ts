@@ -32,17 +32,32 @@ addEventListener('fetch', (event) => {
 
   if (url.pathname === '/get_input/') {
     const id = url.searchParams.get('id')
-    console.log('waiting for response...', id)
+    const prompt = url.searchParams.get('prompt')
 
     event.waitUntil(
       (async () => {
-        if (!event.clientId) return
-        const client = await clients.get(event.clientId)
-        if (!client) return
-        client.postMessage({
-          type: 'AWAITING_INPUT',
-          id
+        // Send AWAITING_INPUT message to all window clients
+        self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            if (client.type === 'window') {
+              client.postMessage({
+                type: 'AWAITING_INPUT',
+                id,
+                prompt
+              })
+            }
+          })
         })
+
+        // Does not match the window in Safari
+        // This is likely due to the request originating from a web worker
+        // if (!event.clientId) return
+        // const client = await clients.get(event.clientId)
+        // if (!client) return
+        // client.postMessage({
+        //   type: 'AWAITING_INPUT',
+        //   id
+        // })
       })()
     )
 

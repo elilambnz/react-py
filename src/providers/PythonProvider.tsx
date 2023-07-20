@@ -8,7 +8,9 @@ const PythonContext = createContext({
   terminateOnCompletion: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   sendInput: (_id: string, _value: string) => {},
-  workerAwaitingInputIds: [] as string[]
+  workerAwaitingInputIds: [] as string[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPrompt: (_id: string) => undefined as string | undefined
 })
 
 export const suppressedMessages = ['Python initialization complete']
@@ -33,6 +35,9 @@ function PythonProvider(props: PythonProviderProps) {
   const [workerAwaitingInputIds, setWorkerAwaitingInputIds] = useState<
     Set<string>
   >(new Set())
+  const [workerAwaitingInputPrompt, setWorkerAwaitingInputPrompt] = useState<
+    Map<string, string>
+  >(new Map())
 
   const swRef = useRef<ServiceWorker>()
 
@@ -61,6 +66,11 @@ function PythonProvider(props: PythonProviderProps) {
             setWorkerAwaitingInputIds((prev) =>
               new Set(prev).add(event.data.id)
             )
+            setWorkerAwaitingInputPrompt((prev) => {
+              const next = new Map(prev)
+              next.set(event.data.id, event.data.prompt)
+              return next
+            })
           }
         }
       }
@@ -91,6 +101,11 @@ function PythonProvider(props: PythonProviderProps) {
       next.delete(id)
       return next
     })
+    setWorkerAwaitingInputPrompt((prev) => {
+      const next = new Map(prev)
+      next.delete(id)
+      return next
+    })
   }
 
   return (
@@ -101,7 +116,8 @@ function PythonProvider(props: PythonProviderProps) {
         lazy,
         terminateOnCompletion,
         sendInput,
-        workerAwaitingInputIds: Array.from(workerAwaitingInputIds)
+        workerAwaitingInputIds: Array.from(workerAwaitingInputIds),
+        getPrompt: (id: string) => workerAwaitingInputPrompt.get(id)
       }}
       {...props}
     />

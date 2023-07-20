@@ -29,7 +29,8 @@ export default function Console() {
     isRunning,
     interruptExecution,
     isAwaitingInput,
-    sendInput
+    sendInput,
+    prompt
   } = usePythonConsole({ packages: { micropip: ['python-cowsay'] } })
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function Console() {
 
   function getPrompt() {
     return isAwaitingInput
-      ? output[output.length - 1].text
+      ? prompt
       : consoleState === ConsoleState.incomplete
       ? ps2
       : ps1

@@ -47,7 +47,8 @@ export default function CodeEditor(props: CodeEditorProps) {
     isRunning,
     interruptExecution,
     isAwaitingInput,
-    sendInput
+    sendInput,
+    prompt
   } = usePython({ packages })
 
   function run() {
@@ -113,7 +114,7 @@ export default function CodeEditor(props: CodeEditorProps) {
         }}
       </BrowserOnly>
 
-      {isAwaitingInput && <Input onSubmit={sendInput} />}
+      {isAwaitingInput && <Input prompt={prompt} onSubmit={sendInput} />}
 
       {showOutput && (
         <pre className="mt-4 text-left">

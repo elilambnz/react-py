@@ -41,10 +41,10 @@ console.log = () => {}
 import { expose } from 'comlink'
 
 const reactPyModule = {
-  getInput: (id: string) => {
+  getInput: (id: string, prompt: string) => {
     const request = new XMLHttpRequest()
     // Synchronous request to be intercepted by service worker
-    request.open('GET', `/get_input/?id=${id}`, false)
+    request.open('GET', `/get_input/?id=${id}&prompt=${prompt}`, false)
     request.send(null)
     return request.responseText
   }
@@ -81,13 +81,16 @@ const python = {
     const patchInputCode = `import sys, builtins
 import react_py
 __saved_input__ = input
+__prompt_str__ = ""
 def input(prompt = ""):
+  global __prompt_str__
+  __prompt_str__ = prompt
   print(prompt, end="")
   s = __saved_input__()
   print(s)
   return s
 builtins.input = input
-sys.stdin.readline = lambda: react_py.getInput("${id}")`
+sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)`
     await self.pyodide.runPythonAsync(patchInputCode)
 
     const version = self.pyodide.version
