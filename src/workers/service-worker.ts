@@ -13,12 +13,10 @@ addEventListener('activate', () => {
 const resolvers = new Map<string, Promise<any>[]>()
 
 addEventListener('message', (event) => {
-  console.log('sw message:', event.data)
-
   if (event.data.type === 'INPUT') {
     const resolverArray = resolvers.get(event.data.id)
     if (!resolverArray || resolverArray.length === 0) {
-      console.error('No resolver')
+      console.error('Error handing input: No resolver')
       return
     }
 

@@ -49,11 +49,11 @@ function PythonProvider(props: PythonProviderProps) {
             new URL('../workers/service-worker', import.meta.url)
           )
           if (registration.installing) {
-            console.log('Service worker installing')
+            console.debug('Service worker installing')
           } else if (registration.waiting) {
-            console.log('Service worker installed')
+            console.debug('Service worker installed')
           } else if (registration.active) {
-            console.log('Service worker active')
+            console.debug('Service worker active')
             swRef.current = registration.active
           }
         } catch (error) {
@@ -61,7 +61,6 @@ function PythonProvider(props: PythonProviderProps) {
         }
 
         navigator.serviceWorker.onmessage = (event) => {
-          console.log('onmessage', event)
           if (event.data.type === 'AWAITING_INPUT') {
             setWorkerAwaitingInputIds((prev) =>
               new Set(prev).add(event.data.id)
@@ -88,7 +87,6 @@ function PythonProvider(props: PythonProviderProps) {
       console.error('No service worker registered')
       return
     }
-    console.log('sending:', value)
 
     swRef.current.postMessage({
       type: 'INPUT',
