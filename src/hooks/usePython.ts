@@ -20,8 +20,8 @@ interface UsePythonProps {
 export default function usePython(props?: UsePythonProps) {
   const { packages = {} } = props ?? {}
 
+  const [runnerId, setRunnerId] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
-  const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
@@ -33,7 +33,9 @@ export default function usePython(props?: UsePythonProps) {
     packages: globalPackages,
     timeout,
     lazy,
-    terminateOnCompletion
+    terminateOnCompletion,
+    sendInput,
+    workerAwaitingInputIds
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
@@ -84,7 +86,7 @@ export default function usePython(props?: UsePythonProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && !!pyodideVersion
+  const isReady = !isLoading && !!runnerId
 
   useEffect(() => {
     if (workerRef.current && !isReady) {
@@ -102,9 +104,8 @@ export default function usePython(props?: UsePythonProps) {
               }
               setOutput((prev) => [...prev, msg])
             }),
-            proxy(({ version }) => {
-              // The runner is ready once the Pyodide version has been set
-              setPyodideVersion(version)
+            proxy(({ id, version }) => {
+              setRunnerId(id)
               console.debug('Loaded pyodide version:', version)
             }),
             allPackages
@@ -142,7 +143,7 @@ export default function usePython(props?: UsePythonProps) {
     if (terminateOnCompletion && hasRun && !isRunning) {
       cleanup()
       setIsRunning(false)
-      setPyodideVersion(undefined)
+      setRunnerId(undefined)
     }
   }, [terminateOnCompletion, hasRun, isRunning])
 
@@ -238,7 +239,7 @@ del sys
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
-    setPyodideVersion(undefined)
+    setRunnerId(undefined)
     setOutput([])
 
     // Spawn new worker
@@ -251,6 +252,17 @@ del sys
     }
     console.debug('Terminating worker')
     workerRef.current.terminate()
+  }
+
+  const isAwaitingInput =
+    !!runnerId && workerAwaitingInputIds.includes(runnerId)
+
+  const sendUserInput = (value: string) => {
+    if (!runnerId) {
+      console.error('No runner id')
+      return
+    }
+    sendInput(runnerId, value)
   }
 
   return {
@@ -266,6 +278,8 @@ del sys
     mkdir,
     rmdir,
     watchModules,
-    unwatchModules
+    unwatchModules,
+    isAwaitingInput,
+    sendInput: sendUserInput
   }
 }

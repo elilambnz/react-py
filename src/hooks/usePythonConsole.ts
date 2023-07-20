@@ -21,6 +21,7 @@ interface UsePythonConsoleProps {
 export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const { packages = {} } = props ?? {}
 
+  const [runnerId, setRunnerId] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
   const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [banner, setBanner] = useState<string | undefined>()
@@ -29,7 +30,12 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
 
-  const { packages: globalPackages, timeout } = useContext(PythonContext)
+  const {
+    packages: globalPackages,
+    timeout,
+    sendInput,
+    workerAwaitingInputIds
+  } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonConsoleRunner>>()
@@ -77,7 +83,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && !!pyodideVersion && !!banner
+  const isReady = !isLoading && !!runnerId
 
   useEffect(() => {
     if (workerRef.current && !isReady) {
@@ -97,9 +103,8 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               }
               setStdout(msg)
             }),
-            proxy(({ version, banner }) => {
-              // The runner is ready once the Pyodide version has been set
-              setPyodideVersion(version)
+            proxy(({ id, version, banner }) => {
+              setRunnerId(id)
               setBanner(banner)
               console.debug('Loaded pyodide version:', version)
             }),
@@ -187,6 +192,17 @@ del sys
     workerRef.current.terminate()
   }
 
+  const isAwaitingInput =
+    !!runnerId && workerAwaitingInputIds.includes(runnerId)
+
+  const sendUserInput = (value: string) => {
+    if (!runnerId) {
+      console.error('No runner id')
+      return
+    }
+    sendInput(runnerId, value)
+  }
+
   return {
     runPython,
     stdout,
@@ -202,6 +218,8 @@ del sys
     watchModules,
     unwatchModules,
     banner,
-    consoleState
+    consoleState,
+    isAwaitingInput,
+    sendInput: sendUserInput
   }
 }

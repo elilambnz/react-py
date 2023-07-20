@@ -95,7 +95,7 @@ James Ansley - [James-Ansley](https://github.com/James-Ansley)
 
 ## Acknowledgments
 
-This project is heavily based on [Pyodide](https://pyodide.org), a Python distribution for the browser and Node.js based on WebAssembly.
+This project uses [Pyodide](https://pyodide.org), a Python distribution for the browser and Node.js based on WebAssembly.
 
 ## Contributing
 

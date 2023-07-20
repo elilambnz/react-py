@@ -15,6 +15,8 @@ interface Pyodide {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globals: any
   isPyProxy: (value: unknown) => boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  registerJsModule: any
 }
 
 interface micropip {
@@ -65,10 +67,28 @@ let pythonConsole: {
   clearConsole: () => void
 }
 
+const reactPyModule = {
+  getInput: (id: string) => {
+    const request = new XMLHttpRequest()
+    // Synchronous request to be intercepted by service worker
+    request.open('GET', `/get_input/?id=${id}`, false)
+    request.send(null)
+    return request.responseText
+  }
+}
+
 const python = {
   async init(
     stdout: (msg: string) => void,
-    onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
+    onLoad: ({
+      id,
+      version,
+      banner
+    }: {
+      id: string
+      version: string
+      banner?: string
+    }) => void,
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({})
@@ -80,6 +100,21 @@ const python = {
       const micropip = self.pyodide.pyimport('micropip')
       await micropip.install(packages[1])
     }
+
+    const id = self.crypto.randomUUID()
+    self.pyodide.registerJsModule('react_py', reactPyModule)
+    const patchInputCode = `import sys, builtins
+import react_py
+__saved_input__ = input
+def input(prompt = ""):
+  print(prompt, end="")
+  s = __saved_input__()
+  print(s)
+  return s
+builtins.input = input
+sys.stdin.readline = lambda: react_py.getInput("${id}")`
+    await self.pyodide.runPythonAsync(patchInputCode)
+
     const version = self.pyodide.version
 
     const namespace = self.pyodide.globals.get('dict')()
@@ -101,7 +136,7 @@ const python = {
       clearConsole
     }
 
-    onLoad({ version, banner })
+    onLoad({ id, version, banner })
   },
   async run(
     code: string

@@ -27,7 +27,9 @@ export default function Console() {
     consoleState,
     isReady,
     isRunning,
-    interruptExecution
+    interruptExecution,
+    isAwaitingInput,
+    sendInput
   } = usePythonConsole({ packages: { micropip: ['python-cowsay'] } })
 
   useEffect(() => {
@@ -52,8 +54,18 @@ export default function Console() {
       ])
   }, [stderr])
 
+  useEffect(() => {
+    if (isAwaitingInput) {
+      setInput('')
+    }
+  }, [isAwaitingInput])
+
   function getPrompt() {
-    return consoleState === ConsoleState.incomplete ? ps2 : ps1
+    return isAwaitingInput
+      ? output[output.length - 1].text
+      : consoleState === ConsoleState.incomplete
+      ? ps2
+      : ps1
   }
 
   function clear() {
@@ -68,8 +80,12 @@ export default function Console() {
   async function send() {
     setCursor(0)
     input && setHistory((prev) => [input, ...prev])
-    setOutput((prev) => [...prev, { text: getPrompt() + input + '\n' }])
-    await runPython(input)
+    if (isAwaitingInput) {
+      sendInput(input)
+    } else {
+      setOutput((prev) => [...prev, { text: getPrompt() + input + '\n' }])
+      await runPython(input)
+    }
     setInput('')
     textArea.current.focus()
   }
