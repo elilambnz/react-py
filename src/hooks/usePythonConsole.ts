@@ -28,10 +28,12 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const [isRunning, setIsRunning] = useState(false)
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
+  const [pendingCode, setPendingCode] = useState<string | undefined>()
 
   const {
     packages: globalPackages,
     timeout,
+    lazy,
     sendInput,
     workerAwaitingInputIds,
     getPrompt
@@ -58,8 +60,10 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   }
 
   useEffect(() => {
-    // Spawn worker on mount
-    createWorker()
+    if (!lazy) {
+      // Spawn worker on mount
+      createWorker()
+    }
 
     // Cleanup worker on unmount
     return () => {
@@ -120,6 +124,17 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     }
   }, [workerRef.current])
 
+  // React to ready state and run delayed code if pending
+  useEffect(() => {
+    if (pendingCode && isReady) {
+      const delayedRun = async () => {
+        await runPython(pendingCode)
+        setPendingCode(undefined)
+      }
+      delayedRun()
+    }
+  }, [pendingCode, isReady])
+
   // prettier-ignore
   const moduleReloadCode = (modules: Set<string>) => `
 import importlib
@@ -137,6 +152,13 @@ del sys
       // Clear stdout and stderr
       setStdout('')
       setStderr('')
+
+      if (lazy && !isReady) {
+        // Spawn worker and set pending code
+        createWorker()
+        setPendingCode(code)
+        return
+      }
 
       if (!isReady) {
         throw new Error('Pyodide is not loaded yet')
@@ -170,7 +192,7 @@ del sys
         clearTimeout(timeoutTimer)
       }
     },
-    [isReady, timeout, watchedModules]
+    [lazy, isReady, timeout, watchedModules]
   )
 
   const interruptExecution = () => {
