@@ -19,3 +19,13 @@ Install `react-py` with:
 ```sh
 npm install react-py
 ```
+
+## Limitations
+
+Most of the Python standard library is functional, except from some modules. The following modules can be imported, but are not functional due to the limitations of the WebAssembly VM:
+
+- multiprocessing
+- threading
+- sockets
+
+Learn more about the limitations [here](https://pyodide.org/en/stable/usage/wasm-constraints.html).

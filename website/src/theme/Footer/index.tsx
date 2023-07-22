@@ -31,10 +31,6 @@ const navigation = {
     {
       name: 'PyRepl.io - Python Editor',
       href: 'https://pyrepl.io'
-    },
-    {
-      name: 'Pixel Lab - Portfolio',
-      href: 'https://pixellab.nz'
     }
   ]
 }
