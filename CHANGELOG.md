@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.10.1](https://github.com/elilambnz/react-py/compare/v1.10.0...v1.10.1) (2023-07-22)
 
+### Features
+
+- Update Pyodide to 0.23.3
+
 ## [1.10.0](https://github.com/elilambnz/react-py/compare/v1.9.1...v1.10.0) (2023-07-22)
 
 ### Features
