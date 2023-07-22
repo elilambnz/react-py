@@ -153,13 +153,6 @@ import sys
 
 sys.tracebacklimit = 0
 
-import time
-def sleep(seconds):
-    start = now = time.time()
-    while now - start < seconds:
-        now = time.time()
-time.sleep = sleep
-
 def run(code, preamble=''):
     globals_ = {}
     try:

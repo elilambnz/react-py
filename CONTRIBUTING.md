@@ -6,7 +6,7 @@ Thanks for your interest in contributing to this project! Please take a moment t
 
 **Please ask first before starting work on any significant new features.**
 
-It's never a fun experience to have your pull request declined after investing a lot of time and effort into a new feature. To avoid this from happening, we request that contributors create [an issue](https://github.com/elilambnz/react-py/issues/new?labels=enhancement) to first discuss any significant new ideas.
+It's never a fun experience to have your pull request declined after investing a lot of time and effort into a new feature. To avoid this from happening, we request that contributors [create an issue](https://github.com/elilambnz/react-py/issues/new?labels=enhancement) to first discuss any significant new ideas.
 
 ## Coding standards
 

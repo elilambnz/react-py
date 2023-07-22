@@ -35,8 +35,12 @@ declare global {
 }
 
 // Monkey patch console.log to prevent the script from outputting logs
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-console.log = () => {}
+if (self.location.hostname !== 'localhost') {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.log = () => {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.error = () => {}
+}
 
 import { expose } from 'comlink'
 
@@ -67,6 +71,7 @@ const python = {
     self.pyodide = await self.loadPyodide({
       stdout
     })
+    await self.pyodide.loadPackage(['pyodide-http'])
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
     }
@@ -77,8 +82,22 @@ const python = {
     }
 
     const id = self.crypto.randomUUID()
+    const version = self.pyodide.version
+
     self.pyodide.registerJsModule('react_py', reactPyModule)
-    const patchInputCode = `import sys, builtins
+    const initCode = `
+import pyodide_http
+pyodide_http.patch_all()
+import time
+def sleep(seconds):
+    start = now = time.time()
+    while now - start < seconds:
+        now = time.time()
+time.sleep = sleep
+`
+    await self.pyodide.runPythonAsync(initCode)
+    const patchInputCode = `
+import sys, builtins
 import react_py
 __saved_input__ = input
 __prompt_str__ = ""
@@ -90,10 +109,10 @@ def input(prompt = ""):
   print(s)
   return s
 builtins.input = input
-sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)`
+sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
+`
     await self.pyodide.runPythonAsync(patchInputCode)
 
-    const version = self.pyodide.version
     onLoad({ id, version })
   },
   async run(code: string) {

@@ -35,27 +35,14 @@ declare global {
 }
 
 // Monkey patch console.log to prevent the script from outputting logs
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-console.log = () => {}
+if (self.location.hostname !== 'localhost') {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.log = () => {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.error = () => {}
+}
 
 import { expose } from 'comlink'
-
-const initConsoleCode = `
-import sys
-from pyodide.ffi import to_js
-from pyodide.console import PyodideConsole, repr_shorten, BANNER
-import __main__
-BANNER = "Welcome to the Pyodide terminal emulator 🐍\\n" + BANNER
-pyconsole = PyodideConsole(__main__.__dict__)
-import builtins
-async def await_fut(fut):
-  res = await fut
-  if res is not None:
-    builtins._ = res
-  return to_js([res], depth=1)
-def clear_console():
-  pyconsole.buffer = []
-`
 
 let pythonConsole: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,6 +79,7 @@ const python = {
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({})
+    await self.pyodide.loadPackage(['pyodide-http'])
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
     }
@@ -102,8 +90,11 @@ const python = {
     }
 
     const id = self.crypto.randomUUID()
+    const version = self.pyodide.version
+
     self.pyodide.registerJsModule('react_py', reactPyModule)
-    const patchInputCode = `import sys, builtins
+    const patchInputCode = `
+import sys, builtins
 import react_py
 __saved_input__ = input
 __prompt_str__ = ""
@@ -115,12 +106,29 @@ def input(prompt = ""):
   print(s)
   return s
 builtins.input = input
-sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)`
+sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
+`
     await self.pyodide.runPythonAsync(patchInputCode)
 
-    const version = self.pyodide.version
-
     const namespace = self.pyodide.globals.get('dict')()
+    const initConsoleCode = `
+import pyodide_http
+pyodide_http.patch_all()
+import sys
+from pyodide.ffi import to_js
+from pyodide.console import PyodideConsole, repr_shorten, BANNER
+import __main__
+BANNER = "Welcome to the Pyodide terminal emulator 🐍\\n" + BANNER
+pyconsole = PyodideConsole(__main__.__dict__)
+import builtins
+async def await_fut(fut):
+  res = await fut
+  if res is not None:
+    builtins._ = res
+  return to_js([res], depth=1)
+def clear_console():
+  pyconsole.buffer = []
+`
     await self.pyodide.runPythonAsync(initConsoleCode, { globals: namespace })
     const reprShorten = namespace.get('repr_shorten')
     const banner = namespace.get('BANNER')
