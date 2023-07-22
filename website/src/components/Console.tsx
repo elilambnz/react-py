@@ -18,7 +18,6 @@ export default function Console() {
   )
   const [history, setHistory] = useState<string[]>([])
   const [cursor, setCursor] = useState(0)
-  const [freezeOutput, setFreezeOutput] = useState(false)
 
   const {
     runPython,
@@ -41,8 +40,8 @@ export default function Console() {
   }, [banner])
 
   useEffect(() => {
-    stdout && !freezeOutput && setOutput((prev) => [...prev, { text: stdout }])
-  }, [stdout, freezeOutput])
+    stdout && setOutput((prev) => [...prev, { text: stdout }])
+  }, [stdout])
 
   useEffect(() => {
     stderr &&
@@ -81,12 +80,9 @@ export default function Console() {
     if (isAwaitingInput) {
       setOutput((prev) => [...prev, { text: getPrompt() + ' ' + input }])
       sendInput(input)
-      // Prevent receiving stdout until a new input is sent
-      setFreezeOutput(true)
     } else {
       setOutput((prev) => [...prev, { text: getPrompt() + input + '\n' }])
       await runPython(input)
-      setFreezeOutput(false)
     }
     setInput('')
     textArea.current?.focus()

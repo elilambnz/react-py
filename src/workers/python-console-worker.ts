@@ -125,7 +125,7 @@ def input(prompt = ""):
   __prompt_str__ = prompt
   print(prompt, end="")
   s = __saved_input__()
-  print(s)
+  print()
   return s
 builtins.input = input
 sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
