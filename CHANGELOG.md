@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-- Update Pyodide to 0.23.3 ([#202](https://github.com/elilambnz/react-py/pull/212))
+- Update Pyodide to 0.23.3 ([#202](https://github.com/elilambnz/react-py/pull/202))
 
 ### [1.8.5](https://github.com/elilambnz/react-py/compare/v1.8.4...v1.8.5) (2023-02-10)
 
@@ -44,7 +44,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-- Added file system support ([(#36)](https://github.com/elilambnz/react-py/pull/36))
+- Added file system support ([#36](https://github.com/elilambnz/react-py/pull/36))
 
 ## [1.4.0](https://github.com/elilambnz/react-py/compare/v1.3.6-alpha.1...v1.4.0) (2022-12-30)
 
