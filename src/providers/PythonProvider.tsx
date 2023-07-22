@@ -45,9 +45,8 @@ function PythonProvider(props: PythonProviderProps) {
     const registerServiceWorker = async () => {
       if ('serviceWorker' in navigator) {
         try {
-          const registration = await navigator.serviceWorker.register(
-            new URL('../workers/service-worker', import.meta.url)
-          )
+          const url = new URL('../workers/service-worker', import.meta.url)
+          const registration = await navigator.serviceWorker.register(url)
           if (registration.active) {
             console.debug('Service worker active')
             swRef.current = registration.active
