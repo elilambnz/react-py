@@ -127,15 +127,12 @@ export default function Console() {
         ))}
         <div className="group relative flex items-center">
           <code className="text-gray-500">{getPrompt()}</code>
-          <span className="-ml-1 text-gray-500 group-focus-within:hidden">
-            |
-          </span>
+          <span className="text-gray-500 group-focus-within:hidden">|</span>
           <textarea
             ref={textArea}
             className={clsx(
               'w-full resize-none rounded-md border-none bg-transparent py-2 pl-1 pr-2 !outline-none !ring-0',
-              isLoading && 'pointer-events-none',
-              !isAwaitingInput && '-ml-1'
+              isLoading && 'pointer-events-none'
             )}
             style={{
               height: input
