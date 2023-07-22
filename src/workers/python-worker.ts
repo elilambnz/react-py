@@ -88,12 +88,6 @@ const python = {
     const initCode = `
 import pyodide_http
 pyodide_http.patch_all()
-import time
-def sleep(seconds):
-    start = now = time.time()
-    while now - start < seconds:
-        now = time.time()
-time.sleep = sleep
 `
     await self.pyodide.runPythonAsync(initCode)
     const patchInputCode = `

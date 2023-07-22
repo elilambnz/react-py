@@ -93,27 +93,12 @@ const python = {
     const version = self.pyodide.version
 
     self.pyodide.registerJsModule('react_py', reactPyModule)
-    const patchInputCode = `
-import sys, builtins
-import react_py
-__saved_input__ = input
-__prompt_str__ = ""
-def input(prompt = ""):
-  global __prompt_str__
-  __prompt_str__ = prompt
-  print(prompt, end="")
-  s = __saved_input__()
-  print(s)
-  return s
-builtins.input = input
-sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
-`
-    await self.pyodide.runPythonAsync(patchInputCode)
 
     const namespace = self.pyodide.globals.get('dict')()
     const initConsoleCode = `
 import pyodide_http
 pyodide_http.patch_all()
+
 import sys
 from pyodide.ffi import to_js
 from pyodide.console import PyodideConsole, repr_shorten, BANNER
@@ -130,6 +115,22 @@ def clear_console():
   pyconsole.buffer = []
 `
     await self.pyodide.runPythonAsync(initConsoleCode, { globals: namespace })
+    const patchInputCode = `
+import sys, builtins
+import react_py
+__saved_input__ = input
+__prompt_str__ = ""
+def input(prompt = ""):
+  global __prompt_str__
+  __prompt_str__ = prompt
+  print(prompt, end="")
+  s = __saved_input__()
+  print(s)
+  return s
+builtins.input = input
+sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
+`
+    await self.pyodide.runPythonAsync(patchInputCode, { globals: namespace })
     const reprShorten = namespace.get('repr_shorten')
     const banner = namespace.get('BANNER')
     const awaitFut = namespace.get('await_fut')

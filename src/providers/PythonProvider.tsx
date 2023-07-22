@@ -48,14 +48,23 @@ function PythonProvider(props: PythonProviderProps) {
           const registration = await navigator.serviceWorker.register(
             new URL('../workers/service-worker', import.meta.url)
           )
-          if (registration.installing) {
-            console.debug('Service worker installing')
-          } else if (registration.waiting) {
-            console.debug('Service worker installed')
-          } else if (registration.active) {
+          if (registration.active) {
             console.debug('Service worker active')
             swRef.current = registration.active
           }
+
+          registration.addEventListener('updatefound', () => {
+            const installingWorker = registration.installing
+            if (installingWorker) {
+              console.debug('Installing new service worker')
+              installingWorker.addEventListener('statechange', () => {
+                if (installingWorker.state === 'installed') {
+                  console.debug('New service worker installed')
+                  swRef.current = installingWorker
+                }
+              })
+            }
+          })
         } catch (error) {
           console.error(`Registration failed with ${error}`)
         }
@@ -72,6 +81,8 @@ function PythonProvider(props: PythonProviderProps) {
             })
           }
         }
+      } else {
+        console.error('Service workers not supported')
       }
     }
     registerServiceWorker()

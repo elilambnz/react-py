@@ -7,6 +7,7 @@ import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
 
 import Controls from './Controls'
+import Loader from './Loader'
 import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
 
 const editorOptions = {
@@ -88,6 +89,8 @@ export default function MatplotlibExample(props: MatplotlibExampleProps) {
             }
           ]}
         />
+
+        {isLoading && <Loader />}
 
         <BrowserOnly fallback={<div>Loading...</div>}>
           {() => {

@@ -7,6 +7,7 @@ import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
 
 import Controls from './Controls'
+import Loader from './Loader'
 import Input from './Input'
 import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
 
@@ -88,6 +89,8 @@ export default function CodeEditor(props: CodeEditorProps) {
         isAwaitingInput={isAwaitingInput}
       />
 
+      {isLoading && <Loader />}
+
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
           const AceEditor = require('react-ace').default
@@ -101,7 +104,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               mode="python"
               name="CodeBlock"
               fontSize="0.9rem"
-              className="min-h-[4rem] overflow-clip rounded shadow-md"
+              className="min-h-[7rem] overflow-clip rounded shadow-md"
               theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
               onChange={(newValue) => setInput(newValue)}
               width="100%"
