@@ -15,6 +15,8 @@ interface Pyodide {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globals: any
   isPyProxy: (value: unknown) => boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  registerJsModule: any
 }
 
 interface micropip {
@@ -33,12 +35,70 @@ declare global {
 }
 
 // Monkey patch console.log to prevent the script from outputting logs
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-console.log = () => {}
+if (self.location.hostname !== 'localhost') {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.log = () => {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.error = () => {}
+}
 
 import { expose } from 'comlink'
 
-const initConsoleCode = `
+let pythonConsole: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reprShorten: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  awaitFut: (fut: unknown) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pyconsole: any
+  clearConsole: () => void
+}
+
+const reactPyModule = {
+  getInput: (id: string, prompt: string) => {
+    const request = new XMLHttpRequest()
+    // Synchronous request to be intercepted by service worker
+    request.open('GET', `/get_input/?id=${id}&prompt=${prompt}`, false)
+    request.send(null)
+    return request.responseText
+  }
+}
+
+const python = {
+  async init(
+    stdout: (msg: string) => void,
+    onLoad: ({
+      id,
+      version,
+      banner
+    }: {
+      id: string
+      version: string
+      banner?: string
+    }) => void,
+    packages: string[][]
+  ) {
+    self.pyodide = await self.loadPyodide({})
+    await self.pyodide.loadPackage(['pyodide-http'])
+    if (packages[0].length > 0) {
+      await self.pyodide.loadPackage(packages[0])
+    }
+    if (packages[1].length > 0) {
+      await self.pyodide.loadPackage(['micropip'])
+      const micropip = self.pyodide.pyimport('micropip')
+      await micropip.install(packages[1])
+    }
+
+    const id = self.crypto.randomUUID()
+    const version = self.pyodide.version
+
+    self.pyodide.registerJsModule('react_py', reactPyModule)
+
+    const namespace = self.pyodide.globals.get('dict')()
+    const initConsoleCode = `
+import pyodide_http
+pyodide_http.patch_all()
+
 import sys
 from pyodide.ffi import to_js
 from pyodide.console import PyodideConsole, repr_shorten, BANNER
@@ -54,36 +114,23 @@ async def await_fut(fut):
 def clear_console():
   pyconsole.buffer = []
 `
-
-let pythonConsole: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reprShorten: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  awaitFut: (fut: unknown) => any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pyconsole: any
-  clearConsole: () => void
-}
-
-const python = {
-  async init(
-    stdout: (msg: string) => void,
-    onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
-    packages: string[][]
-  ) {
-    self.pyodide = await self.loadPyodide({})
-    if (packages[0].length > 0) {
-      await self.pyodide.loadPackage(packages[0])
-    }
-    if (packages[1].length > 0) {
-      await self.pyodide.loadPackage(['micropip'])
-      const micropip = self.pyodide.pyimport('micropip')
-      await micropip.install(packages[1])
-    }
-    const version = self.pyodide.version
-
-    const namespace = self.pyodide.globals.get('dict')()
     await self.pyodide.runPythonAsync(initConsoleCode, { globals: namespace })
+    const patchInputCode = `
+import sys, builtins
+import react_py
+__saved_input__ = input
+__prompt_str__ = ""
+def input(prompt = ""):
+  global __prompt_str__
+  __prompt_str__ = prompt
+  print(prompt, end="")
+  s = __saved_input__()
+  print()
+  return s
+builtins.input = input
+sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
+`
+    await self.pyodide.runPythonAsync(patchInputCode, { globals: namespace })
     const reprShorten = namespace.get('repr_shorten')
     const banner = namespace.get('BANNER')
     const awaitFut = namespace.get('await_fut')
@@ -101,7 +148,7 @@ const python = {
       clearConsole
     }
 
-    onLoad({ version, banner })
+    onLoad({ id, version, banner })
   },
   async run(
     code: string

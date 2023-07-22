@@ -4,7 +4,9 @@ import { usePythonConsole } from '@site/../dist'
 import { ConsoleState } from '@site/../dist/types/Console'
 
 import Controls from './Controls'
+import Loader from './Loader'
 import { ArrowPathIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
 
 const ps1 = '>>> '
 const ps2 = '... '
@@ -17,24 +19,21 @@ export default function Console() {
   const [history, setHistory] = useState<string[]>([])
   const [cursor, setCursor] = useState(0)
 
-  const textArea = useRef<HTMLTextAreaElement>()
-
   const {
     runPython,
     stdout,
     stderr,
     banner,
     consoleState,
-    isReady,
+    isLoading,
     isRunning,
-    interruptExecution
-  } = usePythonConsole({ packages: { micropip: ['python-cowsay'] } })
+    interruptExecution,
+    isAwaitingInput,
+    sendInput,
+    prompt
+  } = usePythonConsole()
 
-  useEffect(() => {
-    if (isReady) {
-      textArea.current.focus()
-    }
-  }, [isReady])
+  const textArea = useRef<HTMLTextAreaElement>()
 
   useEffect(() => {
     banner && setOutput((prev) => [...prev, { text: banner + '\n' }])
@@ -52,8 +51,41 @@ export default function Console() {
       ])
   }, [stderr])
 
+  useEffect(() => {
+    if (isLoading) {
+      textArea.current?.blur()
+    }
+  }, [isLoading])
+
+  useEffect(() => {
+    if (isAwaitingInput) {
+      setInput('')
+      // Remove the last line of output since we render the prompt
+      setOutput((prev) => prev.slice(0, -1))
+    }
+  }, [isAwaitingInput])
+
   function getPrompt() {
-    return consoleState === ConsoleState.incomplete ? ps2 : ps1
+    return isAwaitingInput
+      ? prompt || ps1
+      : consoleState === ConsoleState.incomplete
+      ? ps2
+      : ps1
+  }
+
+  async function send() {
+    if (!input) return
+    setCursor(0)
+    setHistory((prev) => [input, ...prev])
+    if (isAwaitingInput) {
+      setOutput((prev) => [...prev, { text: getPrompt() + ' ' + input }])
+      sendInput(input)
+    } else {
+      setOutput((prev) => [...prev, { text: getPrompt() + input + '\n' }])
+      await runPython(input)
+    }
+    setInput('')
+    textArea.current?.focus()
   }
 
   function clear() {
@@ -63,15 +95,6 @@ export default function Console() {
   function reset() {
     interruptExecution()
     clear()
-  }
-
-  async function send() {
-    setCursor(0)
-    input && setHistory((prev) => [input, ...prev])
-    setOutput((prev) => [...prev, { text: getPrompt() + input + '\n' }])
-    await runPython(input)
-    setInput('')
-    textArea.current.focus()
   }
 
   return (
@@ -89,24 +112,28 @@ export default function Console() {
               label: 'Reset',
               icon: ArrowPathIcon,
               onClick: reset
-              // disabled: isRunning
             }
           ]}
         />
       </div>
 
+      {isLoading && <Loader />}
+
       <pre className="z-10 max-h-[calc(100vh_-_20rem)] min-h-[18rem] text-left text-base shadow-md">
-        {!isReady && <code>Loading...</code>}
         {output.map((line, i) => (
           <code className={line.className} key={i}>
             {line.text}
           </code>
         ))}
-        <div className="relative mt-2 flex">
-          <code className="mt-2">{getPrompt()}</code>
+        <div className="group relative flex items-center">
+          <code className="text-gray-500">{getPrompt()}</code>
+          <span className="text-gray-500 group-focus-within:hidden">|</span>
           <textarea
             ref={textArea}
-            className="-ml-1 w-full resize-none rounded-md border-none bg-neutral-200 py-2 pl-1 pr-2 !outline-none !ring-0 focus:bg-transparent dark:bg-neutral-600 dark:focus:bg-transparent"
+            className={clsx(
+              'w-full resize-none rounded-md border-none bg-transparent py-2 pl-1 pr-2 !outline-none !ring-0',
+              isLoading && 'pointer-events-none'
+            )}
             style={{
               height: input
                 ? `${input.split('\n').length * 1.5 + 1}rem`
@@ -119,14 +146,13 @@ export default function Console() {
               setHistory((prev) => [value, ...prev.slice(1)])
               setInput(value)
             }}
-            onKeyDown={(e) => {
-              // @ts-ignore
+            onKeyDown={(e: any) => {
               const start = e.target.selectionStart
-              // @ts-ignore
               const end = e.target.selectionEnd
 
               switch (e.key) {
                 case 'Enter':
+                  e.preventDefault()
                   !e.shiftKey && send()
                   break
                 case 'ArrowUp':
@@ -138,7 +164,7 @@ export default function Console() {
                   }
                   break
                 case 'ArrowDown':
-                  if (start === input.length && end === input.length) {
+                  if (input && start === input.length && end === input.length) {
                     setInput(history[cursor])
                     setCursor((prev) => Math.max(...[0, prev - 1]))
                   }
@@ -147,10 +173,8 @@ export default function Console() {
                   break
               }
             }}
-            disabled={!isReady}
             autoCapitalize="off"
             spellCheck="false"
-            autoFocus={true}
           />
         </div>
       </pre>

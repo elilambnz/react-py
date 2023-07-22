@@ -7,6 +7,8 @@ import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
 
 import Controls from './Controls'
+import Loader from './Loader'
+import Input from './Input'
 import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
 
 const editorOptions = {
@@ -44,7 +46,10 @@ export default function CodeEditor(props: CodeEditorProps) {
     stderr,
     isLoading,
     isRunning,
-    interruptExecution
+    interruptExecution,
+    isAwaitingInput,
+    sendInput,
+    prompt
   } = usePython({ packages })
 
   function run() {
@@ -81,7 +86,10 @@ export default function CodeEditor(props: CodeEditorProps) {
             disabled: isRunning
           }
         ]}
+        isAwaitingInput={isAwaitingInput}
       />
+
+      {isLoading && <Loader />}
 
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
@@ -96,7 +104,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               mode="python"
               name="CodeBlock"
               fontSize="0.9rem"
-              className="min-h-[4rem] overflow-clip rounded shadow-md"
+              className="min-h-[7rem] overflow-clip rounded shadow-md"
               theme={colorMode === 'dark' ? 'idle_fingers' : 'textmate'}
               onChange={(newValue) => setInput(newValue)}
               width="100%"
@@ -108,6 +116,8 @@ export default function CodeEditor(props: CodeEditorProps) {
           )
         }}
       </BrowserOnly>
+
+      {isAwaitingInput && <Input prompt={prompt} onSubmit={sendInput} />}
 
       {showOutput && (
         <pre className="mt-4 text-left">

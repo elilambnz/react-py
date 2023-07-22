@@ -1,7 +1,15 @@
 export interface Runner {
   init: (
     stdout: (msg: string) => void,
-    onLoad: ({ version, banner }: { version: string; banner?: string }) => void,
+    onLoad: ({
+      id,
+      version,
+      banner
+    }: {
+      id: string
+      version: string
+      banner?: string
+    }) => void,
     packages?: string[][]
   ) => Promise<void>
   interruptExecution: () => void

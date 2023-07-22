@@ -12,6 +12,7 @@ import {
   PlayIcon,
   StopIcon
 } from '@heroicons/react/24/solid'
+import Loader from './Loader'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -90,6 +91,8 @@ export default function CustomModuleExample() {
 
   return (
     <div className="relative mb-10">
+      {isLoading && <Loader />}
+
       <BrowserOnly fallback={<div>Loading...</div>}>
         {() => {
           const AceEditor = require('react-ace').default

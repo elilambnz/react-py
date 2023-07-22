@@ -2,58 +2,20 @@
 sidebar_position: 8
 ---
 
-import Input from '../../src/components/Input'
-
 # User Input
 
+A patch for `stdin` has been provided to allow for user input. This is done by using a service worker to intercept `fetch` requests from the web worker instances.
+
 :::caution
-The behavior of `stdin` is controlled by Pyodide, the Python distribution we use, which calls a [`Window.prompt()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt) to collect user input and blocks execution on the main thread. This behavior is not currently extensible, as blocking the main thread is a special case and is only allowed for a handful of methods. However, there is active development working toward a solution to this issue and we hope to have `input()` usage patched in the near future.
+This is a recently added feature and may not work as expected. If you encounter any issues, please [create an issue](https://github.com/elilambnz/react-py/issues/new?labels=bug).
 :::
 
-In the meantime, depending on your use case, you may be able to use the following alternatives to `stdin`.
+```python
+num1 = int(input("Enter first number "))
+num2 = int(input("Enter second number "))
 
-## User input field
-
-If you're anticipating input from a user, you could render a separate input field for user input and assign the result to a variable in Python:
-
-```tsx
-async function run() {
-  // Set the input variable in Python
-  const code = `name = '${userInput}'
-
-${input}
-`
-
-  runPython(code)
-}
+result = num1 + num2
+print(f"The sum of {num1} and {num2} is: {result}")
 ```
-
-The following example shows this in action. To try it out:
-
-- Enter a value in the input field below, which will set the `userInput` variable
-- Run by clicking `Run` which will execute the code in the editor window, with the `name` variable prepended to the code
-
-export const exampleInputCode = `print(f"Hello, {name}!")
-`
-
-<Input code={exampleInputCode} />
 
 You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/Input.tsx).
-
-## Override built-in `input()`
-
-You could override the built-in input() function to provide a mock input value:
-
-```python
-import builtins
-
-def mock_input(prompt):
-    print(prompt)
-    return "Name"
-
-builtins.input = mock_input
-
-name = input("Enter your name:")
-
-print(f"Hello, {name}!")
-```

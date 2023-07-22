@@ -21,15 +21,23 @@ interface UsePythonConsoleProps {
 export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const { packages = {} } = props ?? {}
 
+  const [runnerId, setRunnerId] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
-  const [pyodideVersion, setPyodideVersion] = useState<string | undefined>()
   const [banner, setBanner] = useState<string | undefined>()
   const [consoleState, setConsoleState] = useState<ConsoleState>()
   const [isRunning, setIsRunning] = useState(false)
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
+  const [pendingCode, setPendingCode] = useState<string | undefined>()
 
-  const { packages: globalPackages, timeout } = useContext(PythonContext)
+  const {
+    packages: globalPackages,
+    timeout,
+    lazy,
+    sendInput,
+    workerAwaitingInputIds,
+    getPrompt
+  } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonConsoleRunner>>()
@@ -52,8 +60,10 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   }
 
   useEffect(() => {
-    // Spawn worker on mount
-    createWorker()
+    if (!lazy) {
+      // Spawn worker on mount
+      createWorker()
+    }
 
     // Cleanup worker on unmount
     return () => {
@@ -77,7 +87,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     return [official, micropip]
   }, [globalPackages, packages])
 
-  const isReady = !isLoading && !!pyodideVersion && !!banner
+  const isReady = !isLoading && !!runnerId
 
   useEffect(() => {
     if (workerRef.current && !isReady) {
@@ -97,9 +107,8 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               }
               setStdout(msg)
             }),
-            proxy(({ version, banner }) => {
-              // The runner is ready once the Pyodide version has been set
-              setPyodideVersion(version)
+            proxy(({ id, version, banner }) => {
+              setRunnerId(id)
               setBanner(banner)
               console.debug('Loaded pyodide version:', version)
             }),
@@ -114,6 +123,17 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
       init()
     }
   }, [workerRef.current])
+
+  // React to ready state and run delayed code if pending
+  useEffect(() => {
+    if (pendingCode && isReady) {
+      const delayedRun = async () => {
+        await runPython(pendingCode)
+        setPendingCode(undefined)
+      }
+      delayedRun()
+    }
+  }, [pendingCode, isReady])
 
   // prettier-ignore
   const moduleReloadCode = (modules: Set<string>) => `
@@ -132,6 +152,13 @@ del sys
       // Clear stdout and stderr
       setStdout('')
       setStderr('')
+
+      if (lazy && !isReady) {
+        // Spawn worker and set pending code
+        createWorker()
+        setPendingCode(code)
+        return
+      }
 
       if (!isReady) {
         throw new Error('Pyodide is not loaded yet')
@@ -165,13 +192,13 @@ del sys
         clearTimeout(timeoutTimer)
       }
     },
-    [isReady, timeout, watchedModules]
+    [lazy, isReady, timeout, watchedModules]
   )
 
   const interruptExecution = () => {
     cleanup()
     setIsRunning(false)
-    setPyodideVersion(undefined)
+    setRunnerId(undefined)
     setBanner(undefined)
     setConsoleState(undefined)
 
@@ -185,6 +212,17 @@ del sys
     }
     console.debug('Terminating worker')
     workerRef.current.terminate()
+  }
+
+  const isAwaitingInput =
+    !!runnerId && workerAwaitingInputIds.includes(runnerId)
+
+  const sendUserInput = (value: string) => {
+    if (!runnerId) {
+      console.error('No runner id')
+      return
+    }
+    sendInput(runnerId, value)
   }
 
   return {
@@ -202,6 +240,9 @@ del sys
     watchModules,
     unwatchModules,
     banner,
-    consoleState
+    consoleState,
+    isAwaitingInput,
+    sendInput: sendUserInput,
+    prompt: runnerId ? getPrompt(runnerId) : ''
   }
 }

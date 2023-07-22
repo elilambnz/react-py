@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.2-6](https://github.com/elilambnz/react-py/compare/v1.9.2-5...v1.9.2-6) (2023-07-22)
+
+### [1.9.2-5](https://github.com/elilambnz/react-py/compare/v1.9.2-4...v1.9.2-5) (2023-07-22)
+
+### [1.9.2-4](https://github.com/elilambnz/react-py/compare/v1.9.2-3...v1.9.2-4) (2023-07-22)
+
+### [1.9.2-3](https://github.com/elilambnz/react-py/compare/v1.9.2-2...v1.9.2-3) (2023-07-22)
+
+### [1.9.2-2](https://github.com/elilambnz/react-py/compare/v1.9.2-1...v1.9.2-2) (2023-07-20)
+
+### [1.9.2-1](https://github.com/elilambnz/react-py/compare/v1.9.2-0...v1.9.2-1) (2023-07-20)
+
+### [1.9.2-0](https://github.com/elilambnz/react-py/compare/v1.9.1...v1.9.2-0) (2023-07-20)
+
 ### [1.9.1](https://github.com/elilambnz/react-py/compare/v1.9.0...v1.9.1) (2023-07-18)
 
 ## [1.9.0](https://github.com/elilambnz/react-py/compare/v1.8.5...v1.9.0) (2023-07-04)
