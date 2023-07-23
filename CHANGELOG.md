@@ -32,8 +32,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Patch default stdin behaviour ([#212](https://github.com/elilambnz/react-py/pull/212))
 
-### [1.9.1](https://github.com/elilambnz/react-py/compare/v1.9.0...v1.9.1) (2023-07-18)
-
 ## [1.9.0](https://github.com/elilambnz/react-py/compare/v1.8.5...v1.9.0) (2023-07-04)
 
 ### Features
