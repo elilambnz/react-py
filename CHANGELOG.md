@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.10.4](https://github.com/elilambnz/react-py/compare/v1.10.3...v1.10.4) (2023-07-23)
 
+### Features
+
+- Support for external service workers
+
 ### [1.10.3](https://github.com/elilambnz/react-py/compare/v1.10.2...v1.10.3) (2023-07-23)
+
+### Bug fixes
+
+- Fixed input patch code for Safari bug
 
 ### [1.10.2](https://github.com/elilambnz/react-py/compare/v1.10.1...v1.10.2) (2023-07-23)
 
