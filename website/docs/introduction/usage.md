@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Usage
 
-How to use `react-py` in your project.
+How to use `react-py` in your project. For framework specific guides, see the sidebar.
 
 ## `PythonProvider` Provider
 

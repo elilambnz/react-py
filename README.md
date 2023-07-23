@@ -48,7 +48,7 @@ function App() {
 render(<App />, document.getElementById('root'))
 ```
 
-Using the `usePython` hook, you can run code and access both stdout and stderr. For full usage instructions, see the [usage docs](https://elilambnz.github.io/react-py/docs/introduction/usage).
+Using the `usePython` hook, you can run code and access both stdout and stderr. For full usage instructions and framework specific guides, see the [usage docs](https://elilambnz.github.io/react-py/docs/introduction/usage).
 
 ## Documentation
 

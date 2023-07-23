@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 # Usage with Vite
@@ -8,21 +8,32 @@ sidebar_position: 4
 Calls to `react-py` hooks will not work with [Vite](https://vitejs.dev) during dev mode due to web workers not being included in the dev build. To view your site with `react-py` enabled, you must build your site and serve it.
 :::
 
-## Vite config
+## Service worker
 
-The service worker that handles `stdin` must be accessible from the root of your site. This means that the `assetsDir` build option must be set to `''` (empty string).
+The service worker that handles `stdin` must be accessible from the root of your site to handle incoming fetch requests. By default, Vite will place the `react-py` service worker in a subdirectory of your build directory.
 
-Add the following build options to your `vite.config.js` file:
+To register the service worker, first copy the service worker to your public directory:
 
-```js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    assetsDir: ''
-  }
-})
+```bash
+cp node_modules/react-py/dist/workers/service-worker.js public/react-py-sw.js
 ```
+
+Then, register the service worker in the entrypoint of your app:
+
+```tsx
+useEffect(() => {
+  navigator.serviceWorker
+    .register('/react-py-sw.js')
+    .then((registration) =>
+      console.log(
+        'Service Worker registration successful with scope: ',
+        registration.scope
+      )
+    )
+    .catch((err) => console.log('Service Worker registration failed: ', err))
+}, [])
+```
+
+:::note
+You will need to copy the service worker to the root of your build directory if you update `react-py` to a new version.
+:::

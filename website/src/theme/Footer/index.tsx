@@ -9,7 +9,14 @@ const navigation = {
       href: '/react-py/docs/introduction/getting-started'
     },
     { name: 'Usage', href: '/react-py/docs/introduction/usage' },
-    { name: 'API Reference', href: '/react-py/docs/introduction/api-reference' }
+    {
+      name: 'API Reference',
+      href: '/react-py/docs/introduction/api-reference'
+    },
+    {
+      name: 'Troubleshooting',
+      href: '/react-py/docs/introduction/troubleshooting'
+    }
   ],
   links: [
     { name: 'NPM', href: 'https://www.npmjs.com/package/react-py' },

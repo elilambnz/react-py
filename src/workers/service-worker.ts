@@ -13,7 +13,7 @@ addEventListener('activate', () => {
 const resolvers = new Map<string, Promise<any>[]>()
 
 addEventListener('message', (event) => {
-  if (event.data.type === 'INPUT') {
+  if (event.data.type === 'REACT_PY_INPUT') {
     const resolverArray = resolvers.get(event.data.id)
     if (!resolverArray || resolverArray.length === 0) {
       console.error('Error handing input: No resolver')
@@ -28,18 +28,18 @@ addEventListener('message', (event) => {
 addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
 
-  if (url.pathname === '/get_input/') {
+  if (url.pathname === '/react-py-get-input/') {
     const id = url.searchParams.get('id')
     const prompt = url.searchParams.get('prompt')
 
     event.waitUntil(
       (async () => {
-        // Send AWAITING_INPUT message to all window clients
+        // Send REACT_PY_AWAITING_INPUT message to all window clients
         self.clients.matchAll().then((clients) => {
           clients.forEach((client) => {
             if (client.type === 'window') {
               client.postMessage({
-                type: 'AWAITING_INPUT',
+                type: 'REACT_PY_AWAITING_INPUT',
                 id,
                 prompt
               })
@@ -53,7 +53,7 @@ addEventListener('fetch', (event) => {
         // const client = await clients.get(event.clientId)
         // if (!client) return
         // client.postMessage({
-        //   type: 'AWAITING_INPUT',
+        //   type: 'REACT_PY_AWAITING_INPUT',
         //   id
         // })
       })()

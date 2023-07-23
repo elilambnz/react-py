@@ -69,7 +69,13 @@ function PythonProvider(props: PythonProviderProps) {
         }
 
         navigator.serviceWorker.onmessage = (event) => {
-          if (event.data.type === 'AWAITING_INPUT') {
+          console.log('Service worker message', event.data)
+
+          if (event.data.type === 'REACT_PY_AWAITING_INPUT') {
+            if (event.source instanceof ServiceWorker) {
+              // Update the service worker reference, in case the service worker is different to the one we registered
+              swRef.current = event.source
+            }
             setWorkerAwaitingInputIds((prev) =>
               new Set(prev).add(event.data.id)
             )
@@ -99,7 +105,7 @@ function PythonProvider(props: PythonProviderProps) {
     }
 
     swRef.current.postMessage({
-      type: 'INPUT',
+      type: 'REACT_PY_INPUT',
       id,
       value
     })
