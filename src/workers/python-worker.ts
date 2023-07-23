@@ -93,16 +93,15 @@ pyodide_http.patch_all()
     const patchInputCode = `
 import sys, builtins
 import react_py
-__saved_input__ = input
 __prompt_str__ = ""
-def input(prompt = ""):
-  global __prompt_str__
-  __prompt_str__ = prompt
-  print(prompt, end="")
-  s = __saved_input__()
-  print(s)
-  return s
-builtins.input = input
+def get_input(prompt=""):
+    global __prompt_str__
+    __prompt_str__ = prompt
+    print(prompt, end="")
+    s = react_py.getInput("${id}", prompt)
+    print(s)
+    return s
+builtins.input = get_input
 sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
 `
     await self.pyodide.runPythonAsync(patchInputCode)
