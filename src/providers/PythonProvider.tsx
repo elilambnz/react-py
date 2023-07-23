@@ -69,8 +69,6 @@ function PythonProvider(props: PythonProviderProps) {
         }
 
         navigator.serviceWorker.onmessage = (event) => {
-          console.log('Service worker message', event.data)
-
           if (event.data.type === 'REACT_PY_AWAITING_INPUT') {
             if (event.source instanceof ServiceWorker) {
               // Update the service worker reference, in case the service worker is different to the one we registered
