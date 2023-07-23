@@ -2,6 +2,8 @@
 sidebar_position: 5
 ---
 
+import MultiFileExample from '../../src/components/MultiFileExample'
+
 # File System
 
 Some internal Pyodide file system methods are exposed.
@@ -50,3 +52,11 @@ with open('hello.txt') as f:
 :::note
 Files are not shared between instances, each usage of the `usePython` hook has an independent file system. Files are also not persisted on page reload.
 :::
+
+## Using multiple files
+
+You can use [Custom Modules](../examples/custom-modules) to make use of multiple files:
+
+<MultiFileExample />
+
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/MultiFileExample.tsx).
