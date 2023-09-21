@@ -1,0 +1,108 @@
+---
+sidebar_position: 9
+---
+
+import ImageExample from '../../src/components/ImageExample'
+import HTMLExample from '../../src/components/HTMLExample'
+
+# Data Visualisation
+
+Some data visualisation libraries can be used, but require some workarounds.
+
+## Matplotlib
+
+By default, matplotlib relies on the import statement `from js import document`, which does not work from within a web worker.
+
+One workaround is to patch the default behaviour of `matplotlib.pyplot.show`.
+
+### Patching `matplotlib.pyplot.show`
+
+The following patch sets matplotlib to use the `AGG` renderer. [Source](https://github.com/pyodide/matplotlib-pyodide/issues/6#issuecomment-1242747625).
+
+:::caution
+This workaround relies on the base64 string to be printed to `stdout`.
+:::
+
+export const matplotlibCode = `import os
+import base64
+from io import BytesIO\n
+# Set this _before_ importing matplotlib
+os.environ['MPLBACKEND'] = 'AGG'\n
+import matplotlib.pyplot as plt\n
+# Patch
+def ensure_matplotlib_patch():
+  _old_show = plt.show\n
+  def show():
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    # Encode to a base64 str
+    img = 'data:image/png;base64,' + \\
+    base64.b64encode(buf.read()).decode('utf-8')
+    # Write to stdout
+    print(img)
+    plt.clf()\n
+  plt.show = show\n\n
+ensure_matplotlib_patch()\n
+# Plot
+fig, ax = plt.subplots()
+ax.plot([1,3,2])\n
+plt.show()
+`
+
+<ImageExample code={matplotlibCode} packages={{ official: ['matplotlib'] }} />
+
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/ImageExample.tsx).
+
+## Folium
+
+:::caution
+This workaround relies on the HTML output to be printed to `stdout`.
+:::
+
+export const foliumCode = `import folium\n
+# Create a map centered at a specific location
+m = folium.Map(location=[37.7749, -122.4194], zoom_start=10)\n
+# Add a marker to the map
+folium.Marker(
+    location=[37.7749, -122.4194],
+    popup="San Francisco, CA",
+    icon=folium.Icon(color='blue')
+).add_to(m)\n
+# Get the HTML content of the map
+map_html = m.get_root().render()\n
+# Print the HTML to stdout
+print(map_html)
+`
+
+<HTMLExample code={foliumCode} packages={{ micropip: ['folium'] }} />
+
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/HTMLExample.tsx).
+
+## Plotly
+
+:::caution
+This workaround relies on the HTML output to be printed to `stdout`.
+:::
+
+export const plotlyCode = `import plotly.express as px\n
+# Sample data
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 1, 3, 7]\n
+# Create a line chart
+fig = px.line(x=x, y=y, title='Simple Line Chart')\n
+# Get the HTML content of the chart
+chart_html = fig.to_html()\n
+# Print the HTML to stdout
+print(chart_html)
+`
+
+<HTMLExample
+  code={plotlyCode}
+  packages={{
+    official: ['pandas'],
+    micropip: ['plotly']
+  }}
+/>
+
+You can find the source code for this example [here](https://github.com/elilambnz/react-py/blob/main/website/src/components/HTMLExample.tsx).

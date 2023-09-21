@@ -64,8 +64,8 @@ export default function MatplotlibExample(props: MatplotlibExampleProps) {
   }
 
   return (
-    <div className="xl:flex xl:space-x-4">
-      <div className="relative mb-10 flex flex-col xl:w-1/2">
+    <div>
+      <div className="relative mb-10 flex flex-col">
         <Controls
           items={[
             {
@@ -118,13 +118,15 @@ export default function MatplotlibExample(props: MatplotlibExampleProps) {
           }}
         </BrowserOnly>
       </div>
-      <div className="xl:w-1/2">
+      <div>
         <h2>Result</h2>
         {!stderr ? (
-          stdout && stdout.startsWith('data:image/png;base64,') ? (
-            <img src={stdout} />
+          stdout ? (
+            <iframe srcDoc={stdout} className="h-96 w-full"></iframe>
           ) : (
-            <p>No image yet</p>
+            <p className="text-sm text-gray-500">
+              No output yet. Click run to see the result.
+            </p>
           )
         ) : (
           <pre className="mt-4 text-left">
