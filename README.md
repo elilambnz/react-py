@@ -72,7 +72,7 @@ For full documentation, visit [elilambnz.github.io/react-py](https://elilambnz.g
 
 [User Input](https://elilambnz.github.io/react-py/docs/examples/user-input)
 
-[Matplotlib](https://elilambnz.github.io/react-py/docs/examples/matplotlib)
+[Data Visualisation](https://elilambnz.github.io/react-py/docs/examples/data-visualisation)
 
 ## Limitations
 
