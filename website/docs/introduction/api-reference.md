@@ -81,7 +81,7 @@ Exposes `pyodide.FS.readFile`, encoding is `utf8`. [Read more here](https://emsc
 
 ### writeFile
 
-`(name: string, data: string) => void`
+`(name: string, data: string | ArrayBufferView) => void`
 
 Exposes `pyodide.FS.writeFile`, encoding is `utf8`. [Read more here](https://emscripten.org/docs/api_reference/Filesystem-API.html#FS.writeFile).
 

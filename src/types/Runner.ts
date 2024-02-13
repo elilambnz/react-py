@@ -14,7 +14,7 @@ export interface Runner {
   ) => Promise<void>
   interruptExecution: () => void
   readFile: (name: string) => void
-  writeFile: (name: string, data: string) => void
+  writeFile: (name: string, data: string | ArrayBufferView) => void
   mkdir: (name: string) => void
   rmdir: (name: string) => void
 }

@@ -16,7 +16,7 @@ export default function useFilesystem(props: UseFilesystemProps) {
     return runner?.readFile(name)
   }
 
-  const writeFile = (name: string, data: string) => {
+  const writeFile = (name: string, data: string | ArrayBufferView) => {
     return runner?.writeFile(name, data)
   }
 
