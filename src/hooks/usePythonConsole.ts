@@ -107,6 +107,9 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               }
               setStdout(msg)
             }),
+            proxy((msg: string) => {
+              setStderr(msg)
+            }),
             proxy(({ id, version, banner }) => {
               setRunnerId(id)
               setBanner(banner)
