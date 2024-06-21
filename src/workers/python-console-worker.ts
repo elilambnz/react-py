@@ -69,6 +69,7 @@ const reactPyModule = {
 const python = {
   async init(
     stdout: (msg: string) => void,
+    stderr: (msg: string) => void,
     onLoad: ({
       id,
       version,
@@ -141,6 +142,7 @@ sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
 
     // eslint-disable-next-line camelcase
     pyconsole.stdout_callback = stdout
+    pyconsole.stderr_callback = stderr
 
     pythonConsole = {
       reprShorten,

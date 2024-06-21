@@ -59,6 +59,7 @@ const reactPyModule = {
 const python = {
   async init(
     stdout: (msg: string) => void,
+    stderr: (msg: string) => void,
     onLoad: ({
       id,
       version,
@@ -71,7 +72,8 @@ const python = {
     packages: string[][]
   ) {
     self.pyodide = await self.loadPyodide({
-      stdout
+      stdout,
+      stderr,
     })
     await self.pyodide.loadPackage(['pyodide-http'])
     if (packages[0].length > 0) {
