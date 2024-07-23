@@ -24,6 +24,7 @@ export default function usePython(props?: UsePythonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
+  const [error, setError] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
@@ -105,6 +106,9 @@ export default function usePython(props?: UsePythonProps) {
               }
               setOutput((prev) => [...prev, msg])
             }),
+            proxy((msg: string) => {
+              setError((prev) => [...prev, msg])
+            }),
             proxy(({ id, version }) => {
               setRunnerId(id)
               console.debug('Loaded pyodide version:', version)
@@ -127,6 +131,13 @@ export default function usePython(props?: UsePythonProps) {
       setStdout(output.join('\n'))
     }
   }, [output])
+
+  // Immediately set stderr upon receiving new input
+  useEffect(() => {
+    if (error.length > 0) {
+      setStderr(error.join('\n'))
+    }
+  }, [error])
 
   // React to ready state and run delayed code if pending
   useEffect(() => {
@@ -205,6 +216,7 @@ del sys
         setHasRun(true)
         // Clear output
         setOutput([])
+        setError([])
         if (!isReady || !runnerRef.current) {
           throw new Error('Pyodide is not loaded yet')
         }
@@ -235,6 +247,7 @@ del sys
     setIsRunning(false)
     setRunnerId(undefined)
     setOutput([])
+    setError([])
 
     // Spawn new worker
     createWorker()

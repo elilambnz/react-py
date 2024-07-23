@@ -1,6 +1,7 @@
 export interface Runner {
   init: (
     stdout: (msg: string) => void,
+    stderr: (msg: string) => void,
     onLoad: ({
       id,
       version,
