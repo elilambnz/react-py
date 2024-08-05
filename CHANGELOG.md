@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.11.1](https://github.com/elilambnz/react-py/compare/v1.11.0...v1.11.1) (2024-08-05)
 
+### Bug fixes
+
+- Encode prompt when sending to the sw ([#346](https://github.com/elilambnz/react-py/issues/346))
+
 ## [1.11.0](https://github.com/elilambnz/react-py/compare/v1.10.7...v1.11.0) (2024-08-05)
 
 ### Features
