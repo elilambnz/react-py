@@ -15,8 +15,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.1.1",
-    "@docusaurus/preset-classic": "^3.1.1",
+    "@docusaurus/core": "^3.4.0",
+    "@docusaurus/preset-classic": "^3.4.0",
     "@easyops-cn/docusaurus-search-local": "^0.37.4",
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
@@ -33,11 +33,10 @@
     "tailwindcss": "^3.1.8"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.1.1",
-    "@docusaurus/tsconfig": "^3.1.1",
-    "@docusaurus/types": "^3.1.1",
+    "@docusaurus/module-type-aliases": "^3.4.0",
+    "@docusaurus/tsconfig": "^3.4.0",
+    "@docusaurus/types": "^3.4.0",
     "@tailwindcss/forms": "^0.5.3",
-    "@tsconfig/docusaurus": "^1.0.5",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "prettier": "^2.8.1",

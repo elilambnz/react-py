@@ -124,7 +124,7 @@ export default function MatplotlibExample(props: MatplotlibExampleProps) {
           stdout && stdout.startsWith('data:image/png;base64,') ? (
             <img src={stdout} />
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-zinc-500">
               No image yet. Click run to see the result.
             </p>
           )

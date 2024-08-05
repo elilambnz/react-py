@@ -124,7 +124,7 @@ export default function MatplotlibExample(props: MatplotlibExampleProps) {
           stdout ? (
             <iframe srcDoc={stdout} className="h-96 w-full"></iframe>
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-zinc-500">
               No output yet. Click run to see the result.
             </p>
           )

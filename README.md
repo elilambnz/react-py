@@ -1,14 +1,11 @@
 <p align="center">
-  <a href="https://elilambnz.github.io/react-py/#gh-light-mode-only" target="_blank">
-    <img src="./.github/logo-light.png" alt="react-py" width="350" height="70">
-  </a>
-  <a href="https://elilambnz.github.io/react-py/#gh-dark-mode-only" target="_blank">
-    <img src="./.github/logo-dark.png" alt="react-py" width="350" height="70">
+  <a href="https://elilambnz.github.io/react-py" target="_blank">
+    <img src="./.github/logo.png" alt="react-py logo" width="70" height="70">
   </a>
 </p>
 
 <p align="center">
-  Effortlessly run Python code in your React apps. <a href="https://elilambnz.github.io/react-py">Try it out!</a>
+  Effortlessly run Python code in your React apps.
 </p>
 
 <p align="center">
@@ -21,7 +18,9 @@
 
 ---
 
-> ✨ <a href="https://pyrepl.io">PyRepl.io</a> is a Python interpreter in your browser. Embed interactive Python examples in your documentation, blog posts, presentations and more. <a href="https://pyrepl.io">Get started for free.</a>
+## Try it out
+
+You can try out `react-py` [in the playground](https://elilambnz.github.io/react-py/playground).
 
 ## Quickstart
 
@@ -88,7 +87,7 @@ Most of the Python standard library is functional, except from some modules. The
 
 _react-py_ is available under the MIT License.
 
-## Contact
+## Maintainers
 
 Eli Lamb - [elilambnz](https://github.com/elilambnz)  
 James Ansley - [James-Ansley](https://github.com/James-Ansley)

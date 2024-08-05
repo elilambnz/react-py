@@ -148,7 +148,7 @@ export default function MultiFileExample() {
                           'flex cursor-pointer items-center rounded border-none px-4 py-1 text-sm font-medium ring-1 ring-inset ring-neutral-900',
                           selected
                             ? 'bg-white text-neutral-700'
-                            : 'bg-neutral-500 text-gray-50 hover:bg-white hover:text-neutral-700'
+                            : 'bg-neutral-500 text-zinc-50 hover:bg-white hover:text-neutral-700'
                         )
                       }
                     >

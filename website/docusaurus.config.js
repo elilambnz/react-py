@@ -81,6 +81,11 @@ const config = {
             label: 'Docs'
           },
           {
+            to: '/playground',
+            position: 'left',
+            label: 'Playground'
+          },
+          {
             href: 'https://github.com/elilambnz/react-py',
             label: 'GitHub',
             position: 'right'

@@ -126,8 +126,8 @@ export default function Console() {
           </code>
         ))}
         <div className="group relative flex items-center">
-          <code className="text-gray-500">{getPrompt()}</code>
-          <span className="text-gray-500 group-focus-within:hidden">|</span>
+          <code className="text-zinc-500">{getPrompt()}</code>
+          <span className="text-zinc-500 group-focus-within:hidden">|</span>
           <textarea
             ref={textArea}
             className={clsx(

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import { useColorMode } from '@docusaurus/theme-common'
 
+import Logo from '../../../static/img/logo.svg'
+
 const navigation = {
   docs: [
     {
@@ -31,14 +33,9 @@ const navigation = {
     }
   ],
   tryExamples: [
+    { name: 'Playground', href: '/react-py/playground' },
     { name: 'Basic Example', href: '/react-py/docs/examples/basic-example' },
     { name: 'REPL', href: '/react-py/docs/examples/repl' }
-  ],
-  seeAlso: [
-    {
-      name: 'PyRepl.io - Python Editor',
-      href: 'https://pyrepl.io'
-    }
   ]
 }
 
@@ -62,17 +59,14 @@ export default function Example() {
       </h2>
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-          <div className="space-y-8">
-            <img
-              className="mx-auto h-6 w-auto"
-              src={
-                isDarkMode
-                  ? require('@site/static/img/logo-dark.png').default
-                  : require('@site/static/img/logo-light.png').default
-              }
-              alt={siteConfig.title}
-            />
-            <p className="leading-6 text-gray-600 dark:text-gray-400">
+          <div className="space-y-6">
+            <div className="flex items-center space-x-2">
+              <Logo className="h-6 w-6" />
+              <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-200">
+                react-py
+              </span>
+            </div>
+            <p className="leading-6 text-zinc-600 dark:text-zinc-400">
               {siteConfig.tagline}
             </p>
             <div className="flex space-x-2">
@@ -80,7 +74,7 @@ export default function Example() {
                 href="https://github.com/elilambnz/react-py"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded border border-transparent bg-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-300 hover:text-gray-700 hover:no-underline dark:bg-gray-100 dark:hover:bg-gray-200"
+                className="inline-flex items-center rounded border border-transparent bg-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-300 hover:text-zinc-700 hover:no-underline dark:bg-zinc-100 dark:hover:bg-zinc-200"
               >
                 <svg
                   className="mr-2 h-6 w-6"
@@ -99,7 +93,7 @@ export default function Example() {
                 href="https://github.com/sponsors/elilambnz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded border border-transparent bg-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-300 hover:text-gray-700 hover:no-underline dark:bg-gray-100 dark:hover:bg-gray-200"
+                className="inline-flex items-center rounded border border-transparent bg-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-300 hover:text-zinc-700 hover:no-underline dark:bg-zinc-100 dark:hover:bg-zinc-200"
               >
                 <svg
                   className="mr-2 h-6 w-6 stroke-rose-400"
@@ -118,90 +112,76 @@ export default function Example() {
               </a>
             </div>
           </div>
-          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-            <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Docs
-                </h3>
-                <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.docs.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Links
-                </h3>
-                <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.links.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <div className="mt-16 grid gap-8 md:grid-cols-3 xl:col-span-2 xl:mt-0">
+            <div>
+              <h3 className="text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-200">
+                Docs
+              </h3>
+              <ul role="list" className="mt-6 list-none space-y-4 pl-0">
+                {navigation.docs.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      className="text-sm font-medium leading-6 text-zinc-600 hover:text-zinc-900 hover:no-underline dark:text-zinc-500 dark:hover:text-zinc-200"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Try Examples
-                </h3>
-                <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.tryExamples.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  See Also
-                </h3>
-                <ul role="list" className="mt-6 list-none space-y-4 pl-0">
-                  {navigation.seeAlso.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium leading-6 text-gray-600 hover:text-gray-900 hover:no-underline dark:text-gray-500 dark:hover:text-gray-200"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div>
+              <h3 className="text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-200">
+                Links
+              </h3>
+              <ul role="list" className="mt-6 list-none space-y-4 pl-0">
+                {navigation.links.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium leading-6 text-zinc-600 hover:text-zinc-900 hover:no-underline dark:text-zinc-500 dark:hover:text-zinc-200"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-200">
+                Try Examples
+              </h3>
+              <ul role="list" className="mt-6 list-none space-y-4 pl-0">
+                {navigation.tryExamples.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      className="text-sm font-medium leading-6 text-zinc-600 hover:text-zinc-900 hover:no-underline dark:text-zinc-500 dark:hover:text-zinc-200"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-        <div className="mt-16 border-t border-b-0 border-l-0 border-r-0 border-solid border-gray-900/10 pt-8 dark:border-gray-200/10 sm:mt-20 lg:mt-24">
-          <p className="leading-5 text-gray-500">
-            Built by <a href="https://github.com/elilambnz">Eli Lamb</a>.
-            Licensed under the{' '}
-            <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md">
+        <div className="mt-16 border-t border-b-0 border-l-0 border-r-0 border-solid border-zinc-900/10 pt-8 dark:border-zinc-200/10 sm:mt-20 lg:mt-24">
+          <p className="leading-5 text-zinc-500">
+            Built by{' '}
+            <a
+              className="text-lime-600 hover:text-lime-600 dark:text-lime-500 hover:dark:text-lime-500"
+              href="https://github.com/elilambnz"
+            >
+              Eli Lamb
+            </a>
+            . Licensed under the{' '}
+            <a
+              className="text-lime-600 hover:text-lime-600 dark:text-lime-500 hover:dark:text-lime-500"
+              href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md"
+            >
               MIT License
             </a>
             .
