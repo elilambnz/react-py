@@ -279,18 +279,14 @@ function Environment({ theme }: { theme: string }) {
         {isDragging && (
           <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-10 backdrop-blur-sm backdrop-filter">
             <div className="rounded-md bg-lime-50 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <DocumentArrowDownIcon
-                    className="h-5 w-5 text-lime-400"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-lime-800">
-                    Drop file to upload
-                  </p>
-                </div>
+              <div className="flex items-center gap-x-4">
+                <DocumentArrowDownIcon
+                  className="h-5 w-5 text-lime-400"
+                  aria-hidden="true"
+                />
+                <span className="text-sm font-medium text-lime-800">
+                  Drop file to upload
+                </span>
               </div>
             </div>
           </div>

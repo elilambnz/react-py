@@ -35,8 +35,20 @@
 
 .navbar__brand:hover,
 .navbar__link:hover,
-.navbar__link--active {
+.navbar__link--active,
+.menu__link--active,
+.menu__link--active:hover,
+.table-of-contents__link:hover,
+.table-of-contents__link:hover code,
+.table-of-contents__link--active,
+.table-of-contents__link--active code,
+.table-of-contents__link--active code a,
+.breadcrumbs__item--active .breadcrumbs__link {
   @apply text-lime-500;
+}
+
+.pagination-nav__link:hover {
+  @apply border-lime-500;
 }
 
 a,
