@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.11.0](https://github.com/elilambnz/react-py/compare/v1.10.7...v1.11.0) (2024-08-05)
 
+### Features
+
+- Added `autoImportPackages` prop to automatically import packages in a code chunk
+
 ### [1.10.7](https://github.com/elilambnz/react-py/compare/v1.10.6...v1.10.7) (2024-02-13)
 
 ### [1.10.6](https://github.com/elilambnz/react-py/compare/v1.10.5...v1.10.6) (2023-09-21)

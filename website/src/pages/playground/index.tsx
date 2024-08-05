@@ -4,11 +4,18 @@ import Layout from '@theme/Layout'
 import { useColorMode } from '@docusaurus/theme-common'
 
 import Environment from '@site/src/components/Environment'
+import BrowserOnly from '@docusaurus/BrowserOnly'
 
 function EnvironmentContainer() {
   const { colorMode } = useColorMode()
 
-  return <Environment theme={colorMode} />
+  return (
+    <BrowserOnly fallback={<div>Loading...</div>}>
+      {() => {
+        return <Environment theme={colorMode} />
+      }}
+    </BrowserOnly>
+  )
 }
 
 export default function Playground(): JSX.Element {

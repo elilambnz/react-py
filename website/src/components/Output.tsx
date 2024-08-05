@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { ConsoleState } from 'react-py/dist/types/Console'
+
+import { ConsoleState } from '@site/../dist/types/Console'
+
 import clsx from 'clsx'
 
 const ps1 = '>>> '

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
-import { useColorMode } from '@docusaurus/theme-common'
 
 import Logo from '../../static/img/logo.svg'
 
@@ -24,14 +23,7 @@ import {
 import clsx from 'clsx'
 
 function HomepageHeader() {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
   const { siteConfig } = useDocusaurusContext()
-  const { colorMode } = useColorMode()
-
-  useEffect(() => {
-    setIsDarkMode(colorMode === 'dark')
-  }, [colorMode])
 
   return (
     <div>

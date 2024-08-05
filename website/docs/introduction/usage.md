@@ -27,7 +27,7 @@ render(<App />, document.getElementById('root'))
 
 ## `usePython` Hook
 
-Use the `usePython` hook to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference#usepython-hook).
+Use the `usePython` hook to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference#usepython-and-usepythonconsole-hooks).
 
 Try the example, [Basic Example](../examples/basic-example.md).
 
@@ -74,7 +74,7 @@ function Codeblock() {
 
 ## `usePythonConsole` Hook
 
-Use the `usePythonConsole` hook to emulate a Python console to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference#usepython-hook).
+Use the `usePythonConsole` hook to emulate a Python console to run code and access both stdout and stderr. For props, see the [API reference docs](../introduction/api-reference#usepython-and-usepythonconsole-hooks).
 
 Try the example, [REPL](../examples/repl.mdx).
 

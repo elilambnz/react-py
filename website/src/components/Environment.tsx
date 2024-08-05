@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePythonConsole } from 'react-py'
+import { usePythonConsole } from '@site/../dist'
 
 import Editor from './Editor'
 import Output from './Output'
