@@ -170,18 +170,9 @@ export default function Example() {
         </div>
         <div className="mt-16 border-t border-b-0 border-l-0 border-r-0 border-solid border-zinc-900/10 pt-8 dark:border-zinc-200/10 sm:mt-20 lg:mt-24">
           <p className="leading-5 text-zinc-500">
-            Built by{' '}
-            <a
-              className="text-lime-600 hover:text-lime-600 dark:text-lime-500 hover:dark:text-lime-500"
-              href="https://github.com/elilambnz"
-            >
-              Eli Lamb
-            </a>
-            . Licensed under the{' '}
-            <a
-              className="text-lime-600 hover:text-lime-600 dark:text-lime-500 hover:dark:text-lime-500"
-              href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md"
-            >
+            Built by <a href="https://github.com/elilambnz">Eli Lamb</a>.
+            Licensed under the{' '}
+            <a href="https://github.com/elilambnz/react-py/blob/main/LICENSE.md">
               MIT License
             </a>
             .

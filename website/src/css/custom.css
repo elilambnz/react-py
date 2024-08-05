@@ -33,6 +33,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.navbar__brand:hover,
+.navbar__link:hover,
+.navbar__link--active {
+  @apply text-lime-500;
+}
+
+a,
+a:hover {
+  @apply text-lime-500;
+}
+
 /* Disable grammarly */
 grammarly-extension {
   display: none;

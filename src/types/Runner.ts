@@ -10,6 +10,7 @@ export interface Runner {
       version: string
       banner?: string
     }) => void,
+    mode: 'standard' | 'console',
     packages?: string[][]
   ) => Promise<void>
   interruptExecution: () => void
@@ -20,9 +21,8 @@ export interface Runner {
 }
 
 export interface PythonRunner extends Runner {
-  run: (code: string) => Promise<void>
-}
-
-export interface PythonConsoleRunner extends Runner {
-  run: (code: string) => Promise<{ state: string; error?: string }>
+  run: (
+    code: string,
+    autoImportPackages: boolean
+  ) => Promise<void | { state: string; error?: string }>
 }

@@ -11,7 +11,7 @@ import { proxy, Remote, wrap } from 'comlink'
 import useFilesystem from './useFilesystem'
 
 import { Packages } from '../types/Packages'
-import { PythonConsoleRunner } from '../types/Runner'
+import { PythonRunner } from '../types/Runner'
 import { ConsoleState } from '../types/Console'
 
 interface UsePythonConsoleProps {
@@ -34,13 +34,14 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     packages: globalPackages,
     timeout,
     lazy,
+    autoImportPackages,
     sendInput,
     workerAwaitingInputIds,
     getPrompt
   } = useContext(PythonContext)
 
   const workerRef = useRef<Worker>()
-  const runnerRef = useRef<Remote<PythonConsoleRunner>>()
+  const runnerRef = useRef<Remote<PythonRunner>>()
 
   const {
     readFile,
@@ -54,7 +55,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
 
   const createWorker = () => {
     const worker = new Worker(
-      new URL('../workers/python-console-worker', import.meta.url)
+      new URL('../workers/python-worker', import.meta.url)
     )
     workerRef.current = worker
   }
@@ -94,9 +95,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
       const init = async () => {
         try {
           setIsLoading(true)
-          const runner: Remote<PythonConsoleRunner> = wrap(
-            workerRef.current as Worker
-          )
+          const runner: Remote<PythonRunner> = wrap(workerRef.current as Worker)
           runnerRef.current = runner
 
           await runner.init(
@@ -112,6 +111,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               setBanner(banner)
               console.debug('Loaded pyodide version:', version)
             }),
+            'console',
             allPackages
           )
         } catch (error) {
@@ -177,9 +177,13 @@ del sys
           }, timeout)
         }
         if (watchedModules.size > 0) {
-          await runnerRef.current.run(moduleReloadCode(watchedModules))
+          await runnerRef.current.run(
+            moduleReloadCode(watchedModules),
+            autoImportPackages
+          )
         }
-        const { state, error } = await runnerRef.current.run(code)
+        const runResult = await runnerRef.current.run(code, autoImportPackages)
+        const { state, error } = runResult ?? {}
         setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
         if (error) {
           setStderr(error)

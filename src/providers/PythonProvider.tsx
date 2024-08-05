@@ -6,6 +6,7 @@ const PythonContext = createContext({
   timeout: 0,
   lazy: false,
   terminateOnCompletion: false,
+  autoImportPackages: true,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   sendInput: (_id: string, _value: string) => {},
   workerAwaitingInputIds: [] as string[],
@@ -20,6 +21,7 @@ interface PythonProviderProps {
   timeout?: number
   lazy?: boolean
   terminateOnCompletion?: boolean
+  autoImportPackages?: boolean
   // eslint-disable-next-line
   children: any
 }
@@ -29,7 +31,8 @@ function PythonProvider(props: PythonProviderProps) {
     packages = {},
     timeout = 0,
     lazy = false,
-    terminateOnCompletion = false
+    terminateOnCompletion = false,
+    autoImportPackages = true
   } = props
 
   const [workerAwaitingInputIds, setWorkerAwaitingInputIds] = useState<
@@ -127,6 +130,7 @@ function PythonProvider(props: PythonProviderProps) {
         timeout,
         lazy,
         terminateOnCompletion,
+        autoImportPackages,
         sendInput,
         workerAwaitingInputIds: Array.from(workerAwaitingInputIds),
         getPrompt: (id: string) => workerAwaitingInputPrompt.get(id)
