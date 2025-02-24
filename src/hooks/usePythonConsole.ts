@@ -26,6 +26,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const [banner, setBanner] = useState<string | undefined>()
   const [consoleState, setConsoleState] = useState<ConsoleState>()
   const [isRunning, setIsRunning] = useState(false)
+  const [output, setOutput] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
@@ -72,6 +73,13 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     }
   }, [])
 
+  // Immediately set stdout upon receiving new input
+  useEffect(() => {
+    if (output.length > 0 && !isRunning) {
+      setStdout(output.join(''))
+    }
+  }, [output, isRunning])
+
   const allPackages = useMemo(() => {
     const official = [
       ...new Set([
@@ -104,7 +112,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               if (suppressedMessages.includes(msg)) {
                 return
               }
-              setStdout(msg)
+              setOutput((prev) => [...prev, msg])
             }),
             proxy(({ id, version, banner }) => {
               setRunnerId(id)
@@ -150,6 +158,7 @@ del sys
   const runPython = useCallback(
     async (code: string) => {
       // Clear stdout and stderr
+      setOutput([])
       setStdout('')
       setStderr('')
 
