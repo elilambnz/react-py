@@ -18,7 +18,7 @@ interface UsePythonConsoleProps {
   packages?: Packages
 }
 
-export default function usePythonConsole(props?: UsePythonConsoleProps) {
+function usePython(props?: UsePythonConsoleProps) {
   const { packages = {} } = props ?? {}
 
   const [runnerId, setRunnerId] = useState<string>()
@@ -241,6 +241,7 @@ del sys
   return {
     runPython,
     stdout,
+    output,
     stderr,
     isLoading,
     isReady,
@@ -257,5 +258,32 @@ del sys
     isAwaitingInput,
     sendInput: sendUserInput,
     prompt: runnerId ? getPrompt(runnerId) : ''
+  }
+}
+
+export default function usePythonConsole(props?: UsePythonConsoleProps) {
+  const { stderr, stdout, runPython, consoleState, ...pyconsole } =
+    usePython(props)
+  const [output, setOutput] = useState([''])
+  function getPrompt() {
+    return consoleState === ConsoleState.incomplete ? '... ' : '>>> '
+  }
+
+  function run(input: string) {
+    setOutput((prev) => [...prev, getPrompt() + input + '\n'])
+    runPython(input)
+  }
+
+  useEffect(() => {
+    if (stdout === pyconsole.output.join('')) {
+      setOutput((prev) => [...prev, stdout, stderr ? stderr + '\n' : ''])
+    }
+  }, [stdout, pyconsole.output, stderr])
+
+  return {
+    ...pyconsole,
+    output,
+    run,
+    getPrompt
   }
 }
