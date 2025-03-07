@@ -34,7 +34,9 @@ const reactPyModule = {
     // Synchronous request to be intercepted by service worker
     request.open(
       'GET',
-      `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`,
+      `${
+        location.origin
+      }/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`,
       false
     )
     request.send(null)
