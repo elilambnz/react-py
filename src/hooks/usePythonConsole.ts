@@ -43,6 +43,7 @@ function usePython(props?: UsePythonConsoleProps) {
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
+  const interruptBuffer = useRef(new Uint8Array(new SharedArrayBuffer(1)))
 
   const {
     readFile,
@@ -120,6 +121,7 @@ function usePython(props?: UsePythonConsoleProps) {
               console.debug('Loaded pyodide version:', version)
             }),
             'console',
+            interruptBuffer.current,
             allPackages
           )
         } catch (error) {
@@ -191,6 +193,7 @@ del sys
             autoImportPackages
           )
         }
+        interruptBuffer.current[0] = 0
         const runResult = await runnerRef.current.run(code, autoImportPackages)
         const { state, error } = runResult ?? {}
         setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
@@ -209,14 +212,8 @@ del sys
   )
 
   const interruptExecution = () => {
-    cleanup()
-    setIsRunning(false)
-    setRunnerId(undefined)
-    setBanner(undefined)
-    setConsoleState(undefined)
-
-    // Spawn new worker
-    createWorker()
+    // 2 stands for SIGINT.
+    interruptBuffer.current[0] = 2
   }
 
   const cleanup = () => {
