@@ -18,7 +18,7 @@ interface UsePythonConsoleProps {
   packages?: Packages
 }
 
-export default function usePythonConsole(props?: UsePythonConsoleProps) {
+function usePython(props?: UsePythonConsoleProps) {
   const { packages = {} } = props ?? {}
 
   const [runnerId, setRunnerId] = useState<string>()
@@ -43,6 +43,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
+  const interruptBuffer = useRef(new Uint8Array(new SharedArrayBuffer(1)))
 
   const {
     readFile,
@@ -120,6 +121,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               console.debug('Loaded pyodide version:', version)
             }),
             'console',
+            interruptBuffer.current,
             allPackages
           )
         } catch (error) {
@@ -191,6 +193,7 @@ del sys
             autoImportPackages
           )
         }
+        interruptBuffer.current[0] = 0
         const runResult = await runnerRef.current.run(code, autoImportPackages)
         const { state, error } = runResult ?? {}
         setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
@@ -209,14 +212,8 @@ del sys
   )
 
   const interruptExecution = () => {
-    cleanup()
-    setIsRunning(false)
-    setRunnerId(undefined)
-    setBanner(undefined)
-    setConsoleState(undefined)
-
-    // Spawn new worker
-    createWorker()
+    // 2 stands for SIGINT.
+    interruptBuffer.current[0] = 2
   }
 
   const cleanup = () => {
@@ -241,6 +238,7 @@ del sys
   return {
     runPython,
     stdout,
+    output,
     stderr,
     isLoading,
     isReady,
@@ -257,5 +255,32 @@ del sys
     isAwaitingInput,
     sendInput: sendUserInput,
     prompt: runnerId ? getPrompt(runnerId) : ''
+  }
+}
+
+export default function usePythonConsole(props?: UsePythonConsoleProps) {
+  const { stderr, stdout, runPython, consoleState, ...pyconsole } =
+    usePython(props)
+  const [output, setOutput] = useState([''])
+  function getPrompt() {
+    return consoleState === ConsoleState.incomplete ? '... ' : '>>> '
+  }
+
+  function run(input: string) {
+    setOutput((prev) => [...prev, getPrompt() + input + '\n'])
+    runPython(input)
+  }
+
+  useEffect(() => {
+    if (stdout === pyconsole.output.join('')) {
+      setOutput((prev) => [...prev, stdout, stderr ? stderr + '\n' : ''])
+    }
+  }, [stdout, pyconsole.output, stderr])
+
+  return {
+    ...pyconsole,
+    output,
+    run,
+    getPrompt
   }
 }

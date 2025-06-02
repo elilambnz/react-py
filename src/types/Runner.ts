@@ -1,3 +1,5 @@
+import { TypedArray } from 'pyodide'
+
 export interface Runner {
   init: (
     stdout: (msg: string) => void,
@@ -11,6 +13,7 @@ export interface Runner {
       banner?: string
     }) => void,
     mode: 'standard' | 'console',
+    interruptBuffer: TypedArray,
     packages?: string[][]
   ) => Promise<void>
   interruptExecution: () => void

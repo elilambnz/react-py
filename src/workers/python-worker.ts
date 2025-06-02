@@ -1,7 +1,11 @@
 importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js')
 
 import { expose } from 'comlink'
-import { loadPyodide as loadPyodideType, PyodideInterface } from 'pyodide'
+import {
+  loadPyodide as loadPyodideType,
+  PyodideInterface,
+  TypedArray
+} from 'pyodide'
 
 declare global {
   interface Window {
@@ -34,7 +38,9 @@ const reactPyModule = {
     // Synchronous request to be intercepted by service worker
     request.open(
       'GET',
-      `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`,
+      `${
+        location.origin
+      }/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`,
       false
     )
     request.send(null)
@@ -70,9 +76,12 @@ const python = {
       banner?: string
     }) => void,
     mode: 'standard' | 'console',
+    interruptBuffer: TypedArray,
     packages?: string[][]
   ) {
     self.pyodide = await self.loadPyodide({ stdout })
+
+    self.pyodide.setInterruptBuffer(interruptBuffer)
 
     // Enable debug mode
     // self.pyodide.setDebug(true)
@@ -96,11 +105,11 @@ const python = {
 
     const initCode = `
 import sys
-import pyodide_http
+#import pyodide_http
 
 sys.tracebacklimit = 0
 
-pyodide_http.patch_all()
+#pyodide_http.patch_all()
 `
     await self.pyodide.runPythonAsync(initCode)
 
