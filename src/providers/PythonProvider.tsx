@@ -17,13 +17,13 @@ const PythonContext = createContext({
 export const suppressedMessages = ['Python initialization complete']
 
 interface PythonProviderProps {
+  workerUrl?: string
   packages?: Packages
   timeout?: number
   lazy?: boolean
   terminateOnCompletion?: boolean
   autoImportPackages?: boolean
-  // eslint-disable-next-line
-  children: any
+  children: React.ReactNode
 }
 
 function PythonProvider(props: PythonProviderProps) {
@@ -48,10 +48,13 @@ function PythonProvider(props: PythonProviderProps) {
     const registerServiceWorker = async () => {
       if ('serviceWorker' in navigator) {
         try {
-          const url = new URL('../workers/service-worker', import.meta.url)
+          const url = new URL(
+            props.workerUrl ?? '../workers/service-worker',
+            props.workerUrl ? window.location.origin : import.meta.url
+          )
           const registration = await navigator.serviceWorker.register(url)
           if (registration.active) {
-            console.debug('Service worker active')
+            console.debug('Service worker active with url', url)
             swRef.current = registration.active
           }
 
@@ -61,7 +64,7 @@ function PythonProvider(props: PythonProviderProps) {
               console.debug('Installing new service worker')
               installingWorker.addEventListener('statechange', () => {
                 if (installingWorker.state === 'installed') {
-                  console.debug('New service worker installed')
+                  console.debug('New service worker installed with url', url)
                   swRef.current = installingWorker
                 }
               })
@@ -95,6 +98,7 @@ function PythonProvider(props: PythonProviderProps) {
   }, [])
 
   const sendInput = (id: string, value: string): void => {
+    console.debug(`sending input ${id} ${value}`)
     if (!workerAwaitingInputIds.has(id)) {
       console.error('Worker not awaiting input')
       return
@@ -122,7 +126,6 @@ function PythonProvider(props: PythonProviderProps) {
       return next
     })
   }
-
   return (
     <PythonContext.Provider
       value={{
