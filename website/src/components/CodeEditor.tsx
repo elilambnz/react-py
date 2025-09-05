@@ -4,12 +4,12 @@ import { Packages } from '@site/../dist/types/Packages'
 
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import { usePython } from '@site/../dist'
-import { useSafeColorMode } from '../hooks/useSafeColorMode'
 
 import Controls from './Controls'
 import Loader from './Loader'
 import Input from './Input'
 import { ArrowPathIcon, PlayIcon, StopIcon } from '@heroicons/react/24/solid'
+import { useSafeColorMode } from '../hooks/useSafeColorMode'
 
 const editorOptions = {
   enableBasicAutocompletion: true,
@@ -29,16 +29,25 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor(props: CodeEditorProps) {
+  return (
+    <BrowserOnly fallback={<div>Loading...</div>}>
+      {() => {
+        return <Editor {...props} />
+      }}
+    </BrowserOnly>
+  )
+}
+
+function Editor(props: CodeEditorProps) {
   const { code, packages } = props
   const [input, setInput] = useState(code.trimEnd())
   const [showOutput, setShowOutput] = useState(false)
+  const colorMode = useSafeColorMode()
 
   useEffect(() => {
     setInput(code.trimEnd())
     setShowOutput(false)
   }, [code])
-
-  const colorMode = useSafeColorMode()
 
   const {
     runPython,

@@ -3,9 +3,8 @@
 
 const path = require('path')
 
-const { themes } = require('prism-react-renderer')
-const lightCodeTheme = themes.github
-const darkCodeTheme = themes.dracula
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -54,13 +53,9 @@ const config = {
 
   themes: [
     [
-      // @ts-ignore
       require.resolve('@easyops-cn/docusaurus-search-local'),
       /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
-      // @ts-ignore
-      ({
-        hashed: true
-      })
+      ({ hashed: true })
     ]
   ],
 
@@ -99,17 +94,6 @@ const config = {
     }),
 
   plugins: [
-    async function tailwind() {
-      return {
-        name: 'tailwindcss',
-        configurePostCss(postcssOptions) {
-          // Appends TailwindCSS and AutoPrefixer.
-          postcssOptions.plugins.push(require('tailwindcss'))
-          postcssOptions.plugins.push(require('autoprefixer'))
-          return postcssOptions
-        }
-      }
-    },
     async function disableUsedExports() {
       return {
         name: 'disable-used-exports',
@@ -133,6 +117,17 @@ const config = {
               }
             }
           }
+        }
+      }
+    },
+    async function tailwind() {
+      return {
+        name: 'tailwindcss',
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS and AutoPrefixer.
+          postcssOptions.plugins.push(require('tailwindcss'))
+          postcssOptions.plugins.push(require('autoprefixer'))
+          return postcssOptions
         }
       }
     }

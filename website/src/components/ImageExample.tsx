@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Packages } from '@site/../dist/types/Packages'
 
 import BrowserOnly from '@docusaurus/BrowserOnly'
-import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 import { usePython } from '@site/../dist'
+import { useSafeColorMode } from '../hooks/useSafeColorMode'
 
 import Controls from './Controls'
 import Loader from './Loader'

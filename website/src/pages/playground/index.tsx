@@ -1,10 +1,10 @@
 import React from 'react'
 
 import Layout from '@theme/Layout'
-import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 
 import Environment from '@site/src/components/Environment'
 import BrowserOnly from '@docusaurus/BrowserOnly'
+import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 
 function EnvironmentContainer() {
   const colorMode = useSafeColorMode()

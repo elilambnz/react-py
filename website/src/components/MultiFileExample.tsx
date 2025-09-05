@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import BrowserOnly from '@docusaurus/BrowserOnly'
-import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 import { usePython } from '@site/../dist'
+import { useSafeColorMode } from '../hooks/useSafeColorMode'
 import PythonIcon from '../../static/img/python-icon.svg'
 
 import Controls from './Controls'
@@ -152,7 +152,7 @@ export default function MultiFileExample() {
                         )
                       }
                     >
-                      <PythonIcon className="mr-1 -mb-1 h-4 w-4" />
+                      <PythonIcon className="-mb-1 mr-1 h-4 w-4" />
                       {name}
                     </Tab>
                   ))}
