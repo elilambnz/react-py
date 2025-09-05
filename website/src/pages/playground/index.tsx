@@ -1,13 +1,13 @@
 import React from 'react'
 
 import Layout from '@theme/Layout'
-import { useColorMode } from '@docusaurus/theme-common'
+import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 
 import Environment from '@site/src/components/Environment'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 
 function EnvironmentContainer() {
-  const { colorMode } = useColorMode()
+  const colorMode = useSafeColorMode()
 
   return (
     <BrowserOnly fallback={<div>Loading...</div>}>

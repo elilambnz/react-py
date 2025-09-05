@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import BrowserOnly from '@docusaurus/BrowserOnly'
-import { useColorMode } from '@docusaurus/theme-common'
+import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 import { usePython } from '@site/../dist'
 import PythonIcon from '../../static/img/python-icon.svg'
 
@@ -48,7 +48,7 @@ export default function MultiFileExample() {
   const [strings, setUtils] = useState(stringsCode)
   const [showOutput, setShowOutput] = useState(false)
 
-  const { colorMode } = useColorMode()
+  const colorMode = useSafeColorMode()
 
   const {
     runPython,

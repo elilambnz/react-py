@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { useColorMode } from '@docusaurus/theme-common'
 
 import Logo from '../../../static/img/logo.svg'
 
@@ -39,15 +38,8 @@ const navigation = {
   ]
 }
 
-export default function Example() {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
+export default function Footer() {
   const { siteConfig } = useDocusaurusContext()
-  const { colorMode } = useColorMode()
-
-  useEffect(() => {
-    setIsDarkMode(colorMode === 'dark')
-  }, [colorMode])
 
   return (
     <footer

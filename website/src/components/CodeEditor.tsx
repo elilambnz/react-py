@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Packages } from '@site/../dist/types/Packages'
 
 import BrowserOnly from '@docusaurus/BrowserOnly'
-import { useColorMode } from '@docusaurus/theme-common'
 import { usePython } from '@site/../dist'
+import { useSafeColorMode } from '../hooks/useSafeColorMode'
 
 import Controls from './Controls'
 import Loader from './Loader'
@@ -38,7 +38,7 @@ export default function CodeEditor(props: CodeEditorProps) {
     setShowOutput(false)
   }, [code])
 
-  const { colorMode } = useColorMode()
+  const colorMode = useSafeColorMode()
 
   const {
     runPython,

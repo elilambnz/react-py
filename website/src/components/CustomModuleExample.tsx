@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import BrowserOnly from '@docusaurus/BrowserOnly'
-import { useColorMode } from '@docusaurus/theme-common'
+import { useSafeColorMode } from '@site/src/hooks/useSafeColorMode'
 import { usePython } from '@site/../dist'
 
 import Controls from './Controls'
@@ -40,7 +40,7 @@ export default function CustomModuleExample() {
   const [showOutput, setShowOutput] = useState(false)
   const [message, setMessage] = useState<string>()
 
-  const { colorMode } = useColorMode()
+  const colorMode = useSafeColorMode()
 
   const {
     runPython,

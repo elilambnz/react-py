@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { usePythonConsole } from '@site/../dist'
 
 import Editor from './Editor'
