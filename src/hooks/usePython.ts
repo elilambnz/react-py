@@ -42,6 +42,7 @@ export default function usePython(props?: UsePythonProps) {
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
+  const interruptBuffer = useRef(new Uint8Array(new SharedArrayBuffer(1)))
 
   const {
     readFile,
@@ -111,6 +112,7 @@ export default function usePython(props?: UsePythonProps) {
               console.debug('Loaded pyodide version:', version)
             }),
             'standard',
+            interruptBuffer.current,
             allPackages
           )
         } catch (error) {
@@ -200,6 +202,7 @@ del sys
             autoImportPackages
           )
         }
+        interruptBuffer.current[0] = 0
         await runnerRef.current.run(code, autoImportPackages)
         // eslint-disable-next-line
       } catch (error: any) {
@@ -213,13 +216,8 @@ del sys
   )
 
   const interruptExecution = () => {
-    cleanup()
-    setIsRunning(false)
-    setRunnerId(undefined)
-    setOutput([])
-
-    // Spawn new worker
-    createWorker()
+    // 2 stands for SIGINT.
+    interruptBuffer.current[0] = 2
   }
 
   const cleanup = () => {
