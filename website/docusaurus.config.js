@@ -101,8 +101,7 @@ const config = {
           if (isServer) return {}
 
           return {
-            // Add webpack globals to all chunks to fix worker context issues
-            // This resolves the "__webpack_require__ is not defined" error in web workers
+            // Inject fallback __webpack_require__ object to prevent web worker errors
             plugins: [
               new (require('webpack').BannerPlugin)({
                 banner: `
