@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.11.5](https://github.com/elilambnz/react-py/compare/v1.11.4...v1.11.5) (2025-09-07)
 
+- Updated Docusaurus plugin to fix webpack issue
+
 ### [1.11.4](https://github.com/elilambnz/react-py/compare/v1.11.3...v1.11.4) (2025-09-07)
 
 ### [1.11.3](https://github.com/elilambnz/react-py/compare/v1.11.2...v1.11.3) (2025-02-27)
