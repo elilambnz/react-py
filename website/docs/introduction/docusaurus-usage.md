@@ -46,11 +46,7 @@ plugins: [
             new (require('webpack').BannerPlugin)({
               banner: `
 if (typeof __webpack_require__ === 'undefined') {
-  var __webpack_require__ = {
-    gca: function(e) { return e = {}[e] || e, __webpack_require__.p + __webpack_require__.u(e); },
-    p: '',
-    u: function(e) { return ''; }
-  };
+  var __webpack_require__ = {};
 }
 `,
               raw: true,
@@ -64,7 +60,7 @@ if (typeof __webpack_require__ === 'undefined') {
 ]
 ```
 
-This configuration resolves the `__webpack_require__ is not defined` error that occurs when web workers are processed by webpack. The BannerPlugin injects the necessary webpack globals into all JavaScript chunks, ensuring that worker files have access to the `__webpack_require__` object they expect.
+This configuration resolves the `__webpack_require__ is not defined` error that occurs when web workers are processed by webpack. The BannerPlugin injects a simple `__webpack_require__` object to prevent the error from occurring in web worker contexts.
 
 [Read more about the original issue here](https://github.com/facebook/docusaurus/issues/8389).
 

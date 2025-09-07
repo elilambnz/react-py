@@ -107,11 +107,7 @@ const config = {
               new (require('webpack').BannerPlugin)({
                 banner: `
 if (typeof __webpack_require__ === 'undefined') {
-  var __webpack_require__ = {
-    gca: function(e) { return e = {}[e] || e, __webpack_require__.p + __webpack_require__.u(e); },
-    p: '',
-    u: function(e) { return ''; }
-  };
+  var __webpack_require__ = {};
 }
 `,
                 raw: true,
