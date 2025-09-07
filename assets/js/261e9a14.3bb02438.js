@@ -1,0 +1,1 @@
+if(void 0===__webpack_require__)var __webpack_require__={};(self.webpackChunkreact_py_docs=self.webpackChunkreact_py_docs||[]).push([[788],{1966:e=>{e.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"default"}')}}]);
