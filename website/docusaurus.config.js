@@ -55,7 +55,7 @@ const config = {
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
-      ({ hashed: true })
+      { hashed: true }
     ]
   ],
 
@@ -94,14 +94,30 @@ const config = {
     }),
 
   plugins: [
-    async function disableUsedExports() {
+    async function reactPyWebpackFix() {
       return {
-        name: 'disable-used-exports',
-        configureWebpack() {
+        name: 'react-py-webpack-fix',
+        configureWebpack(_config, isServer) {
+          if (isServer) return {}
+
           return {
-            optimization: {
-              usedExports: false
-            }
+            // Add webpack globals to all chunks to fix worker context issues
+            // This resolves the "__webpack_require__ is not defined" error in web workers
+            plugins: [
+              new (require('webpack').BannerPlugin)({
+                banner: `
+if (typeof __webpack_require__ === 'undefined') {
+  var __webpack_require__ = {
+    gca: function(e) { return e = {}[e] || e, __webpack_require__.p + __webpack_require__.u(e); },
+    p: '',
+    u: function(e) { return ''; }
+  };
+}
+`,
+                raw: true,
+                test: /\.js$/
+              })
+            ]
           }
         }
       }

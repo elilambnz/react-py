@@ -25,7 +25,7 @@ export default function Root({ children }) {
 
 You can override the default CodeBlock by swizzling the component, [more about swizzling](https://docusaurus.io/docs/swizzling).
 
-For a full example, check out an example of a Docusaurus site using `react-py` at https://github.com/James-Ansley/python-docusaurus-template, specifically `src/theme/CodeBlock` and `src/components/CodeEditor`.
+For a full example, check out an example of a Docusaurus site using `react-py` at https://github.com/elilambnz/python-docusaurus-template, specifically `src/theme/CodeBlock` and `src/components/CodeEditor`.
 
 ## Docusaurus config
 
@@ -33,14 +33,30 @@ We've encountered a Webpack issue when bundling a Docusaurus site with this pack
 
 ```js
 plugins: [
-  async function disableUsedExports() {
+  async function reactPyWebpackFix() {
     return {
-      name: 'disable-used-exports',
-      configureWebpack() {
+      name: 'react-py-webpack-fix',
+      configureWebpack(_config, isServer) {
+        if (isServer) return {}
+
         return {
-          optimization: {
-            usedExports: false
-          }
+          // Add webpack globals to all chunks to fix worker context issues
+          // This resolves the "__webpack_require__ is not defined" error in web workers
+          plugins: [
+            new (require('webpack').BannerPlugin)({
+              banner: `
+if (typeof __webpack_require__ === 'undefined') {
+  var __webpack_require__ = {
+    gca: function(e) { return e = {}[e] || e, __webpack_require__.p + __webpack_require__.u(e); },
+    p: '',
+    u: function(e) { return ''; }
+  };
+}
+`,
+              raw: true,
+              test: /\.js$/
+            })
+          ]
         }
       }
     }
@@ -48,8 +64,10 @@ plugins: [
 ]
 ```
 
-[Read more about this issue here](https://github.com/facebook/docusaurus/issues/8389).
+This configuration resolves the `__webpack_require__ is not defined` error that occurs when web workers are processed by webpack. The BannerPlugin injects the necessary webpack globals into all JavaScript chunks, ensuring that worker files have access to the `__webpack_require__` object they expect.
+
+[Read more about the original issue here](https://github.com/facebook/docusaurus/issues/8389).
 
 ## Python Docusaurus Template
 
-Get started with `react-py` and Docusaurus, you can use the [Python Docusaurus Template](https://github.com/James-Ansley/python-docusaurus-template). Click the green "Use this template" button on the repository page to clone, then follow the Docusaurus configuration steps for your specific site.
+Get started with `react-py` and Docusaurus, you can use the [Python Docusaurus Template](https://github.com/elilambnz/python-docusaurus-template). Click the green "Use this template" button on the repository page to clone, then follow the Docusaurus configuration steps for your specific site.
