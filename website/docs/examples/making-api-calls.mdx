@@ -37,7 +37,7 @@ print("*" * 50)
 ## `GET`
 
 export const exampleGetCode = `import requests
-response = requests.get('https://reqres.in/api/users/2')
+response = requests.get('https://jsonplaceholder.typicode.com/users/1')
 data = response.json()\n
 print(data)
 `
@@ -47,7 +47,7 @@ print(data)
 ## `POST`
 
 export const examplePostCode = `import requests
-response = requests.post('https://reqres.in/api/users', { "name": "morpheus", "job": "leader" })
+response = requests.post('https://jsonplaceholder.typicode.com/posts', { "title": "My Post", "body": "This is the content of my post", "userId": 1 })
 data = response.json()\n
 print(data)
 `
@@ -57,7 +57,7 @@ print(data)
 ## `PUT`
 
 export const examplePutCode = `import requests
-response = requests.put('https://reqres.in/api/users/2', { "name": "morpheus", "job": "zion resident" })
+response = requests.put('https://jsonplaceholder.typicode.com/posts/1', { "id": 1, "title": "Updated Post", "body": "This is the updated content", "userId": 1 })
 data = response.json()\n
 print(data)
 `
@@ -67,8 +67,8 @@ print(data)
 ## `DELETE`
 
 export const exampleDeleteCode = `import requests
-response = requests.delete('https://reqres.in/api/users/2')\n
-if response.status_code == 204:
+response = requests.delete('https://jsonplaceholder.typicode.com/posts/1')\n
+if response.status_code == 200:
   print ('Success')
 `
 
