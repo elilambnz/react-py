@@ -26,7 +26,6 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
   const [banner, setBanner] = useState<string | undefined>()
   const [consoleState, setConsoleState] = useState<ConsoleState>()
   const [isRunning, setIsRunning] = useState(false)
-  const [output, setOutput] = useState<string[]>([])
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
@@ -43,6 +42,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
 
   const workerRef = useRef<Worker>()
   const runnerRef = useRef<Remote<PythonRunner>>()
+  const outputRef = useRef<string[]>([])
 
   const {
     readFile,
@@ -72,13 +72,6 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
       cleanup()
     }
   }, [])
-
-  // Immediately set stdout upon receiving new input
-  useEffect(() => {
-    if (output.length > 0 && !isRunning) {
-      setStdout(output.join(''))
-    }
-  }, [output, isRunning])
 
   const allPackages = useMemo(() => {
     const official = [
@@ -112,7 +105,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               if (suppressedMessages.includes(msg)) {
                 return
               }
-              setOutput((prev) => [...prev, msg])
+              outputRef.current.push(msg)
             }),
             proxy(({ id, version, banner }) => {
               setRunnerId(id)
@@ -158,7 +151,7 @@ del sys
   const runPython = useCallback(
     async (code: string) => {
       // Clear stdout and stderr
-      setOutput([])
+      outputRef.current = []
       setStdout('')
       setStderr('')
 
@@ -193,6 +186,7 @@ del sys
         }
         const runResult = await runnerRef.current.run(code, autoImportPackages)
         const { state, error } = runResult ?? {}
+        setStdout(outputRef.current.join(''))
         setConsoleState(ConsoleState[state as keyof typeof ConsoleState])
         if (error) {
           setStderr(error)
@@ -214,6 +208,7 @@ del sys
     setRunnerId(undefined)
     setBanner(undefined)
     setConsoleState(undefined)
+    outputRef.current = []
 
     // Spawn new worker
     createWorker()
