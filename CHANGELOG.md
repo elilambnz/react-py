@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.11.7](https://github.com/elilambnz/react-py/compare/v1.11.5...v1.11.7) (2026-03-22)
 
-
 ### Bug Fixes
 
-* **console:** emit stdout after console execution completes ([70ebf98](https://github.com/elilambnz/react-py/commit/70ebf980c7c221c1591aece35fdf9ddab10354e9))
+- Console: emit stdout after console execution completes ([70ebf98](https://github.com/elilambnz/react-py/commit/70ebf980c7c221c1591aece35fdf9ddab10354e9))
 
 ### [1.11.6](https://github.com/elilambnz/react-py/compare/v1.11.5...v1.11.6) (2026-03-22)
 
